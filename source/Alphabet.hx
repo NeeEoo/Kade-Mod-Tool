@@ -77,9 +77,18 @@ class Alphabet extends FlxSpriteGroup
 				lastWasSpace = true;
 			}
 
-			if (AlphaCharacter.alphabet.indexOf(character.toLowerCase()) != -1)
+			#if (haxe >= "4.0.0")
+			var isNumber:Bool = AlphaCharacter.numbers.contains(character);
+			var isSymbol:Bool = AlphaCharacter.symbols.contains(character);
+			#else
+			var isNumber:Bool = AlphaCharacter.numbers.indexOf(character) != -1;
+			var isSymbol:Bool = AlphaCharacter.symbols.indexOf(character) != -1;
+			#end
+
+			if (AlphaCharacter.alphabet.indexOf(character.toLowerCase()) != -1 || isNumber || isSymbol)
 				// if (AlphaCharacter.alphabet.contains(character.toLowerCase()))
 			{
+				
 				if (lastSprite != null)
 				{
 					xPos = lastSprite.x + lastSprite.width;
@@ -92,13 +101,22 @@ class Alphabet extends FlxSpriteGroup
 				}
 
 				// var letter:AlphaCharacter = new AlphaCharacter(30 * loopNum, 0);
-				var letter:AlphaCharacter = new AlphaCharacter(xPos, 0);
+				var letter:AlphaCharacter;
 
-				if (isBold)
-					letter.createBold(character);
-				else
-				{
-					letter.createLetter(character);
+				if (isSymbol) {
+					letter = new AlphaCharacter(xPos, 0, "alphabet-inverted");
+					letter.createSymbol(character);
+				} else {
+					letter = new AlphaCharacter(xPos, 0);
+					if (isBold) {
+						letter.createBold(character);
+					} else {
+						if (isNumber) {
+							letter.createNumber(character);
+						} else {
+							letter.createLetter(character);
+						}
+					}
 				}
 
 				add(letter);
@@ -242,10 +260,10 @@ class AlphaCharacter extends FlxSprite
 
 	public var row:Int = 0;
 
-	public function new(x:Float, y:Float)
+	public function new(x:Float, y:Float, ?image:String="alphabet")
 	{
 		super(x, y);
-		var tex = Paths.getSparrowAtlas('alphabet');
+		var tex = Paths.getSparrowAtlas(image);
 		frames = tex;
 
 		antialiasing = true;
@@ -290,6 +308,10 @@ class AlphaCharacter extends FlxSprite
 		{
 			case '.':
 				animation.addByPrefix(letter, 'period', 24);
+				animation.play(letter);
+				y += 50;
+			case '_':
+				animation.addByPrefix(letter, 'underscore', 24);
 				animation.play(letter);
 				y += 50;
 			case "'":

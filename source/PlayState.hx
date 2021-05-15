@@ -758,7 +758,7 @@ class PlayState extends MusicBeatState
 					bgGirls.scrollFactor.set(0.9, 0.9);
 
 					if (SONG.song.toLowerCase() == 'roses')
-						{
+					{
 							bgGirls.getScared();
 					}
 
@@ -1143,6 +1143,33 @@ class PlayState extends MusicBeatState
 					schoolIntro(doof);
 				case 'thorns':
 					schoolIntro(doof);
+				/*case 'bopeebo':
+					var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+					black.scrollFactor.set();
+					add(black);
+
+					new FlxTimer().start(0.3, function(tmr:FlxTimer)
+						{
+							black.alpha -= 0.15;
+				
+							if (black.alpha > 0)
+							{
+								tmr.reset(0.3);
+							}
+							else
+							{
+								if (doof != null)
+								{
+									inCutscene = true;
+				
+									add(doof);
+								}
+								else
+									startCountdown();
+				
+								remove(black);
+							}
+						});*/
 				default:
 					startCountdown();
 			}

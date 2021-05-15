@@ -1,2 +1,2 @@
-1010101
+1111111
 Each one is a week, 1 means unlocked, 0 means locked
