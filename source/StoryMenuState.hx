@@ -23,6 +23,7 @@ class StoryMenuState extends MusicBeatState
 {
 	var scoreText:FlxText;
 
+	var visualWeekData:Array<Dynamic> = [];
 	var weekData:Array<Dynamic> = [
 		['Tutorial'],
 		['Bopeebo', 'Fresh', 'Dadbattle'],
@@ -34,7 +35,7 @@ class StoryMenuState extends MusicBeatState
 	];
 	var curDifficulty:Int = 1;
 
-	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
+	public static var weekUnlocked:Array<Bool> = [];
 
 	var weekCharacters:Array<Dynamic> = [
 		['', 'bf', 'gf'],
@@ -46,15 +47,7 @@ class StoryMenuState extends MusicBeatState
 		['senpai', 'bf', 'gf']
 	];
 
-	var weekNames:Array<String> = [
-		"How to Funk",
-		"Daddy Dearest",
-		"Spooky Month",
-		"PICO",
-		"MOMMY MUST MURDER",
-		"RED SNOW",
-		"Hating Simulator ft. Moawling"
-	];
+	var weekNames:Array<String> = [];
 
 	var txtWeekTitle:FlxText;
 
@@ -78,6 +71,22 @@ class StoryMenuState extends MusicBeatState
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Story Mode Menu", null);
 		#end
+
+		var visWeekName: Array<String> = CoolUtil.coolTextFile(Paths.txt("visualWeekNames"));
+
+		for (i in visWeekName)
+		{
+			visualWeekData.push(i.split('--'));
+		}
+
+		weekNames = CoolUtil.coolTextFile(Paths.txt("visualWeekNamesExtra"));
+
+        var unlockedWeeks = CoolUtil.coolTextFile(Paths.txt("unlockedWeeks"));
+        var dataLine = unlockedWeeks[0].split("");
+        for (i in dataLine) {
+            var dataUnlocked = i == "1";
+            weekUnlocked.push(dataUnlocked);
+        }
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -380,7 +389,7 @@ class StoryMenuState extends MusicBeatState
 		grpWeekCharacters.members[2].setCharacter(weekCharacters[curWeek][2]);
 
 		txtTracklist.text = "Tracks\n";
-		var stringThing:Array<String> = weekData[curWeek];
+		var stringThing:Array<String> = visualWeekData[curWeek];
 
 		for (i in stringThing)
 		{

@@ -42,7 +42,11 @@ class FreeplayState extends MusicBeatState
 		for (i in 0...initSonglist.length)
 		{
 			var data:Array<String> = initSonglist[i].split(':');
-			songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1]));
+			if(data.length == 3) {
+				songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1]));
+			} else {
+				songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1], data[3]));
+			}
 		}
 
 		/* 
@@ -76,7 +80,8 @@ class FreeplayState extends MusicBeatState
 
 		for (i in 0...songs.length)
 		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
+			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].visualWeekName, true, false);
+			// var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
 			grpSongs.add(songText);
@@ -297,11 +302,17 @@ class SongMetadata
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
+	public var visualWeekName:String = "";
 
-	public function new(song:String, week:Int, songCharacter:String)
+	public function new(song:String, week:Int, songCharacter:String, ?visualWeekName:String)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
+		if(visualWeekName == null) {
+			this.visualWeekName = song;
+		} else {
+			this.visualWeekName = visualWeekName;
+		}
 	}
 }
