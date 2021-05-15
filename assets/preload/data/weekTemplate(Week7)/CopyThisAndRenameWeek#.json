@@ -1,0 +1,14 @@
+{
+    "weekNumber": {
+          "8": {
+              "weekName":"THINK OF THE CHILDREN",
+              "levels" : [
+                  "The-Scream",
+                  "Agony",
+                  "True-Death"
+              ],
+              "characters": ["spooky", "bf", "gf"],
+              "locked": 0
+          }
+      }
+  }
