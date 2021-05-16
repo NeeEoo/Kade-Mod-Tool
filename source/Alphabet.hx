@@ -324,6 +324,44 @@ class AlphaCharacter extends FlxSprite
 			case "!":
 				animation.addByPrefix(letter, 'exclamation point', 24);
 				animation.play(letter);
+			/*case "#":
+				animation.addByPrefix(letter, '#', 24);
+				animation.play(letter);
+			case "$":
+				animation.addByPrefix(letter, '$', 24);
+				animation.play(letter);
+			case "%":
+				animation.addByPrefix(letter, '%', 24);
+				animation.play(letter);
+			case "&":
+				animation.addByPrefix(letter, '&', 24);
+				animation.play(letter);
+			case "(":
+				animation.addByPrefix(letter, '(', 24);
+				animation.play(letter);
+			case ")":
+				animation.addByPrefix(letter, ')', 24);
+				animation.play(letter);
+			case "+":
+				animation.addByPrefix(letter, '+', 24);
+				animation.play(letter);
+			case "-":
+				animation.addByPrefix(letter, '-', 24);
+				animation.play(letter);
+			case '"':
+				animation.addByPrefix(letter, '"', 24);
+				animation.play(letter);
+				y -= 0;
+			case '@':
+				animation.addByPrefix(letter, '@', 24);
+				animation.play(letter);
+			case "^":
+				animation.addByPrefix(letter, '^', 24);
+				animation.play(letter);
+				y -= 0;
+			case ' ':
+				animation.addByPrefix(letter, 'space', 24);
+				animation.play(letter);*/
 		}
 
 		updateHitbox();

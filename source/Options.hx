@@ -19,7 +19,6 @@ class OptionCatagory
 		_options.push(opt);
 	}
 
-	
 	public final function removeOption(opt:Option)
 	{
 		_options.remove(opt);
@@ -61,7 +60,6 @@ class Option
 		return description;
 	}
 
-	
 	// Returns whether the label is to be updated.
 	public function press():Bool { return throw "stub!"; }
 	private function updateDisplay():String { return throw "stub!"; }
@@ -94,7 +92,7 @@ class DFJKOption extends Option
 
 	private override function updateDisplay():String
 	{
-		return  FlxG.save.data.dfjk ? "DFJK" : "WASD";
+		return FlxG.save.data.dfjk ? "DFJK" : "WASD";
 	}
 }
 
@@ -126,6 +124,7 @@ class AccuracyOption extends Option
 		super();
 		description = desc;
 	}
+
 	public override function press():Bool
 	{
 		FlxG.save.data.accuracyDisplay = !FlxG.save.data.accuracyDisplay;
@@ -146,6 +145,7 @@ class SongPositionOption extends Option
 		super();
 		description = desc;
 	}
+
 	public override function press():Bool
 	{
 		FlxG.save.data.songPosition = !FlxG.save.data.songPosition;
@@ -161,8 +161,6 @@ class SongPositionOption extends Option
 
 class Judgement extends Option
 {
-	
-
 	public function new(desc:String)
 	{
 		super();
@@ -181,7 +179,6 @@ class Judgement extends Option
 	}
 
 	override function left():Bool {
-
 		if (Conductor.safeFrames == 1)
 			return false;
 
@@ -200,7 +197,6 @@ class Judgement extends Option
 	}
 
 	override function right():Bool {
-
 		if (Conductor.safeFrames == 20)
 			return false;
 
@@ -325,12 +321,10 @@ class ScrollSpeedOption extends Option
 		if (FlxG.save.data.scrollSpeed > 10)
 			FlxG.save.data.scrollSpeed = 10;
 
-
 		OptionsMenu.versionShit.text = "Current Scroll Speed: " + OptionsMenu.truncateFloat(FlxG.save.data.scrollSpeed,1) + " - Description - " + description;
 		return true;
 	}
 }
-
 
 class RainbowFPSOption extends Option
 {
@@ -471,7 +465,7 @@ class OffsetMenu extends Option
 	public override function press():Bool
 	{
 		trace("switch");
-		var poop:String = Highscore.formatSong("Tutorial", 1);
+		var poop:String = Song.getSongFilename("Tutorial", 1); // Normal
 
 		PlayState.SONG = Song.loadFromJson(poop, "Tutorial");
 		PlayState.isStoryMode = false;
@@ -488,6 +482,3 @@ class OffsetMenu extends Option
 		return "Time your offset";
 	}
 }
-
-
-

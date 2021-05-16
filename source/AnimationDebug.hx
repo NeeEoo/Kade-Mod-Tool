@@ -10,7 +10,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
 /**
-	*DEBUG MODE
+ * DEBUG MODE
  */
 class AnimationDebug extends FlxState
 {

@@ -30,8 +30,6 @@ import haxe.Json;
 import lime.utils.Assets;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.events.IOErrorEvent;
-import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
@@ -135,7 +133,7 @@ class ChartingState extends MusicBeatState
 		}
 
 		FlxG.mouse.visible = true;
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkin', 'kademodtool');
 
 		tempBpm = _song.bpm;
 
@@ -224,17 +222,17 @@ class ChartingState extends MusicBeatState
 		});
 
 		
-		var restart = new FlxButton(10,140,"Reset", function()
-            {
-                for (ii in 0..._song.notes.length)
-                {
-                    for (i in 0..._song.notes[ii].sectionNotes.length)
-                        {
-                            _song.notes[ii].sectionNotes = [];
-                        }
-                }
-                resetSection(true);
-            });
+		var restart = new FlxButton(10, 140, "Reset", function()
+		{
+			for (ii in 0..._song.notes.length)
+			{
+				for (i in 0..._song.notes[ii].sectionNotes.length)
+				{
+					_song.notes[ii].sectionNotes = []; // BUG?
+				}
+			}
+			resetSection(true);
+		});
 
 		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'load autosave', loadAutosave);
 
@@ -354,8 +352,8 @@ class ChartingState extends MusicBeatState
 		tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 
-		writingNotesText = new FlxUIText(20,100, 0, "");
-		writingNotesText.setFormat("Arial",20,FlxColor.WHITE,FlxTextAlign.LEFT,FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		writingNotesText = new FlxUIText(20, 100, 0, "");
+		writingNotesText.setFormat("Arial", 20, FlxColor.WHITE, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 		stepperSusLength = new FlxUINumericStepper(10, 10, Conductor.stepCrochet / 2, 0, 0, Conductor.stepCrochet * _song.notes[curSection].lengthInSteps * 4);
 		stepperSusLength.value = 0;
@@ -424,8 +422,7 @@ class ChartingState extends MusicBeatState
 			loopCheck.checked = curNoteSelected.doesLoop;
 			tooltips.add(loopCheck, {title: 'Section looping', body: "Whether or not it's a simon says style section", style: tooltipType});
 			bullshitUI.add(loopCheck);
-
-		 */
+		*/
 	}
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
@@ -554,16 +551,16 @@ class ChartingState extends MusicBeatState
 				if (controlArray[i])
 				{
 					for (n in 0..._song.notes[curSection].sectionNotes.length)
+					{
+						var note = _song.notes[curSection].sectionNotes[n];
+						if (note == null)
+							continue;
+						if (note[0] == Conductor.songPosition && note[1] % 4 == i)
 						{
-							var note = _song.notes[curSection].sectionNotes[n];
-							if (note == null)
-								continue;
-							if (note[0] == Conductor.songPosition && note[1] % 4 == i)
-							{
-								trace('GAMING');
-								_song.notes[curSection].sectionNotes.remove(note);
-							}
+							trace('GAMING');
+							_song.notes[curSection].sectionNotes.remove(note);
 						}
+					}
 					trace('adding note');
 					_song.notes[curSection].sectionNotes.push([Conductor.songPosition, i, 0]);
 					updateGrid();
@@ -807,9 +804,7 @@ class ChartingState extends MusicBeatState
 					var daTime:Float = 700 * FlxG.elapsed;
 
 					if (FlxG.keys.pressed.W)
-					{
 						FlxG.sound.music.time -= daTime;
-					}
 					else
 						FlxG.sound.music.time += daTime;
 
@@ -826,9 +821,7 @@ class ChartingState extends MusicBeatState
 					var daTime:Float = Conductor.stepCrochet * 2;
 
 					if (FlxG.keys.justPressed.W)
-					{
 						FlxG.sound.music.time -= daTime;
-					}
 					else
 						FlxG.sound.music.time += daTime;
 
@@ -888,6 +881,7 @@ class ChartingState extends MusicBeatState
 			songTime: 0,
 			bpm: 0
 		}
+
 		for (i in 0...Conductor.bpmChangeMap.length)
 		{
 			if (FlxG.sound.music.time > Conductor.bpmChangeMap[i].songTime)
@@ -1121,18 +1115,18 @@ class ChartingState extends MusicBeatState
 
 
 	function deleteNote(note:Note):Void
+	{
+		lastNote = note;
+		for (i in _song.notes[curSection].sectionNotes)
 		{
-			lastNote = note;
-			for (i in _song.notes[curSection].sectionNotes)
+			if (i[0] == note.strumTime && i[1] % 4 == note.noteData)
 			{
-				if (i[0] == note.strumTime && i[1] % 4 == note.noteData)
-				{
-					_song.notes[curSection].sectionNotes.remove(i);
-				}
+				_song.notes[curSection].sectionNotes.remove(i);
 			}
-	
-			updateGrid();
 		}
+
+		updateGrid();
+	}
 
 	function clearSection():Void
 	{

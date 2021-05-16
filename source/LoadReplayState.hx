@@ -72,10 +72,10 @@ class LoadReplayState extends MusicBeatState
 
 		for (i in 0...controlsStrings.length)
 		{
-				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-				controlLabel.isMenuItem = true;
-				controlLabel.targetY = i;
-				grpControls.add(controlLabel);
+			var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+			controlLabel.isMenuItem = true;
+			controlLabel.targetY = i;
+			grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
@@ -109,53 +109,51 @@ class LoadReplayState extends MusicBeatState
     }
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String)
-        {
-            songs.push(new FreeplayState.SongMetadata(songName, weekNum, songCharacter));
-        }
+	{
+		songs.push(new FreeplayState.SongMetadata(songName, weekNum, songCharacter));
+	}
     
-        public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
-        {
-            if (songCharacters == null)
-                songCharacters = ['bf'];
-    
-            var num:Int = 0;
-            for (song in songs)
-            {
-                addSong(song, weekNum, songCharacters[num]);
-    
-                if (songCharacters.length != 1)
-                    num++;
-            }
-        }
-    
+	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
+	{
+		if (songCharacters == null)
+			songCharacters = ['bf'];
+
+		var num:Int = 0;
+		for (song in songs)
+		{
+			addSong(song, weekNum, songCharacters[num]);
+
+			if (songCharacters.length != 1)
+				num++;
+		}
+	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-			if (controls.BACK)
-				FlxG.switchState(new OptionsMenu());
-			if (controls.UP_P)
-				changeSelection(-1);
-			if (controls.DOWN_P)
-				changeSelection(1);
-		
+		if (controls.BACK)
+			FlxG.switchState(new OptionsMenu());
+		if (controls.UP_P)
+			changeSelection(-1);
+		if (controls.DOWN_P)
+			changeSelection(1);
 
-			if (controls.ACCEPT && grpControls.members[curSelected].text != "No Replays...")
-			{
-                trace('loading ' + actualNames[curSelected]);
-                PlayState.rep = Replay.LoadReplay(actualNames[curSelected]);
+		if (controls.ACCEPT && grpControls.members[curSelected].text != "No Replays...")
+		{
+			trace('loading ' + actualNames[curSelected]);
+			PlayState.rep = Replay.LoadReplay(actualNames[curSelected]);
 
-                PlayState.loadRep = true;
+			PlayState.loadRep = true;
 
-                var poop:String = Highscore.formatSong(PlayState.rep.replay.songName.toLowerCase(), PlayState.rep.replay.songDiff);
+			var poop:String = Song.getSongFilename(PlayState.rep.replay.songName.toLowerCase(), PlayState.rep.replay.songDiff);
 
-				PlayState.SONG = Song.loadFromJson(poop, PlayState.rep.replay.songName.toLowerCase());
-                PlayState.isStoryMode = false;
-                PlayState.storyDifficulty = PlayState.rep.replay.songDiff;
-                PlayState.storyWeek = getWeekNumbFromSong(PlayState.rep.replay.songName);
-                LoadingState.loadAndSwitchState(new PlayState());
-			}
+			PlayState.SONG = Song.loadFromJson(poop, PlayState.rep.replay.songName.toLowerCase());
+			PlayState.isStoryMode = false;
+			PlayState.storyDifficulty = PlayState.rep.replay.songDiff;
+			PlayState.storyWeek = getWeekNumbFromSong(PlayState.rep.replay.songName);
+			LoadingState.loadAndSwitchState(new PlayState());
+		}
 	}
 
 	var isSettingControl:Bool = false;

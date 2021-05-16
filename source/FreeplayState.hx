@@ -57,10 +57,10 @@ class FreeplayState extends MusicBeatState
 			}
 		 */
 
-		 #if windows
-		 // Updating Discord Rich Presence
-		 DiscordClient.changePresence("In the Freeplay Menu", null);
-		 #end
+		#if windows
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("In the Freeplay Menu", null);
+		#end
 
 		var isDebug:Bool = false;
 
@@ -207,7 +207,7 @@ class FreeplayState extends MusicBeatState
 
 		if (accepted)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+			var poop:String = Song.getSongFilename(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
 			trace(poop);
 

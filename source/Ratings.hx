@@ -2,7 +2,6 @@ class Ratings
 {
     public static function CalculateRating(noteDiff:Float, ?customSafeZone:Float):String
     {
-
         var customTimeScale = Conductor.timeScale;
 
         if (customSafeZone != null)

@@ -81,7 +81,6 @@ class Replay
         #end
     }
 
-
     public function LoadFromJSON()
     {
         #if sys
@@ -97,5 +96,4 @@ class Replay
         }
         #end
     }
-
 }

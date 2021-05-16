@@ -35,7 +35,6 @@ class MusicBeatState extends FlxUIState
 		super.create();
 	}
 
-
 	var array:Array<FlxColor> = [
 		FlxColor.fromRGB(148, 0, 211),
 		FlxColor.fromRGB(75, 0, 130),
@@ -60,15 +59,15 @@ class MusicBeatState extends FlxUIState
 			stepHit();
 
 		if (FlxG.save.data.fpsRain && skippedFrames >= 6)
-			{
-				if (currentColor >= array.length)
-					currentColor = 0;
-				(cast (Lib.current.getChildAt(0), Main)).changeFPSColor(array[currentColor]);
-				currentColor++;
-				skippedFrames = 0;
-			}
-			else
-				skippedFrames++;
+		{
+			if (currentColor >= array.length)
+				currentColor = 0;
+			(cast (Lib.current.getChildAt(0), Main)).changeFPSColor(array[currentColor]);
+			currentColor++;
+			skippedFrames = 0;
+		}
+		else
+			skippedFrames++;
 
 		if ((cast (Lib.current.getChildAt(0), Main)).getFPSCap != FlxG.save.data.fpsCap)
 			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
@@ -102,7 +101,6 @@ class MusicBeatState extends FlxUIState
 
 	public function stepHit():Void
 	{
-
 		if (curStep % 4 == 0)
 			beatHit();
 	}
