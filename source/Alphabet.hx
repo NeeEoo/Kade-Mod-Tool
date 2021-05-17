@@ -88,6 +88,9 @@ class Alphabet extends FlxSpriteGroup
 			if (AlphaCharacter.alphabet.indexOf(character.toLowerCase()) != -1 || isNumber || isSymbol)
 				// if (AlphaCharacter.alphabet.contains(character.toLowerCase()))
 			{
+				if(character == " " || character == "-") {
+					continue;
+				}
 				
 				if (lastSprite != null)
 				{
