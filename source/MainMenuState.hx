@@ -189,9 +189,9 @@ class MainMenuState extends MusicBeatState
 									case 'story mode':
 										FlxG.switchState(new StoryMenuState());
 										trace("Story Menu Selected");
+
 									case 'freeplay':
 										FlxG.switchState(new FreeplayState());
-
 										trace("Freeplay Menu Selected");
 
 									case 'options':
@@ -218,7 +218,7 @@ class MainMenuState extends MusicBeatState
 
 		if (curSelected >= menuItems.length)
 			curSelected = 0;
-		if (curSelected < 0)
+		else if (curSelected < 0)
 			curSelected = menuItems.length - 1;
 
 		menuItems.forEach(function(spr:FlxSprite)

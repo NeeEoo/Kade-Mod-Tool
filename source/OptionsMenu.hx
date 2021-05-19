@@ -127,21 +127,23 @@ class OptionsMenu extends MusicBeatState
 		
 		if (isCat)
 		{
-			if (currentSelectedCat.getOptions()[curSelected].getAccept())
+			var currentCategoryOption = currentSelectedCat.getOptions()[curSelected];
+
+			if (currentCategoryOption.getAccept())
 			{
 				if (FlxG.keys.pressed.SHIFT)
 				{
 					if (FlxG.keys.pressed.RIGHT)
-						currentSelectedCat.getOptions()[curSelected].right();
+						currentCategoryOption.right();
 					if (FlxG.keys.pressed.LEFT)
-						currentSelectedCat.getOptions()[curSelected].left();
+						currentCategoryOption.left();
 				}
 				else
 				{
 					if (FlxG.keys.justPressed.RIGHT)
-						currentSelectedCat.getOptions()[curSelected].right();
+						currentCategoryOption.right();
 					if (FlxG.keys.justPressed.LEFT)
-						currentSelectedCat.getOptions()[curSelected].left();
+						currentCategoryOption.left();
 				}
 			}
 			else
@@ -226,7 +228,7 @@ class OptionsMenu extends MusicBeatState
 
 		if (curSelected < 0)
 			curSelected = grpControls.length - 1;
-		if (curSelected >= grpControls.length)
+		else if (curSelected >= grpControls.length)
 			curSelected = 0;
 
 		if (isCat)
@@ -237,12 +239,12 @@ class OptionsMenu extends MusicBeatState
 
 		// selector.y = (70 * curSelected) + 30;
 
-		var bullShit:Int = 0;
+		var i:Int = 0;
 
 		for (item in grpControls.members)
 		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
+			item.targetY = i - curSelected;
+			i++;
 
 			item.alpha = 0.6;
 			// item.setGraphicSize(Std.int(item.width * 0.8));

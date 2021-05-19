@@ -63,18 +63,22 @@ class Highscore
 
 	public static function getScore(song:String, diff:Int):Int
 	{
-		if (!songScores.exists(formatSong(song, diff)))
-			setScore(formatSong(song, diff), 0);
+		var daSong = formatSong(song, diff);
 
-		return songScores.get(formatSong(song, diff));
+		if (!songScores.exists(daSong))
+			setScore(daSong, 0);
+
+		return songScores.get(daSong);
 	}
 
 	public static function getWeekScore(week:Int, diff:Int):Int
 	{
-		if (!songScores.exists(formatSong('week' + week, diff)))
-			setScore(formatSong('week' + week, diff), 0);
+		var daSong = formatSong('week' + week, diff);
 
-		return songScores.get(formatSong('week' + week, diff));
+		if (!songScores.exists(daSong))
+			setScore(daSong, 0);
+
+		return songScores.get(daSong);
 	}
 
 	public static function load():Void

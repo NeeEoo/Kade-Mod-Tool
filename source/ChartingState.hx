@@ -370,11 +370,13 @@ class ChartingState extends MusicBeatState
 
 		var swapSection:FlxButton = new FlxButton(10, 170, "Swap Section", function()
 		{
-			for (i in 0..._song.notes[curSection].sectionNotes.length)
+			var sectionNotes:Array<Dynamic> = _song.notes[curSection].sectionNotes;
+
+			for (i in 0...sectionNotes.length)
 			{
-				var note = _song.notes[curSection].sectionNotes[i];
+				var note = sectionNotes[i];
 				note[1] = (note[1] + 4) % 8;
-				_song.notes[curSection].sectionNotes[i] = note;
+				sectionNotes[i] = note;
 				updateGrid();
 			}
 		});
@@ -492,6 +494,8 @@ class ChartingState extends MusicBeatState
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
 	{
+		var note:SwagSection = _song.notes[curSection];
+
 		if (id == FlxUICheckBox.CLICK_EVENT)
 		{
 			var check:FlxUICheckBox = cast sender;
@@ -499,15 +503,15 @@ class ChartingState extends MusicBeatState
 			switch (label)
 			{
 				case 'Camera Points to P1?':
-					_song.notes[curSection].mustHitSection = check.checked;
+					note.mustHitSection = check.checked;
 
 					updateHeads();
 
 				case 'Change BPM':
-					_song.notes[curSection].changeBPM = check.checked;
+					note.changeBPM = check.checked;
 					FlxG.log.add('changed bpm shit');
 				case "Alternate Animation":
-					_song.notes[curSection].altAnim = check.checked;
+					note.altAnim = check.checked;
 			}
 		}
 		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper))
@@ -515,43 +519,41 @@ class ChartingState extends MusicBeatState
 			var nums:FlxUINumericStepper = cast sender;
 			var wname = nums.name;
 			FlxG.log.add(wname);
-			if (wname == 'section_length')
+			switch(wname)
 			{
-				if (nums.value <= 4)
-					nums.value = 4;
-				_song.notes[curSection].lengthInSteps = Std.int(nums.value);
-				updateGrid();
-			}
-			else if (wname == 'song_speed')
-			{
-				if (nums.value <= 0)
-					nums.value = 0;
-				_song.speed = nums.value;
-			}
-			else if (wname == 'song_bpm')
-			{
-				if (nums.value <= 0)
-					nums.value = 1;
-				tempBpm = Std.int(nums.value);
-				Conductor.mapBPMChanges(_song);
-				Conductor.changeBPM(Std.int(nums.value));
-			}
-			else if (wname == 'note_susLength')
-			{
-				if (curSelectedNote == null)
-					return;
+				case 'section_length':
+					if (nums.value <= 4)
+						nums.value = 4;
+					_song.notes[curSection].lengthInSteps = Std.int(nums.value);
+					updateGrid();
+				
+				case 'song_speed':
+					if (nums.value <= 0)
+						nums.value = 0;
+					_song.speed = nums.value;
+				
+				case 'song_bpm':
+					if (nums.value <= 0)
+						nums.value = 1;
+					tempBpm = Std.int(nums.value);
+					Conductor.mapBPMChanges(_song);
+					Conductor.changeBPM(Std.int(nums.value));
+				
+				case 'note_susLength':
+					if (curSelectedNote == null)
+						return;
+	
+					if (nums.value <= 0)
+						nums.value = 0;
+					curSelectedNote[2] = nums.value;
+					updateGrid();
 
-				if (nums.value <= 0)
-					nums.value = 0;
-				curSelectedNote[2] = nums.value;
-				updateGrid();
-			}
-			else if (wname == 'section_bpm')
-			{
-				if (nums.value <= 0.1)
-					nums.value = 0.1;
-				_song.notes[curSection].bpm = Std.int(nums.value);
-				updateGrid();
+				case 'section_bpm':
+					if (nums.value <= 0.1)
+						nums.value = 0.1;
+					_song.notes[curSection].bpm = Std.int(nums.value);
+					updateGrid();
+
 			}
 		}
 
@@ -590,9 +592,7 @@ class ChartingState extends MusicBeatState
 		curStep = recalculateSteps();
 
 		if (FlxG.keys.justPressed.ALT && UI_box.selected_tab == 0)
-		{
 			writingNotes = !writingNotes;
-		}
 
 		if (writingNotes)
 			writingNotesText.text = "WRITING NOTES";
@@ -805,7 +805,6 @@ class ChartingState extends MusicBeatState
 
 		if (!typingShit.hasFocus)
 		{
-
 			if (FlxG.keys.pressed.CONTROL)
 			{
 				if (FlxG.keys.justPressed.Z && lastNote != null)
@@ -902,7 +901,7 @@ class ChartingState extends MusicBeatState
 			if (FlxG.keys.justPressed.DOWN)
 				Conductor.changeBPM(Conductor.bpm - 1); */
 
-		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
+		bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
 			+ "\nSection: "
@@ -918,8 +917,7 @@ class ChartingState extends MusicBeatState
 		{
 			if (curSelectedNote[2] != null)
 			{
-				curSelectedNote[2] += value;
-				curSelectedNote[2] = Math.max(curSelectedNote[2], 0);
+				curSelectedNote[2] = Math.max(curSelectedNote[2] + value, 0);
 			}
 		}
 
@@ -1214,13 +1212,14 @@ class ChartingState extends MusicBeatState
 		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime();
 		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
 		var noteSus = 0;
+		var note = _song.notes[curSection];
 
 		if (n != null)
-			_song.notes[curSection].sectionNotes.push([n.strumTime, n.noteData, n.sustainLength]);
+			note.sectionNotes.push([n.strumTime, n.noteData, n.sustainLength]);
 		else
-			_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus]);
+			note.sectionNotes.push([noteStrum, noteData, noteSus]);
 
-		var thingy = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
+		var thingy = note.sectionNotes[note.sectionNotes.length - 1];
 
 		curSelectedNote = thingy;
 

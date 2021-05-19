@@ -279,19 +279,19 @@ class StoryMenuState extends MusicBeatState
 
 	var movedBack:Bool = false;
 	var selectedWeek:Bool = false;
-	var stopspamming:Bool = false;
+	var stopSpamming:Bool = false;
 
 	function selectWeek()
 	{
 		if (weekUnlocked[curWeek])
 		{
-			if (stopspamming == false)
+			if (stopSpamming == false)
 			{
 				FlxG.sound.play(Paths.sound('confirmMenu'));
 
 				grpWeekText.members[curWeek].startFlashing();
 				grpWeekCharacters.members[1].animation.play('bfConfirm');
-				stopspamming = true;
+				stopSpamming = true;
 			}
 
 			PlayState.storyPlaylist = weekData[curWeek];
@@ -310,7 +310,8 @@ class StoryMenuState extends MusicBeatState
 
 			PlayState.storyDifficulty = curDifficulty;
 
-			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + diffic, PlayState.storyPlaylist[0].toLowerCase());
+			var songName = PlayState.storyPlaylist[0].toLowerCase();
+			PlayState.SONG = Song.loadFromJson(songName + diffic, songName);
 			PlayState.storyWeek = curWeek;
 			PlayState.campaignScore = 0;
 			new FlxTimer().start(1, function(tmr:FlxTimer)
@@ -326,7 +327,7 @@ class StoryMenuState extends MusicBeatState
 
 		if (curDifficulty < 0)
 			curDifficulty = 2;
-		if (curDifficulty > 2)
+		else if (curDifficulty > 2)
 			curDifficulty = 0;
 
 		sprDifficulty.offset.x = 0;
@@ -366,19 +367,18 @@ class StoryMenuState extends MusicBeatState
 
 		if (curWeek >= weekData.length)
 			curWeek = 0;
-		if (curWeek < 0)
+		else if (curWeek < 0)
 			curWeek = weekData.length - 1;
 
-		var bullShit:Int = 0;
-
+		var i = 0;
 		for (item in grpWeekText.members)
 		{
-			item.targetY = bullShit - curWeek;
+			item.targetY = i - curWeek;
 			if (item.targetY == Std.int(0) && weekUnlocked[curWeek])
 				item.alpha = 1;
 			else
 				item.alpha = 0.6;
-			bullShit++;
+			i++;
 		}
 
 		FlxG.sound.play(Paths.sound('scrollMenu'));
@@ -388,9 +388,9 @@ class StoryMenuState extends MusicBeatState
 
 	function updateText()
 	{
-		grpWeekCharacters.members[0].setCharacter(weekCharacters[curWeek][0]);
-		grpWeekCharacters.members[1].setCharacter(weekCharacters[curWeek][1]);
-		grpWeekCharacters.members[2].setCharacter(weekCharacters[curWeek][2]);
+		for(i in 0...3) {
+			grpWeekCharacters.members[i].setCharacter(weekCharacters[curWeek][i]);
+		}
 
 		txtTracklist.text = "Tracks\n";
 		var stringThing:Array<String> = visualWeekData[curWeek];

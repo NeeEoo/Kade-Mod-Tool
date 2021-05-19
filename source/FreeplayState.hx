@@ -62,11 +62,7 @@ class FreeplayState extends MusicBeatState
 		DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
 
-		var isDebug:Bool = false;
-
-		#if debug
-		isDebug = true;
-		#end
+		var isDebug:Bool = #if debug true #else false #end;
 
 		// LOAD MUSIC
 
@@ -187,13 +183,9 @@ class FreeplayState extends MusicBeatState
 		var accepted = controls.ACCEPT;
 
 		if (upP)
-		{
 			changeSelection(-1);
-		}
 		if (downP)
-		{
 			changeSelection(1);
-		}
 
 		if (controls.LEFT_P)
 			changeDiff(-1);
@@ -201,17 +193,16 @@ class FreeplayState extends MusicBeatState
 			changeDiff(1);
 
 		if (controls.BACK)
-		{
 			FlxG.switchState(new MainMenuState());
-		}
 
 		if (accepted)
 		{
-			var poop:String = Song.getSongFilename(songs[curSelected].songName.toLowerCase(), curDifficulty);
+			var songName = songs[curSelected].songName.toLowerCase();
+			var poop:String = Song.getSongFilename(songName, curDifficulty);
 
 			trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(poop, songName);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = songs[curSelected].week;
@@ -224,9 +215,10 @@ class FreeplayState extends MusicBeatState
 	{
 		curDifficulty += change;
 
+		// Change to modulo?
 		if (curDifficulty < 0)
 			curDifficulty = 2;
-		if (curDifficulty > 2)
+		else if (curDifficulty > 2)
 			curDifficulty = 0;
 
 		#if !switch
@@ -257,7 +249,7 @@ class FreeplayState extends MusicBeatState
 
 		if (curSelected < 0)
 			curSelected = songs.length - 1;
-		if (curSelected >= songs.length)
+		else if (curSelected >= songs.length)
 			curSelected = 0;
 
 		// selector.y = (70 * curSelected) + 30;
