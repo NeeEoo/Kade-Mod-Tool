@@ -11,9 +11,8 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import lime.net.curl.CURLCode;
 
-#if windows
+#if (windows && DISCORD)
 import Discord.DiscordClient;
 #end
 
@@ -52,6 +51,7 @@ class StoryMenuState extends MusicBeatState
 	var txtWeekTitle:FlxText;
 
 	var curWeek:Int = 0;
+	var curMod:String = "base";
 
 	var txtTracklist:FlxText;
 
@@ -67,7 +67,7 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
-		#if windows
+		#if (windows && DISCORD)
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Story Mode Menu", null);
 		#end
@@ -131,6 +131,8 @@ class StoryMenuState extends MusicBeatState
 		add(grpLocks);
 
 		trace("Line 70");
+
+		Paths.setCurrentMod("base");
 
 		for (i in 0...weekData.length)
 		{
@@ -311,9 +313,11 @@ class StoryMenuState extends MusicBeatState
 			PlayState.storyDifficulty = curDifficulty;
 
 			var songName = PlayState.storyPlaylist[0].toLowerCase();
-			PlayState.SONG = Song.loadFromJson(songName + diffic, songName);
 			PlayState.storyWeek = curWeek;
 			PlayState.campaignScore = 0;
+			PlayState.currentMod = curMod;
+			LoadingState.setGlobals();
+			PlayState.SONG = Song.loadFromJson(songName + diffic, songName);
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				LoadingState.loadAndSwitchState(new PlayState(), true);

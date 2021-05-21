@@ -1,0 +1,106 @@
+{
+    "weeks": {
+        "0": {
+            "weekText": "Tutorial",
+            "comment": "How to Funk",
+            "tracks": [
+                "Tutorial"
+            ],
+            "menuCharacters": ["", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "gf"
+            ]
+        },
+        "1": {
+            "comment": "Daddy Dearest",
+            "tracks": [
+                "Bopeebo",
+                "Fresh",
+                "Dadbattle"
+            ],
+            "menuCharacters": ["dad", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "dad",
+                "dad",
+                "dad"
+            ]
+        },
+        "2": {
+            "comment": "Spooky Month",
+            "tracks": [
+                "Spookeez",
+                ["South", "AAAAAA"],
+                "Monster"
+            ],
+            "menuCharacters": ["spooky", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "spooky",
+                "spooky",
+                "monster"
+            ]
+        },
+        "3": {
+            "comment": "PICO",
+            "tracks": [
+                "Pico",
+                "Philly",
+                "Blammed"
+            ],
+            "menuCharacters": ["pico", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "pico",
+                "pico",
+                "pico"
+            ]
+        },
+        "4": {
+            "comment": "MOMMY MUST MURDER",
+            "tracks": [
+                "Satin-Panties",
+                "High",
+                "Milf"
+            ],
+            "menuCharacters": ["mom", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "mom",
+                "mom",
+                "mom"
+            ]
+        },
+        "5": {
+            "comment": "RED SNOW",
+            "tracks": [
+                "Cocoa",
+                "Eggnog",
+                "Winter-Horrorland"
+            ],
+            "menuCharacters": ["parents-christmas", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "parents-christmas",
+                "parents-christmas",
+                "monster-christmas"
+            ]
+        },
+        "6": {
+            "comment": "Hating Simulator ft. Moawling",
+            "tracks": [
+                "Senpai",
+                "Roses",
+                "Thorns"
+            ],
+            "menuCharacters": ["senpai", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "senpai",
+                "senpai",
+                "spirit"
+            ]
+        }
+    }
+}

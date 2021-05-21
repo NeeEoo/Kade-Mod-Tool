@@ -32,9 +32,9 @@ class LoadReplayState extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-        #if sys
+		#if sys
 		controlsStrings = sys.FileSystem.readDirectory(Sys.getCwd() + "/assets/replays/");
-        #end
+		#end
 		trace(controlsStrings);
 
         controlsStrings.sort(Reflect.compare);
@@ -108,9 +108,9 @@ class LoadReplayState extends MusicBeatState
         return week;
     }
 
-	public function addSong(songName:String, weekNum:Int, songCharacter:String)
+	public function addSong(songName:String, weekNum:Int, songCharacter:String, mod:String)
 	{
-		songs.push(new FreeplayState.SongMetadata(songName, weekNum, songCharacter));
+		songs.push(new FreeplayState.SongMetadata(songName, weekNum, songCharacter, mod));
 	}
     
 	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
@@ -121,7 +121,7 @@ class LoadReplayState extends MusicBeatState
 		var num:Int = 0;
 		for (song in songs)
 		{
-			addSong(song, weekNum, songCharacters[num]);
+			addSong(song, weekNum, songCharacters[num], "base"); // TODO
 
 			if (songCharacters.length != 1)
 				num++;
@@ -146,12 +146,15 @@ class LoadReplayState extends MusicBeatState
 
 			PlayState.loadRep = true;
 
-			var poop:String = Song.getSongFilename(PlayState.rep.replay.songName.toLowerCase(), PlayState.rep.replay.songDiff);
+			var song = PlayState.rep.replay.songName;
 
-			PlayState.SONG = Song.loadFromJson(poop, PlayState.rep.replay.songName.toLowerCase());
+			var poop:String = Song.getSongFilename(song.toLowerCase(), PlayState.rep.replay.songDiff);
+
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = PlayState.rep.replay.songDiff;
-			PlayState.storyWeek = getWeekNumbFromSong(PlayState.rep.replay.songName);
+			PlayState.storyWeek = getWeekNumbFromSong(song);
+			PlayState.currentMod = "base"; // TODO
+			PlayState.SONG = Song.loadFromJson(poop, song.toLowerCase());
 			LoadingState.loadAndSwitchState(new PlayState());
 		}
 	}

@@ -21,16 +21,16 @@
 	<window width="1280" height="720" fps="" background="#000000" hardware="true" vsync="false" />
 
 	<!--HTML5-specific-->
-	<window if="html5" resizable="true" />
+	<!--<window if="html5" resizable="true" />-->
 
 	<!--Desktop-specific-->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>
+	<!--<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>-->
 
 	<!--Switch-specific-->
-	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
+	<!--<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />-->
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
@@ -43,39 +43,49 @@
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
 	
+	<!-- <define name="ADD_POLYMOD" /> -->
 	<!-- <define name="PRELOAD_ALL" /> -->
+	<!-- <define name="ng" /> -->
+	<define name="DISCORD" />
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
 	
 	<section if="PRELOAD_ALL">
 		<library name="songs"    preload="true" />
 		<library name="shared"   preload="true" />
-		<library name="tutorial" preload="true" />
+		<!-- <library name="tutorial" preload="true" />
 		<library name="week1"    preload="true" />
 		<library name="week2"    preload="true" />
 		<library name="week3"    preload="true" />
 		<library name="week4"    preload="true" />
 		<library name="week5"    preload="true" />
-		<library name="week6"    preload="true" />
+		<library name="week6"    preload="true" />-->
+		
+		
+		<!-- <library name="weeks"    preload="true" />-->
 	</section>
 	
 	<section if="NO_PRELOAD_ALL">
 		<library name="songs"    preload="false" />
 		<library name="shared"   preload="false" />
-		<library name="tutorial" preload="false" />
+		<!-- <library name="tutorial" preload="false" />
 		<library name="week1"    preload="false" />
 		<library name="week2"    preload="false" />
 		<library name="week3"    preload="false" />
 		<library name="week4"    preload="false" />
 		<library name="week5"    preload="false" />
-		<library name="week6"    preload="false" />
+		<library name="week6"    preload="false" />-->
+		<library name="weeks"   preload="false" />
 	</section>
 	
 	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
 	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/>
 	<assets path="assets/shared"   library="shared"   exclude="*.ogg" if="web"/>
 	<assets path="assets/shared"   library="shared"   exclude="*.mp3" unless="web"/>
-	<assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/>
+
+	<assets path="assets/weeks"    library="weeks"    exclude="*.ogg" if="web"/>
+	<assets path="assets/weeks"    library="weeks"    exclude="*.mp3" unless="web"/>
+	<!-- <assets path="assets/tutorial" library="tutorial" exclude="*.ogg" if="web"/>
 	<assets path="assets/tutorial" library="tutorial" exclude="*.mp3" unless="web"/>
 	<assets path="assets/week1"    library="week1"    exclude="*.ogg" if="web"/>
 	<assets path="assets/week1"    library="week1"    exclude="*.mp3" unless="web"/>
@@ -88,13 +98,15 @@
 	<assets path="assets/week5"    library="week5"    exclude="*.ogg" if="web"/>
 	<assets path="assets/week5"    library="week5"    exclude="*.mp3" unless="web"/>
 	<assets path="assets/week6"    library="week6"    exclude="*.ogg" if="web"/>
-	<assets path="assets/week6"    library="week6"    exclude="*.mp3" unless="web"/>
+	<assets path="assets/week6"    library="week6"    exclude="*.mp3" unless="web"/>-->
 	
-	<assets path='example_mods' rename='mods' embed='false'/>
-	<assets path='art/readme.txt' rename='do NOT readme.txt' />
+	<section if="ADD_POLYMOD">
+		<assets path='example_mods' rename='mods' embed='false'/>
+	</section>
+	<assets path='art/readme.txt' rename='do NOT readme.txt' embed='false'/>
 	<!-- <template path='mods' /> -->
 	
-	<assets path="CHANGELOG.md" rename='changelog.txt'/>
+	<assets path="CHANGELOG.md" rename='changelog.txt' embed='false'/>
 
 	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY 
 		TO FIX ONE OF THEM, I CONVERTED IT TO OTF. DUNNO IF YOU NEED TO
@@ -105,19 +117,21 @@
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
-	<haxedev set='webgl' />
+	<!--<haxedev set='webgl' />-->
 
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
-	<haxelib name="hscript" />
+	<haxelib name="hscript" if="debug" />
 
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
-	<haxelib name="newgrounds"/>
+	<haxelib name="newgrounds" if="ng" />
 	<haxelib name="faxe" if='switch'/>
-	<haxelib name="polymod"/>
-	<haxelib name="discord_rpc" if="windows"/>
-	<haxelib name="linc_luajit"/>
+	<haxelib name="polymod" if='ADD_POLYMOD'/>
+	<section if="DISCORD">
+		<haxelib name="discord_rpc" if="windows"/>
+	</section>
+	<haxelib name="linc_luajit" if="windows"/>
 
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 

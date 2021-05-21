@@ -11,7 +11,7 @@ import flixel.util.FlxColor;
 import lime.utils.Assets;
 
 
-#if windows
+#if (windows && DISCORD)
 import Discord.DiscordClient;
 #end
 
@@ -43,9 +43,9 @@ class FreeplayState extends MusicBeatState
 		{
 			var data:Array<String> = initSonglist[i].split(':');
 			if(data.length == 3) {
-				songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1]));
+				songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1], "base"));
 			} else {
-				songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1], data[3]));
+				songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1], "base", data[3]));
 			}
 		}
 
@@ -57,12 +57,12 @@ class FreeplayState extends MusicBeatState
 			}
 		 */
 
-		#if windows
+		#if (windows && DISCORD)
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Freeplay Menu", null);
 		#end
 
-		var isDebug:Bool = #if debug true #else false #end;
+		// var isDebug:Bool = #if debug true #else false #end;
 
 		// LOAD MUSIC
 
@@ -142,9 +142,9 @@ class FreeplayState extends MusicBeatState
 		super.create();
 	}
 
-	public function addSong(songName:String, weekNum:Int, songCharacter:String)
+	public function addSong(songName:String, weekNum:Int, songCharacter:String, mod:String)
 	{
-		songs.push(new SongMetadata(songName, weekNum, songCharacter));
+		songs.push(new SongMetadata(songName, weekNum, songCharacter, mod));
 	}
 
 	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
@@ -155,7 +155,7 @@ class FreeplayState extends MusicBeatState
 		var num:Int = 0;
 		for (song in songs)
 		{
-			addSong(song, weekNum, songCharacters[num]);
+			addSong(song, weekNum, songCharacters[num], "base");
 
 			if (songCharacters.length != 1)
 				num++;
@@ -202,10 +202,12 @@ class FreeplayState extends MusicBeatState
 
 			trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songName);
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = songs[curSelected].week;
+			PlayState.currentMod = songs[curSelected].mod;
+			LoadingState.setGlobals();
+			PlayState.SONG = Song.loadFromJson(poop, songName);
 			trace('CUR WEEK' + PlayState.storyWeek);
 			LoadingState.loadAndSwitchState(new PlayState());
 		}
@@ -260,7 +262,8 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		Paths.setCurrentMod(songs[curSelected].mod);
+		FlxG.sound.playMusic(Paths.instWeek(songs[curSelected].songName, "week" + songs[curSelected].week), 0);
 		#end
 
 		var bullShit:Int = 0;
@@ -295,12 +298,14 @@ class SongMetadata
 	public var week:Int = 0;
 	public var songCharacter:String = "";
 	public var visualWeekName:String = "";
+	public var mod:String = "";
 
-	public function new(song:String, week:Int, songCharacter:String, ?visualWeekName:String)
+	public function new(song:String, week:Int, songCharacter:String, mod:String, ?visualWeekName:String)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
+		this.mod = mod;
 		if(visualWeekName == null) {
 			this.visualWeekName = song;
 		} else {

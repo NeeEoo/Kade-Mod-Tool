@@ -53,8 +53,7 @@ class LoadingState extends MusicBeatState
 		add(gfDance);
 		add(logo);
 		
-		initSongsManifest().onComplete(function (lib)
-		{
+		initSongsManifest().onComplete(function (lib) {
 			callbacks = new MultiCallback(onLoad);
 			var introComplete = callbacks.add("introComplete");
 			checkLoadSong(getSongPath());
@@ -132,12 +131,12 @@ class LoadingState extends MusicBeatState
 		FlxG.switchState(target);
 	}
 	
-	static function getSongPath()
+	static inline function getSongPath()
 	{
 		return Paths.inst(PlayState.SONG.song);
 	}
 	
-	static function getVocalPath()
+	static inline function getVocalPath()
 	{
 		return Paths.voices(PlayState.SONG.song);
 	}
@@ -147,9 +146,21 @@ class LoadingState extends MusicBeatState
 		FlxG.switchState(getNextState(target, stopMusic));
 	}
 	
+	public static function setGlobals()
+	{
+		var curWeekStr = "";
+
+		if(Std.is(PlayState.storyWeek, Int)) {
+			curWeekStr = "week" + PlayState.storyWeek;
+		}
+		Paths.setCurrentMod(PlayState.currentMod);
+		Paths.setCurrentWeek(curWeekStr);
+		Paths.setCurrentLevel("week" + PlayState.storyWeek);
+	}
+
 	static function getNextState(target:FlxState, stopMusic = false):FlxState
 	{
-		Paths.setCurrentLevel("week" + PlayState.storyWeek);
+		setGlobals();
 		#if NO_PRELOAD_ALL
 		var loaded = isSoundLoaded(getSongPath())
 			&& (!PlayState.SONG.needsVoices || isSoundLoaded(getVocalPath()))

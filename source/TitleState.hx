@@ -2,29 +2,25 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.graphics.FlxGraphic;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
-import flixel.system.ui.FlxSoundTray;
-import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+#if ng
 import io.newgrounds.NG;
+#end
 import lime.app.Application;
 import openfl.Assets;
 
-#if windows
+#if (windows && DISCORD)
 import Discord.DiscordClient;
 #end
 
@@ -66,7 +62,7 @@ class TitleState extends MusicBeatState
 
 		PlayerSettings.init();
 
-		#if windows
+		#if (windows && DISCORD)
 		DiscordClient.initialize();
 
 		Application.current.onExit.add(function (exitCode) {
@@ -155,6 +151,10 @@ class TitleState extends MusicBeatState
 
 		Conductor.changeBPM(102);
 		persistentUpdate = true;
+
+		#if debug
+		FlxG.sound.volume = 0.1;
+		#end
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		// bg.antialiasing = true;
@@ -286,7 +286,7 @@ class TitleState extends MusicBeatState
 
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
-			#if !switch
+			#if (!switch && ng)
 			NGio.unlockMedal(60960);
 
 			// If it's Friday according to da clock
@@ -302,7 +302,7 @@ class TitleState extends MusicBeatState
 			transitioning = true;
 			// FlxG.sound.music.stop();
 
-			new FlxTimer().start(2, function(tmr:FlxTimer)
+			new FlxTimer().start(#if debug 0.1 #else 2 #end, function(tmr:FlxTimer)
 			{
 				FlxG.switchState(new MainMenuState());
 			});
@@ -359,7 +359,7 @@ class TitleState extends MusicBeatState
 		else
 			gfDance.animation.play('danceLeft');
 
-		FlxG.log.add(curBeat);
+		// FlxG.log.add(curBeat);
 
 		switch (curBeat)
 		{

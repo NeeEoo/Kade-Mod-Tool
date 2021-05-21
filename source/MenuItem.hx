@@ -13,10 +13,24 @@ class MenuItem extends FlxSpriteGroup
 	public var week:FlxSprite;
 	public var flashingInt:Int = 0;
 
-	public function new(x:Float, y:Float, weekNum:Int = 0)
+	public function new(x:Float, y:Float, weekNum:Int = 0, ?text:String)
 	{
 		super(x, y);
-		week = new FlxSprite().loadGraphic(Paths.image('storymenu/week' + weekNum));
+
+		// TODO: Make it default to the base game images
+		// week = new FlxSprite().loadGraphic(Paths.image('storymenu/week' + weekNum));
+
+		var assetKey = 'week' + weekNum + '/week';
+
+		if(Paths.doesWeekTextImage(assetKey)) {
+			week = new FlxSprite().loadGraphic(Paths.weekTextImage(assetKey));
+		} else {
+			if(text == null) {
+				text = "Week " + weekNum;
+			}
+			var coolText:Alphabet = new Alphabet(0, 0, text, true, false, true);
+			week = coolText;
+		}
 		add(week);
 	}
 
