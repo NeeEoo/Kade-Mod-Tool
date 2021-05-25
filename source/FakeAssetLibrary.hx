@@ -10,9 +10,12 @@ import lime.utils.AssetLibrary;
 import lime.utils.AssetManifest;
 import sys.io.File;
 
+using StringTools;
+
 class FakeAssetLibrary {
 	var id:String = "";
 	var library:AssetLibrary = null;
+	public static var modsFound:Array<String> = [];
 
 	var knownExtensions = [
 		"jpg" => IMAGE, "jpeg" => IMAGE, "png" => IMAGE, "gif" => IMAGE, "webp" => IMAGE, "bmp" => IMAGE, "tiff" => IMAGE, "jfif" => IMAGE, "otf" => FONT,
@@ -35,7 +38,7 @@ class FakeAssetLibrary {
 
 		var weekPath = "assets/weeks";
 
-		recursiveLoop(weekPath);
+		recursiveAssetLoop(weekPath);
 
 		// Save the library to the assets
 		@:privateAccess
@@ -63,18 +66,31 @@ class FakeAssetLibrary {
 		@:privateAccess library.types.set(id, assetType);
 	}
 
-	private function recursiveLoop(directory:String = null) {
+	private function recursiveAssetLoop(directory:String = null) {
 		if(directory == null) throw "Missing Directory";
 
 		if (FileSystem.exists(directory)) {
 			for (file in FileSystem.readDirectory(directory)) {
-				var path = haxe.io.Path.join([directory, file]);
+				var path = Path.join([directory, file]);
 
 				if (!FileSystem.isDirectory(path)) {
+					if(file == "weeks.json") {
+						var checkDirectory = directory;
+						if(!checkDirectory.endsWith("/")) {
+							checkDirectory += "/";
+						}
+						var pathSplit = checkDirectory.split("/");
+						// trace("Found Mod?", pathSplit, path);
+						if(pathSplit.length == 4) { // assets/weeks/modname/
+							trace("Found Mod", pathSplit, path);
+							modsFound.push(pathSplit[2]);
+						}
+					}
+
 					addFileToAssets(path);
 				} else {
-					var directory = haxe.io.Path.addTrailingSlash(path);
-					recursiveLoop(directory);
+					var directory = Path.addTrailingSlash(path);
+					recursiveAssetLoop(directory);
 				}
 			}
 		} else {

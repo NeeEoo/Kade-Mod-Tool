@@ -10,38 +10,48 @@ class Highscore
 	public static var songScores:Map<String, Int> = new Map<String, Int>();
 	#end
 
-	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Void
+	public static function saveScore(mod:String, song:String, score:Int = 0, ?diff:Int = 0):Void
 	{
-		var daSong:String = formatSong(song, diff);
+		var daSong:String = formatSong(mod + "__" + song, diff);
 
 		#if (!switch && ng)
-		NGio.postScore(score, song);
+		NGio.postScore(score, song + ' for mod "' + mod + '"');
 		#end
 
 		if (songScores.exists(daSong))
 		{
-			if (songScores.get(daSong) < score)
+			var oldScore = songScores.get(daSong);
+			if (oldScore < score) {
+				trace('New Highscore on song: $song on mod $mod. Old was $oldScore. New is $score. Went up ${score - oldScore}');
 				setScore(daSong, score);
+			}
 		}
-		else
+		else {
+			trace('New Highscore on song: $song on mod $mod. Old was 0. New is $score. Went up ${score}');
 			setScore(daSong, score);
+		}
 	}
 
-	public static function saveWeekScore(week:Int = 1, score:Int = 0, ?diff:Int = 0):Void
+	public static function saveWeekScore(mod:String, week:Int = 1, score:Int = 0, ?diff:Int = 0):Void
 	{
 		#if (!switch && ng)
-		NGio.postScore(score, "Week " + week);
+		NGio.postScore(score, "Week " + week + ' for mod "' + mod + '"');
 		#end
 
-		var daWeek:String = formatSong('week' + week, diff);
+		var daWeek:String = formatSong(mod + "__" + 'week' + week, diff);
 
 		if (songScores.exists(daWeek))
 		{
-			if (songScores.get(daWeek) < score)
+			var oldScore = songScores.get(daWeek);
+			if (oldScore < score) {
+				trace('New Highscore on week: $week on mod $mod. Old was $oldScore. New is $score. Went up ${score - oldScore}');
 				setScore(daWeek, score);
+			}
 		}
-		else
+		else {
+			trace('New Highscore on week: $week on mod $mod. Old was 0. New is $score. Went up ${score}');
 			setScore(daWeek, score);
+		}
 	}
 
 	/**
@@ -61,9 +71,9 @@ class Highscore
 		return Song.getSongFilename(song, diff);
 	}
 
-	public static function getScore(song:String, diff:Int):Int
+	public static function getScore(mod:String, song:String, diff:Int):Int
 	{
-		var daSong = formatSong(song, diff);
+		var daSong = formatSong(mod + "__" + song, diff);
 
 		if (!songScores.exists(daSong))
 			setScore(daSong, 0);
@@ -71,9 +81,9 @@ class Highscore
 		return songScores.get(daSong);
 	}
 
-	public static function getWeekScore(week:Int, diff:Int):Int
+	public static function getWeekScore(mod:String, week:Int, diff:Int):Int
 	{
-		var daSong = formatSong('week' + week, diff);
+		var daSong = formatSong(mod + "__" + 'week' + week, diff);
 
 		if (!songScores.exists(daSong))
 			setScore(daSong, 0);

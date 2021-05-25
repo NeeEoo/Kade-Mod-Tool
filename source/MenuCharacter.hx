@@ -1,7 +1,6 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 
 class CharacterSetting
 {
@@ -75,5 +74,6 @@ class MenuCharacter extends FlxSprite
 		offset.set(setting.x, setting.y);
 		setGraphicSize(Std.int(width * setting.scale));
 		flipX = setting.flipped != flipped;
+		// updateHitbox();
 	}
 }

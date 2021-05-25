@@ -12,26 +12,40 @@ class MenuItem extends FlxSpriteGroup
 	public var targetY:Float = 0;
 	public var week:FlxSprite;
 	public var flashingInt:Int = 0;
+	public var isCategory:Bool = false;
 
-	public function new(x:Float, y:Float, weekNum:Int = 0, ?text:String)
+	public function new(x:Float, y:Float, weekNum:Int = 0, ?text:String, ?isCategory:Bool = false)
 	{
 		super(x, y);
+		this.isCategory = isCategory;
 
 		// TODO: Make it default to the base game images
 		// week = new FlxSprite().loadGraphic(Paths.image('storymenu/week' + weekNum));
+		week = makeText(weekNum, text, isCategory);
 
+		add(week);
+	}
+
+	public static function makeText(weekNum:Int = 0, ?text:String, ?isCategory:Bool = false) {
+		var week:FlxSprite;
 		var assetKey = 'week' + weekNum + '/week';
+		if(isCategory) {
+			assetKey = "modImage";
+		}
 
 		if(Paths.doesWeekTextImage(assetKey)) {
 			week = new FlxSprite().loadGraphic(Paths.weekTextImage(assetKey));
 		} else {
 			if(text == null) {
-				text = "Week " + weekNum;
+				if(isCategory) {
+					text = "MODNAME MISSING";
+				} else {
+					text = "Week " + weekNum;
+				}
 			}
-			var coolText:Alphabet = new Alphabet(0, 0, text, true, false, true);
-			week = coolText;
+			week = new Alphabet(0, 0, text, true, false, !isCategory);
 		}
-		add(week);
+		return week;
 	}
 
 	private var isFlashing:Bool = false;

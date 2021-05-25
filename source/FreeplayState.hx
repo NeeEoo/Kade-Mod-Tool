@@ -76,7 +76,7 @@ class FreeplayState extends MusicBeatState
 
 		for (i in 0...songs.length)
 		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].visualWeekName, true, false);
+			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].visualSongName, true, false);
 			// var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
@@ -207,6 +207,7 @@ class FreeplayState extends MusicBeatState
 			PlayState.storyWeek = songs[curSelected].week;
 			PlayState.currentMod = songs[curSelected].mod;
 			LoadingState.setGlobals();
+			PlayState.visualSongName = songs[curSelected].visualSongName; // TODO
 			PlayState.SONG = Song.loadFromJson(poop, songName);
 			trace('CUR WEEK' + PlayState.storyWeek);
 			LoadingState.loadAndSwitchState(new PlayState());
@@ -224,7 +225,7 @@ class FreeplayState extends MusicBeatState
 			curDifficulty = 0;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Highscore.getScore(songs[curSelected].mod, songs[curSelected].songName, curDifficulty);
 		#end
 
 		switch (curDifficulty)
@@ -257,7 +258,7 @@ class FreeplayState extends MusicBeatState
 		// selector.y = (70 * curSelected) + 30;
 
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Highscore.getScore(songs[curSelected].mod, songs[curSelected].songName, curDifficulty);
 		// lerpScore = 0;
 		#end
 
@@ -297,19 +298,19 @@ class SongMetadata
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
-	public var visualWeekName:String = "";
+	public var visualSongName:String = "";
 	public var mod:String = "";
 
-	public function new(song:String, week:Int, songCharacter:String, mod:String, ?visualWeekName:String)
+	public function new(song:String, week:Int, songCharacter:String, mod:String, ?visualSongName:String)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
 		this.mod = mod;
-		if(visualWeekName == null) {
-			this.visualWeekName = song;
+		if(visualSongName == null) {
+			this.visualSongName = song;
 		} else {
-			this.visualWeekName = visualWeekName;
+			this.visualSongName = visualSongName;
 		}
 	}
 }

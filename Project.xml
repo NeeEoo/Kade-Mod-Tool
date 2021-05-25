@@ -46,9 +46,10 @@
 	<!-- <define name="ADD_POLYMOD" /> -->
 	<!-- <define name="PRELOAD_ALL" /> -->
 	<!-- <define name="ng" /> -->
-	<define name="DISCORD" />
+	<!-- <define name="DISCORD" /> -->
+	<define name="TESTING" />
 	<define name="PRELOAD_ALL" unless="web" />
-	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
 	
 	<section if="PRELOAD_ALL">
 		<library name="songs"    preload="true" />

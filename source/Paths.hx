@@ -38,18 +38,27 @@ class Paths
 			var levelPath = getLibraryPathForce(file, currentLevel);
 			if (OpenFlAssets.exists(levelPath, type))
 				return levelPath;
-
-			#if sys
-			var levelPath = getPreloadPath('weeks/$currentMod/$currentWeek/'+file);
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-
-			var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/$currentWeek/'+file);
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-
-			#end
 		}
+
+		#if sys
+		// Top-level overrides
+		var levelPath = getPreloadPath('weeks/$currentMod/'+file);
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
+
+		var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/'+file);
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
+
+		// Week-level overrides
+		var levelPath = getPreloadPath('weeks/$currentMod/$currentWeek/'+file);
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
+
+		var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/$currentWeek/'+file);
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
+		#end
 
 		var shared = getLibraryPathForce(file, "shared");
 		if (OpenFlAssets.exists(shared, type))
@@ -121,6 +130,14 @@ class Paths
 	inline static public function xml(key:String, ?library:String)
 	{
 		return getPath('data/$key.xml', TEXT, library);
+	}
+
+	inline static public function jsonWeekTop(key:String, ?library:String, ?customMod:String)
+	{
+		if(customMod != null) {
+			return getPath('$customMod/$key.json', TEXT, library);
+		}
+		return getPath('$currentMod/$key.json', TEXT, library);
 	}
 
 	inline static public function jsonWeek(key:String, ?week:String, ?library:String)

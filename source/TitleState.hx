@@ -40,6 +40,8 @@ class TitleState extends MusicBeatState
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
 
+	public static var introTexts = [];
+
 	var curWacky:Array<String> = [];
 
 	var wackyImage:FlxSprite;
@@ -61,6 +63,11 @@ class TitleState extends MusicBeatState
 		}
 
 		PlayerSettings.init();
+
+		#if sys
+		var modsFound = FakeAssetLibrary.modsFound;
+		WeeksParser.addCustomIntroTexts(modsFound);
+		#end
 
 		#if (windows && DISCORD)
 		DiscordClient.initialize();
@@ -89,19 +96,19 @@ class TitleState extends MusicBeatState
 
 		Highscore.load();
 
-		if (FlxG.save.data.weekUnlocked != null)
+		/*if (FlxG.save.data.weekUnlocked != null)
 		{
 			// FIX LATER!!!
 			// WEEK UNLOCK PROGRESSION!!
 			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
 
-			if (StoryMenuState.weekUnlocked.length < 4)
-				StoryMenuState.weekUnlocked.insert(0, true);
+			if (StoryMenuState.weekUnlocked["base"].length < 4)
+				StoryMenuState.weekUnlocked["base"].insert(0, true);
 
 			// QUICK PATCH OOPS!
-			if (!StoryMenuState.weekUnlocked[0])
-				StoryMenuState.weekUnlocked[0] = true;
-		}
+			if (!StoryMenuState.weekUnlocked["base"][0])
+				StoryMenuState.weekUnlocked["base"][0] = true;
+		}*/
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
@@ -241,6 +248,13 @@ class TitleState extends MusicBeatState
 		for (i in firstArray)
 		{
 			swagGoodArray.push(i.split('--'));
+		}
+
+		// Gets from static variable. Mods can add custom
+		if(introTexts.length != 0) {
+			for(text in introTexts) {
+				swagGoodArray.push(text);
+			}
 		}
 
 		return swagGoodArray;

@@ -468,6 +468,7 @@ class OffsetMenu extends Option
 		var poop:String = Song.getSongFilename("Tutorial", 1); // Normal
 
 		PlayState.SONG = Song.loadFromJson(poop, "Tutorial");
+		PlayState.visualSongName = "Tutorial";
 		PlayState.isStoryMode = false;
 		PlayState.storyDifficulty = 0;
 		PlayState.storyWeek = 0;

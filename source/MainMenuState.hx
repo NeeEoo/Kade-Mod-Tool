@@ -105,13 +105,44 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.60 * (60 / FlxG.save.data.fpsCap));
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer +  (Main.watermarks ? " FNF - " + kadeEngineVer + " Kade Engine" : ""), 12);
+		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, gameVer + (Main.watermarks ? " FNF - " + kadeEngineVer + " Kade Engine" : ""), 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
+		
+
+		#if TESTING
+		var testerStuff:FlxText = new FlxText(10, FlxG.height - 300, 0, "", 12);
+		testerStuff.text += "This is a TESTING build\n";
+		testerStuff.text += "for the Kade Mod Tool\n";
+		testerStuff.text += "made by Ne_Eo and Lelmaster\n";
+		testerStuff.text += "\n";
+		testerStuff.text += "Do not share this exectuable\n";
+		// testerStuff.alignment = CENTER;
+		testerStuff.scrollFactor.set();
+		testerStuff.setFormat("VCR OSD Mono", 28, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+
+		// storyBG = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400);
+		add(testerStuff);
+		#end
+
+		var controlsStuff:FlxText = new FlxText(FlxG.width-500, FlxG.height - 300, 0, "", 12);
+		controlsStuff.text += "Controls:\n";
+		controlsStuff.text += "Change mod\n";
+		controlsStuff.text += "Q or PAGEUP to go back\n";
+		controlsStuff.text += "E or PAGEDOWN to go forward\n";
+		#if debug
+		controlsStuff.text += "Press F2 to open debugger\n";
+		#end
+		// controlsStuff.text += "Do not share this exectuable\n";
+		controlsStuff.scrollFactor.set();
+		controlsStuff.setFormat("VCR OSD Mono", 28, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		controlsStuff.alignment = CENTER;
+
+		// storyBG = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400);
+		add(controlsStuff);
 
 		// NG.core.calls.event.logEvent('swag').send();
-
 
 		if (FlxG.save.data.dfjk)
 			controls.setKeyboardScheme(KeyboardScheme.Solo, true);

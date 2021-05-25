@@ -60,7 +60,7 @@ class Note extends FlxSprite
 		{
 			case 'pixel':
 				if (isSustainNote) {
-					loadGraphic(Paths.image('pixelUI/arrowEnds', 'shared'), true, 7, 6);
+					loadGraphic(Paths.image('pixelUI/arrowEnds'), true, 7, 6);
 
 					animation.add('purplehold', [0]);
 					animation.add('bluehold', [1]);
@@ -72,7 +72,7 @@ class Note extends FlxSprite
 					animation.add('greenholdend', [6]);
 					animation.add('redholdend', [7]);
 				} else {
-					loadGraphic(Paths.image('pixelUI/arrows-pixels', 'shared'), true, 17, 17);
+					loadGraphic(Paths.image('pixelUI/arrows-pixels'), true, 17, 17);
 					animation.add('purpleScroll', [4]);
 					animation.add('blueScroll', [5]);
 					animation.add('greenScroll', [6]);

@@ -1,0 +1,19 @@
+{
+    "weeks": {
+        "8": {
+            "comment": "THINK OF THE CHILDREN",
+            "tracks": [
+                "The-Scream",
+                "Agony",
+                "True-Death"
+            ],
+            "menuCharacters": ["spooky", "bf", "gf"],
+            "locked": false,
+            "freeplay": [
+                "spooky",
+                "spooky",
+                "spooky"
+            ]
+        }
+    }
+}

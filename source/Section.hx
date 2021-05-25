@@ -22,7 +22,7 @@ class Section
 	/**
 	 *	Copies the first section into the second section!
 	 */
-	public static var COPYCAT:Int = 0;
+	// public static var COPYCAT:Int = 0;
 
 	public function new(lengthInSteps:Int = 16)
 	{
