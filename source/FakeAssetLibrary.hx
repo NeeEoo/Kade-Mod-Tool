@@ -49,21 +49,13 @@ class FakeAssetLibrary {
 	}
 	
 	private function addFileToAssets(filename:String) {
-		var hasSize = true;
-		var size, id, pathGroup:Array<String>, classRef;
-
 		var assetType = getAssetType(filename);
 		var stat = FileSystem.stat(filename);
-		size = stat.size;
 
-		// size = hasSize && Reflect.hasField(asset, "size") ? asset.size : 100;
-		id = filename; // Reflect.hasField(asset, "id") ? asset.id : asset.path;
+		@:privateAccess library.paths.set(filename, library.__cacheBreak(library.__resolvePath(filename)));
 
-		// library.paths.set(id, library.__cacheBreak(library.__resolvePath(basePath + filename)));
-		@:privateAccess library.paths.set(id, library.__cacheBreak(library.__resolvePath(filename)));
-
-		@:privateAccess library.sizes.set(id, size);
-		@:privateAccess library.types.set(id, assetType);
+		@:privateAccess library.sizes.set(filename, stat.size);
+		@:privateAccess library.types.set(filename, assetType);
 	}
 
 	private function recursiveAssetLoop(directory:String = null) {
@@ -80,7 +72,7 @@ class FakeAssetLibrary {
 							checkDirectory += "/";
 						}
 						var pathSplit = checkDirectory.split("/");
-						// trace("Found Mod?", pathSplit, path);
+
 						if(pathSplit.length == 4) { // assets/weeks/modname/
 							trace("Found Mod", pathSplit, path);
 							modsFound.push(pathSplit[2]);

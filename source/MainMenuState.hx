@@ -34,9 +34,9 @@ class MainMenuState extends MusicBeatState
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
 	#end
 
-	var newGaming:FlxText;
-	var newGaming2:FlxText;
-	var newInput:Bool = true;
+	// var newGaming:FlxText;
+	// var newGaming2:FlxText;
+	// var newInput:Bool = true;
 
 	public static var nightly:String = "";
 
@@ -110,14 +110,13 @@ class MainMenuState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 		
-
 		#if TESTING
 		var testerStuff:FlxText = new FlxText(10, FlxG.height - 300, 0, "", 12);
 		testerStuff.text += "This is a TESTING build\n";
 		testerStuff.text += "for the Kade Mod Tool\n";
 		testerStuff.text += "made by Ne_Eo and Lelmaster\n";
 		testerStuff.text += "\n";
-		testerStuff.text += "Do not share this exectuable\n";
+		testerStuff.text += "Do not redistribute this exectuable\n";
 		// testerStuff.alignment = CENTER;
 		testerStuff.scrollFactor.set();
 		testerStuff.setFormat("VCR OSD Mono", 28, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -138,8 +137,6 @@ class MainMenuState extends MusicBeatState
 		controlsStuff.scrollFactor.set();
 		controlsStuff.setFormat("VCR OSD Mono", 28, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		controlsStuff.alignment = CENTER;
-
-		// storyBG = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400);
 		add(controlsStuff);
 
 		// NG.core.calls.event.logEvent('swag').send();
@@ -187,9 +184,9 @@ class MainMenuState extends MusicBeatState
 				if (optionShit[curSelected] == 'donate')
 				{
 					#if linux
-					Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
+					Sys.command('/usr/bin/xdg-open', ["https://www.kickstarter.com/projects/funkin/friday-night-funkin-the-full-ass-game", "&"]);
 					#else
-					FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
+					FlxG.openURL('https://www.kickstarter.com/projects/funkin/friday-night-funkin-the-full-ass-game');
 					#end
 				}
 				else

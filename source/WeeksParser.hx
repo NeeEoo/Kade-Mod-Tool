@@ -8,7 +8,7 @@ using StringTools;
 typedef SwagWeeks =
 {
 	var modName:String;
-	var weeks:haxe.DynamicAccess<SwagWeek>;//Map<String, SwagWeek>;
+	var weeks:haxe.DynamicAccess<SwagWeek>;
 	@:optional var storyMenuColor:String;
 	@:optional var introTexts:Array<Array<String>>;
 }

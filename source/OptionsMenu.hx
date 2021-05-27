@@ -8,7 +8,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -61,8 +60,7 @@ class OptionsMenu extends MusicBeatState
 	override function create()
 	{
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuDesat"));
-//og color v  0xFFea71fd
-		menuBG.color = 0xFFe62c2c;
+		menuBG.color = 0xFFea71fd; //0xFFe62c2c;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
@@ -111,13 +109,13 @@ class OptionsMenu extends MusicBeatState
 			isCat = false;
 			grpControls.clear();
 			for (i in 0...options.length)
-				{
-					var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, options[i].getName(), true, false);
-					controlLabel.isMenuItem = true;
-					controlLabel.targetY = i;
-					grpControls.add(controlLabel);
-					// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-				}
+			{
+				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, options[i].getName(), true, false);
+				controlLabel.isMenuItem = true;
+				controlLabel.targetY = i;
+				grpControls.add(controlLabel);
+				// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+			}
 			curSelected = 0;
 		}
 		if (controls.UP_P)
@@ -201,20 +199,20 @@ class OptionsMenu extends MusicBeatState
 				isCat = true;
 				grpControls.clear();
 				for (i in 0...currentSelectedCat.getOptions().length)
-					{
-						var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, currentSelectedCat.getOptions()[i].getDisplay(), true, false);
-						controlLabel.isMenuItem = true;
-						controlLabel.targetY = i;
-						grpControls.add(controlLabel);
-						// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-					}
+				{
+					var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, currentSelectedCat.getOptions()[i].getDisplay(), true, false);
+					controlLabel.isMenuItem = true;
+					controlLabel.targetY = i;
+					grpControls.add(controlLabel);
+					// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+				}
 				curSelected = 0;
 			}
 		}
 		FlxG.save.flush();
 	}
 
-	var isSettingControl:Bool = false;
+	// var isSettingControl:Bool = false;
 
 	function changeSelection(change:Int = 0)
 	{

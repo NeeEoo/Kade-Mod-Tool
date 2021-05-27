@@ -41,7 +41,7 @@ class StoryMenuSubGroup extends FlxGroup
 
 	var curWeek:Int = 0;
 	var curMod:Int = 0;
-	var curModStr:String = "base";
+	var curModStr:String = "";
 
 	var txtTracklist:FlxText;
 
@@ -81,20 +81,13 @@ class StoryMenuSubGroup extends FlxGroup
 		this.curMod = curMod;
 		currentX = x;
 		currentY = y;
-		// }
-
-		// override function create() {
-		// #if (windows && DISCORD)
-		// // Updating Discord Rich Presence
-		// DiscordClient.changePresence("In the Story Mode Menu", "\nCurrently Viewing " + curModStr);
-		// #end
+		var totalMods = TitleState.mods.length;
 
 		Paths.setCurrentMod(curModStr);
 
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
 		
 		storyBG = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400);
-		//changeStoryColor(StoryMenuState.storyColor);
 		changeStoryColor(StoryMenuState.storyColor);
 
 		grpWeekText = new FlxTypedGroup<MenuItem>();
@@ -105,8 +98,6 @@ class StoryMenuSubGroup extends FlxGroup
 
 		blackBarThingie = new FlxSprite().makeGraphic(FlxG.width, 56, FlxColor.BLACK);
 		add(blackBarThingie);
-
-		// grpWeekCharacters[curMod] = new FlxTypedGroup<MenuCharacter>();
 
 		leftModArrow = makeArrow(
 			10,
@@ -157,19 +148,7 @@ class StoryMenuSubGroup extends FlxGroup
 
 		modNameText = MenuItem.makeText(0, modInfo.modName, true);
 		modNameText.screenCenter(X);
-		// modNameText.x += FlxG.width * curMod;
 		modNameText.antialiasing = true;
-
-		/*{
-			var weekThing:MenuItem = new MenuItem(0, storyBG.y + storyBG.height + 10, 0, currentModInfo.modName, true);
-			weekThing.y += ((weekThing.height + 20) * totalWeeks);
-			weekThing.targetY = totalWeeks;
-			grpWeekText.add(weekThing);
-
-			weekThing.screenCenter(X);
-			weekThing.antialiasing = true;
-			totalWeeks++; // To make space
-		}*/
 
 		var keys = weeks.keys();
 
@@ -288,19 +267,6 @@ class StoryMenuSubGroup extends FlxGroup
 			modStoryColor = StoryMenuState.DEFAULT_STORY_COLOR;
 		}
 
-		/*if (FlxG.sound.music != null)
-		{
-			if(curModStr != StoryMenuState.prevMod) {
-				if (FlxG.sound.music.playing) {
-					FlxG.sound.music.stop();
-				}
-				var currentFreakyPath = Paths.music('freakyMenu');
-
-				FlxG.sound.playMusic(currentFreakyPath);
-				StoryMenuState.prevMod = curModStr;
-			}
-		}*/
-
 		trace("Line 96");
 
 		txtTracklist = new FlxText(FlxG.width * 0.05, storyBG.x + storyBG.height + 100, 0, "Tracks", 32);
@@ -311,31 +277,25 @@ class StoryMenuSubGroup extends FlxGroup
 		// add(rankText);
 		add(scoreText);
 		add(txtWeekTitle);
-		add(leftModArrow);
-		add(rightModArrow);
+		if(totalMods > 1) {
+			add(leftModArrow);
+			add(rightModArrow);
+		}
 		add(modNameText);
 
 		updateText();
 
 		trace("Line 165");
 
-		FlxG.watch.add(this, "weekCharacters", "Characters");
-		FlxG.watch.add(this, "curModStr", "Current Mod");
-		FlxG.watch.add(this, "curMod", "Mod INDEX");
-		FlxG.watch.add(this, "curWeek", "Current Week");
-		//FlxG.watch.add(this, "mods", "Mods");
-		FlxG.watch.add(this, "curDifficulty", "Current Difficulty");
-		FlxG.watch.add(this, "weekData", "Week Tracks");
-		FlxG.watch.add(this, "visualTrackNames", "Vis Track Name");
-		FlxG.watch.add(this, "weekComment", "Week Comments");
-		FlxG.watch.add(this, "weekUnlocked", "Unlocked Weeks");
-		// FlxG.watch.add(this, "prevMod", "Previous Mod");
-		// FlxG.watch.addQuick("Characters", weekCharacters);
-		// FlxG.watch.addQuick("Mod", curModStr);
-		// FlxG.watch.addQuick("Mod INDEX", curMod);
-		// FlxG.watch.addQuick("Current Mod", curWeek);
-
-		// super.create();
+		// FlxG.watch.add(this, "weekCharacters", "Characters");
+		// FlxG.watch.add(this, "curModStr", "Current Mod");
+		// FlxG.watch.add(this, "curMod", "Mod INDEX");
+		// FlxG.watch.add(this, "curWeek", "Current Week");
+		// FlxG.watch.add(this, "curDifficulty", "Current Difficulty");
+		// FlxG.watch.add(this, "weekData", "Week Tracks");
+		// FlxG.watch.add(this, "visualTrackNames", "Vis Track Name");
+		// FlxG.watch.add(this, "weekComment", "Week Comments");
+		// FlxG.watch.add(this, "weekUnlocked", "Unlocked Weeks");
 	}
 
 	public function moveEverything(x:Float, y:Float) {
@@ -353,19 +313,10 @@ class StoryMenuSubGroup extends FlxGroup
 			txtTracklist
 		];
 
-		// grpWeekCharacters,
-		//
-		// ,grpWeekText
-
 		var groupSprites:Array<FlxTypedGroup<FlxSprite>> = [
 			grpLocks,
 			difficultySelectors
 		];
-
-		// var groupSprites:Array<FlxSpriteGroup> = [
-		// 	grpWeekCharacters,
-		// 	grpWeekText
-		// ];
 
 		for(group in groupSprites) {
 			for(i in 0...group.members.length) {
@@ -373,16 +324,6 @@ class StoryMenuSubGroup extends FlxGroup
 				group.members[i].y += dy;
 			}
 		}
-
-		/*for(i in 0...difficultySelectors.members.length) {
-			difficultySelectors.members[i].x += dx;
-			difficultySelectors.members[i].y += dy;
-		}
-
-		for(i in 0...grpLocks.members.length) {
-			grpLocks.members[i].x += dx;
-			grpLocks.members[i].y += dy;
-		}*/
 
 		for(i in 0...grpWeekCharacters.members.length) {
 			grpWeekCharacters.members[i].x += dx;
@@ -415,10 +356,7 @@ class StoryMenuSubGroup extends FlxGroup
 		scoreText.text = "WEEK SCORE:" + lerpScore;
 
 		txtWeekTitle.text = weekComment[curWeek].toUpperCase();
-		// txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
 		txtWeekTitle.x = rightModArrow.x - (txtWeekTitle.width + 10);
-
-		// FlxG.watch.addQuick('font', scoreText.font);
 
 		difficultySelectors.visible = weekUnlocked[curWeek];
 
@@ -512,6 +450,7 @@ class StoryMenuSubGroup extends FlxGroup
 			PlayState.campaignScore = 0;
 			PlayState.currentMod = curModStr;
 			StoryMenuState.weekUnlocked = weekUnlocked;
+			PlayState.songFilename = songName;
 			LoadingState.setGlobals();
 			PlayState.visualSongName = PlayState.storyVisNamePlaylist[0];
 			PlayState.SONG = Song.loadFromJson(songName + diffic, songName);
@@ -582,11 +521,6 @@ class StoryMenuSubGroup extends FlxGroup
 		for (item in grpWeekText.members)
 		{
 			item.targetY = i - curWeek;
-			// if(item.isCategory) {
-			// 	item.alpha = 1;
-			// 	i++;
-			// 	continue;
-			// }
 			
 			if (item.targetY == 0 && weekUnlocked[curWeek])
 				item.alpha = 1;
@@ -602,8 +536,6 @@ class StoryMenuSubGroup extends FlxGroup
 
 	function updateText()
 	{
-		// trace(weekCharacters);
-
 		txtTracklist.text = "Tracks\n";
 		var stringThing:Array<String> = visualTrackNames[curWeek];
 
@@ -656,15 +588,10 @@ class StoryMenuSubGroup extends FlxGroup
 	}
 
 	public function changeStoryColor(color:Int) {
-		// storyBG = storyBG.makeGraphic(FlxG.width, 400, color);
-		storyBG.color = color;// = storyBG.makeGraphic(FlxG.width, 400, color);
+		storyBG.color = color;
 	}
 
 	public function fadeStoryColor(color:Int) {
-		// var tween = new ColorTween();
-		// tween.tween(0.2, StoryMenuState.storyColor, color, storyBG);
-		// storyBG.color = color;
-		// StoryMenuState.storyColor = color;
 		tween = FlxTween.color(storyBG, 0.25, StoryMenuState.storyColor, color, {
 			onUpdate: setColorGlobal
 		});
@@ -678,6 +605,26 @@ class StoryMenuSubGroup extends FlxGroup
 
 	function setColorGlobal(tween:FlxTween) {
 		StoryMenuState.storyColor = storyBG.color; // So if user changes quickly the color will fade from where it was
+	}
+
+	public function modSelected() {
+		#if (windows && DISCORD)
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("In the Story Mode Menu", "\nCurrent Mod: " + modInfo.modName);
+		#end
+
+		/*if (FlxG.sound.music != null)
+		{
+			if(curModStr != StoryMenuState.prevMod) {
+				if (FlxG.sound.music.playing) {
+					FlxG.sound.music.stop();
+				}
+				var currentFreakyPath = Paths.music('freakyMenu');
+
+				FlxG.sound.playMusic(currentFreakyPath);
+				StoryMenuState.prevMod = curModStr;
+			}
+		}*/
 	}
 }
 

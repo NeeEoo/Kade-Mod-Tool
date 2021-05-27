@@ -32,6 +32,9 @@ import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
+#if (windows && DISCORD)
+import Discord.DiscordClient;
+#end
 
 using StringTools;
 
@@ -89,6 +92,10 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
+		#if (windows && DISCORD)
+		DiscordClient.changePresence("Chart Editor", null, null, true);
+		#end
+
 		curSection = lastSection;
 
 		if (PlayState.SONG != null)

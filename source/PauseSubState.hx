@@ -1,13 +1,10 @@
 package;
 
-import llua.Lua;
-import Controls.Control;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
@@ -22,9 +19,10 @@ class PauseSubState extends MusicBeatSubstate
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
+
+	#if sys
 	var perSongOffset:FlxText;
 	
-	#if desktop
 	var offsetChanged:Bool = false;
 	var oldOffset:Float = 0;
 	#end
@@ -72,11 +70,11 @@ class PauseSubState extends MusicBeatSubstate
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
+		
+		#if sys
 		perSongOffset = new FlxText(5, FlxG.height - 18, 0, "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.', 12);
 		perSongOffset.scrollFactor.set();
 		perSongOffset.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		
-		#if desktop
 		add(perSongOffset);
 		#end
 
@@ -115,7 +113,7 @@ class PauseSubState extends MusicBeatSubstate
 		else if (downP)
 			changeSelection(1);
 		
-		#if desktop
+		#if sys
 		else if (leftP)
 		{
 			//oldOffset = PlayState.songOffset;
@@ -171,11 +169,13 @@ class PauseSubState extends MusicBeatSubstate
 					FlxG.resetState();
 				case "Exit to menu":
 					PlayState.loadRep = false;
-					if (PlayState.lua != null)
+					#if windows
+					if (PlayState.luaModchart != null)
 					{
-						Lua.close(PlayState.lua);
-						PlayState.lua = null;
+						PlayState.luaModchart.die();
+						PlayState.luaModchart = null;
 					}
+					#end
 					if (PlayState.offsetTesting)
 					{
 						PlayState.offsetTesting = false;
@@ -186,11 +186,11 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		}
 
-		if (FlxG.keys.justPressed.J)
-		{
+		//if (FlxG.keys.justPressed.J)
+		//{
 			// for reference later!
 			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
-		}
+		//}
 	}
 
 	override function destroy()

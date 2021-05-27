@@ -46,8 +46,8 @@
 	<!-- <define name="ADD_POLYMOD" /> -->
 	<!-- <define name="PRELOAD_ALL" /> -->
 	<!-- <define name="ng" /> -->
-	<!-- <define name="DISCORD" /> -->
-	<define name="TESTING" />
+	<define name="DISCORD" />
+	<!-- <define name="TESTING" /> -->
 	<define name="PRELOAD_ALL" unless="web" />
 	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL" />
 	
@@ -174,6 +174,8 @@
 
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+
+	<haxedef name="shaders_supported" unless="flash || openfl-legacy" />
 
 	<!-- _________________________________ Custom _______________________________ -->
 

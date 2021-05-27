@@ -156,6 +156,7 @@ class LoadingState extends MusicBeatState
 		Paths.setCurrentMod(PlayState.currentMod);
 		Paths.setCurrentWeek(curWeekStr);
 		Paths.setCurrentLevel("week" + PlayState.storyWeek);
+		Paths.setCurrentSong(PlayState.songFilename.toLowerCase());
 	}
 
 	static function getNextState(target:FlxState, stopMusic = false):FlxState

@@ -12,6 +12,7 @@ class Paths
 	public static var currentLevel:String;
 	public static var currentWeek:String;
 	public static var currentMod:String;
+	public static var currentSong:String;
 
 	static public function setCurrentLevel(name:String)
 	{
@@ -28,11 +29,17 @@ class Paths
 		currentWeek = name;
 	}
 
+	static public function setCurrentSong(name:String)
+	{
+		currentSong = name;
+	}
+
 	static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);
 
+		// Unneeded?
 		if (currentLevel != null)
 		{
 			var levelPath = getLibraryPathForce(file, currentLevel);
@@ -41,12 +48,12 @@ class Paths
 		}
 
 		#if sys
-		// Top-level overrides
-		var levelPath = getPreloadPath('weeks/$currentMod/'+file);
+		// Song-level overrides
+		var levelPath = getPreloadPath('weeks/$currentMod/$currentWeek/tracks/$currentSong/'+file);
 		if (OpenFlAssets.exists(levelPath, type))
 			return levelPath;
 
-		var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/'+file);
+		var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/$currentWeek/tracks/$currentSong/'+file);
 		if (OpenFlAssets.exists(levelPath, type))
 			return levelPath;
 
@@ -56,6 +63,15 @@ class Paths
 			return levelPath;
 
 		var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/$currentWeek/'+file);
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
+
+		// Top-level overrides
+		var levelPath = getPreloadPath('weeks/$currentMod/'+file);
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
+
+		var levelPath = getDynamicWeeksPathForce('weeks/$currentMod/'+file);
 		if (OpenFlAssets.exists(levelPath, type))
 			return levelPath;
 		#end
@@ -96,9 +112,33 @@ class Paths
 		return getPath(file, type, library);
 	}
 
-	inline static public function lua(key:String,?library:String)
+	inline static public function lua(key:String, ?library:String)
 	{
 		return getPath('data/$key.lua', TEXT, library);
+	}
+
+	inline static public function luaWeek(key:String, ?library:String = "weeks")
+	{
+		if(currentWeek != null) {
+			return getPath('$currentMod/$currentWeek/tracks/$key.lua', TEXT, library);
+		}
+		return getPath('$currentMod/tracks/$key.lua', TEXT, library);
+	}
+
+	inline static public function luaWeekPath(key:String)
+	{
+		if(currentWeek != null) {
+			return 'assets/weeks/$currentMod/$currentWeek/tracks/$key.lua';
+		}
+		return 'assets/weeks/$currentMod/tracks/$key.lua';
+	}
+
+	inline static public function doesLuaExistWeek(key:String, ?library:String = "weeks")
+	{
+		var key = getPath('$currentMod/$currentWeek/tracks/$key.lua', TEXT, library);
+		if (OpenFlAssets.exists(key, TEXT))
+			return true;
+		return false;
 	}
 
 	inline static public function luaImage(key:String, ?library:String)
@@ -117,14 +157,6 @@ class Paths
 			return getPath('$currentMod/$week/tracks/$key.txt', TEXT, library);
 		}
 		return getPath('$currentMod/tracks/$key.txt', TEXT, library);
-	}
-
-	inline static public function txtWeekPath(key:String, ?week:String, ?library:String)
-	{
-		if(week != null) {
-			return 'assets/weeks/$currentMod/$week/tracks/$key.txt';
-		}
-		return 'assets/weeks/$currentMod/tracks/$key.txt';
 	}
 
 	inline static public function xml(key:String, ?library:String)
@@ -196,28 +228,12 @@ class Paths
 		return 'weeks:assets/weeks/$currentMod/tracks/${song.toLowerCase()}/Voices.$SOUND_EXT';
 	}
 
-	inline static public function voicesWeekPath(song:String, ?week:String)
-	{
-		if(week != null) {
-			return 'assets/weeks/$currentMod/$week/tracks/${song.toLowerCase()}/Voices.$SOUND_EXT';
-		}
-		return 'assets/weeks/$currentMod/tracks/${song.toLowerCase()}/Voices.$SOUND_EXT';
-	}
-
 	inline static public function instWeek(song:String, ?week:String)
 	{
 		if(week != null) {
 			return 'weeks:assets/weeks/$currentMod/$week/tracks/${song.toLowerCase()}/Inst.$SOUND_EXT';
 		}
 		return 'weeks:assets/weeks/$currentMod/tracks/${song.toLowerCase()}/Inst.$SOUND_EXT';
-	}
-
-	inline static public function instWeekPath(song:String, ?week:String)
-	{
-		if(week != null) {
-			return 'assets/weeks/$currentMod/$week/tracks/${song.toLowerCase()}/Inst.$SOUND_EXT';
-		}
-		return 'assets/weeks/$currentMod/tracks/${song.toLowerCase()}/Inst.$SOUND_EXT';
 	}
 
 	inline static public function image(key:String, ?library:String)

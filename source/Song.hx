@@ -2,11 +2,7 @@ package;
 
 import Section.SwagSection;
 import haxe.Json;
-import haxe.format.JsonParser;
 import lime.utils.Assets;
-#if sys
-import sys.io.File;
-#end
 
 using StringTools;
 
@@ -104,6 +100,6 @@ class Song
 		else if (diff == 2)
 			daSong += '-hard';
 
-		return daSong;
+		return daSong.toLowerCase();
 	}
 }

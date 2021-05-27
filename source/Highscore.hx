@@ -18,6 +18,8 @@ class Highscore
 		NGio.postScore(score, song + ' for mod "' + mod + '"');
 		#end
 
+		// trace("Saving: " + daSong);
+
 		if (songScores.exists(daSong))
 		{
 			var oldScore = songScores.get(daSong);
@@ -75,6 +77,8 @@ class Highscore
 	{
 		var daSong = formatSong(mod + "__" + song, diff);
 
+		// trace("Getting: " + daSong);
+
 		if (!songScores.exists(daSong))
 			setScore(daSong, 0);
 
@@ -96,6 +100,12 @@ class Highscore
 		if (FlxG.save.data.songScores != null)
 		{
 			songScores = FlxG.save.data.songScores;
+
+			// Convert old scores with uppercase to lowercase
+			/*for(score in songScores.keys()) {
+				trace(score + " -> " + score.toLowerCase() + " | " + songScores.get(score));
+				setScore(score.toLowerCase(), songScores.get(score));
+			}*/
 		}
 	}
 }

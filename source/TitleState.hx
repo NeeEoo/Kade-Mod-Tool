@@ -24,10 +24,6 @@ import openfl.Assets;
 import Discord.DiscordClient;
 #end
 
-#if desktop
-import sys.thread.Thread;
-#end
-
 using StringTools;
 
 class TitleState extends MusicBeatState
@@ -36,11 +32,12 @@ class TitleState extends MusicBeatState
 
 	var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
-	var credTextShit:Alphabet;
+	//var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
 
 	public static var introTexts = [];
+	public static var mods:Array<String> = [];
 
 	var curWacky:Array<String> = [];
 
@@ -67,12 +64,15 @@ class TitleState extends MusicBeatState
 		#if sys
 		var modsFound = FakeAssetLibrary.modsFound;
 		WeeksParser.addCustomIntroTexts(modsFound);
+		mods = FakeAssetLibrary.modsFound;
+		#else
+		mods = ["base"];
 		#end
 
 		#if (windows && DISCORD)
 		DiscordClient.initialize();
 
-		Application.current.onExit.add(function (exitCode) {
+		Application.current.onExit.add(function(exitCode) {
 			DiscordClient.shutdown();
 		});
 		#end
@@ -211,12 +211,12 @@ class TitleState extends MusicBeatState
 		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		credGroup.add(blackScreen);
 
-		credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er", true);
-		credTextShit.screenCenter();
+		//credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er", true);
+		//credTextShit.screenCenter();
 
-		// credTextShit.alignment = CENTER;
+		//// credTextShit.alignment = CENTER;
 
-		credTextShit.visible = false;
+		//credTextShit.visible = false;
 
 		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
 		add(ngSpr);
@@ -226,7 +226,7 @@ class TitleState extends MusicBeatState
 		ngSpr.screenCenter(X);
 		ngSpr.antialiasing = true;
 
-		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
+		//FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
 
 		FlxG.mouse.visible = false;
 
