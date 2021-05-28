@@ -9,6 +9,7 @@ typedef SwagWeeks =
 {
 	var modName:String;
 	var weeks:haxe.DynamicAccess<SwagWeek>;
+	@:optional var credits:Array<String>;
 	@:optional var storyMenuColor:String;
 	@:optional var hudColors:SwagHudColors;
 	@:optional var introTexts:Array<Array<String>>;
@@ -34,7 +35,7 @@ typedef SwagHudColors =
 
 class WeeksParser
 {
-	public function new(song, notes, bpm)
+	public function new()
 	{
 	}
 
