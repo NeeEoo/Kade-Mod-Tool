@@ -18,7 +18,7 @@ import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
 
-class ModchartState 
+class ModchartState
 {
 	//public static var shaders:Array<LuaShader> = null;
 
@@ -225,10 +225,11 @@ class ModchartState
 
 	public static var luaSprites:Map<String,FlxSprite> = [];
 
-	function makeLuaSprite(spritePath:String,toBeCalled:String, drawBehind:Bool)
+	function makeLuaSprite(spritePath:String, toBeCalled:String, drawBehind:Bool)
 	{
 		#if sys
-		var data:BitmapData = BitmapData.fromFile(Sys.getCwd() + "assets/data/" + PlayState.SONG.song.toLowerCase() + '/' + spritePath + ".png");
+		// var data:BitmapData = BitmapData.fromFile(Sys.getCwd() + "assets/data/" + PlayState.SONG.song.toLowerCase() + '/' + spritePath + ".png");
+		var data:BitmapData = BitmapData.fromFile(Sys.getCwd() + "assets/weeks/" + PlayState.currentMod.toLowerCase() + '/luasprites/' + spritePath + ".png");
 
 		var sprite:FlxSprite = new FlxSprite(0,0);
 		var imgWidth:Float = FlxG.width / data.width;
@@ -239,7 +240,7 @@ class ModchartState
 		if (scale > 1)
 			scale = 1;
 
-		sprite.makeGraphic(Std.int(data.width * scale),Std.int(data.width * scale),FlxColor.TRANSPARENT);
+		sprite.makeGraphic(Std.int(data.width * scale), Std.int(data.width * scale), FlxColor.TRANSPARENT);
 
 		var data2:BitmapData = sprite.pixels.clone();
 		var matrix:Matrix = new Matrix();
@@ -248,11 +249,11 @@ class ModchartState
 		data2.fillRect(data2.rect, FlxColor.TRANSPARENT);
 		data2.draw(data, matrix, null, null, null, true);
 		sprite.pixels = data2;
-		
-		luaSprites.set(toBeCalled,sprite);
+
+		luaSprites.set(toBeCalled, sprite);
 		// and I quote:
 		// shitty layering but it works!
-		
+
 		if (drawBehind)
 		{
 			PlayState.instance.removeObject(PlayState.gf);
@@ -286,7 +287,7 @@ class ModchartState
 		trace("Lua version: " + Lua.version());
 		trace("LuaJIT version: " + Lua.versionJIT());
 		Lua.init_callbacks(lua);
-		
+
 		//shaders = new Array<LuaShader>();
 
 		var result = LuaL.dofile(lua, Paths.luaWeekPath(PlayState.SONG.song.toLowerCase() + "/modchart")); // execute le file
@@ -332,7 +333,7 @@ class ModchartState
 		setVar("mustHit", false);
 
 		setVar("strumLineY", PlayState.instance.strumLine.y);
-		
+
 		// callbacks
 
 		// sprites
@@ -367,7 +368,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"getHudY", function () {
 			return PlayState.instance.camHUD.y;
 		});
-		
+
 		Lua_helper.add_callback(lua,"setCamPosition", function (x:Int, y:Int) {
 			FlxG.camera.x = x;
 			FlxG.camera.y = y;
@@ -397,7 +398,7 @@ class ModchartState
 		});
 
 		// actors
-		
+
 		Lua_helper.add_callback(lua,"getRenderedNotes", function() {
 			return PlayState.instance.notes.length;
 		});
@@ -422,7 +423,7 @@ class ModchartState
 			return PlayState.instance.notes.members[id].prevNote.isSustainNote;
 		});
 
-		
+
 		Lua_helper.add_callback(lua,"getRenderedNoteParentX", function(id:Int) {
 			return PlayState.instance.notes.members[id].prevNote.x;
 		});
@@ -500,7 +501,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"setActorY", function(y:Int,id:String) {
 			getActorByName(id).y = y;
 		});
-					
+
 		Lua_helper.add_callback(lua,"setActorAngle", function(angle:Int,id:String) {
 			getActorByName(id).angle = angle;
 		});
@@ -508,7 +509,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"setActorScale", function(scale:Float,id:String) {
 			getActorByName(id).setGraphicSize(Std.int(getActorByName(id).width * scale));
 		});
-		
+
 		Lua_helper.add_callback(lua, "setActorScaleXY", function(scaleX:Float, scaleY:Float, id:String)
 		{
 			getActorByName(id).setGraphicSize(Std.int(getActorByName(id).width * scaleX), Std.int(getActorByName(id).height * scaleY));
@@ -564,7 +565,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"resizeWindow",function(Width:Int,Height:Int) {
 			Application.current.window.resize(Width,Height);
 		});
-		
+
 		Lua_helper.add_callback(lua,"getScreenWidth",function() {
 			return Application.current.window.displayMode.width;
 		});
@@ -575,11 +576,11 @@ class ModchartState
 
 
 		// tweens
-		
+
 		Lua_helper.add_callback(lua,"tweenCameraPos", function(toX:Int, toY:Int, time:Float, onComplete:String) {
 			FlxTween.tween(FlxG.camera, {x: toX, y: toY}, time, {ease: FlxEase.linear, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
-						
+
 		Lua_helper.add_callback(lua,"tweenCameraAngle", function(toAngle:Float, time:Float, onComplete:String) {
 			FlxTween.tween(FlxG.camera, {angle:toAngle}, time, {ease: FlxEase.linear, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
@@ -591,7 +592,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"tweenHudPos", function(toX:Int, toY:Int, time:Float, onComplete:String) {
 			FlxTween.tween(PlayState.instance.camHUD, {x: toX, y: toY}, time, {ease: FlxEase.linear, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
-						
+
 		Lua_helper.add_callback(lua,"tweenHudAngle", function(toAngle:Float, time:Float, onComplete:String) {
 			FlxTween.tween(PlayState.instance.camHUD, {angle:toAngle}, time, {ease: FlxEase.linear, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
@@ -619,7 +620,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"tweenCameraPosOut", function(toX:Int, toY:Int, time:Float, onComplete:String) {
 			FlxTween.tween(FlxG.camera, {x: toX, y: toY}, time, {ease: FlxEase.cubeOut, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
-						
+
 		Lua_helper.add_callback(lua,"tweenCameraAngleOut", function(toAngle:Float, time:Float, onComplete:String) {
 			FlxTween.tween(FlxG.camera, {angle:toAngle}, time, {ease: FlxEase.cubeOut, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
@@ -631,7 +632,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"tweenHudPosOut", function(toX:Int, toY:Int, time:Float, onComplete:String) {
 			FlxTween.tween(PlayState.instance.camHUD, {x: toX, y: toY}, time, {ease: FlxEase.cubeOut, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
-						
+
 		Lua_helper.add_callback(lua,"tweenHudAngleOut", function(toAngle:Float, time:Float, onComplete:String) {
 			FlxTween.tween(PlayState.instance.camHUD, {angle:toAngle}, time, {ease: FlxEase.cubeOut, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
@@ -659,7 +660,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"tweenCameraPosIn", function(toX:Int, toY:Int, time:Float, onComplete:String) {
 			FlxTween.tween(FlxG.camera, {x: toX, y: toY}, time, {ease: FlxEase.cubeIn, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
-						
+
 		Lua_helper.add_callback(lua,"tweenCameraAngleIn", function(toAngle:Float, time:Float, onComplete:String) {
 			FlxTween.tween(FlxG.camera, {angle:toAngle}, time, {ease: FlxEase.cubeIn, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
@@ -671,7 +672,7 @@ class ModchartState
 		Lua_helper.add_callback(lua,"tweenHudPosIn", function(toX:Int, toY:Int, time:Float, onComplete:String) {
 			FlxTween.tween(PlayState.instance.camHUD, {x: toX, y: toY}, time, {ease: FlxEase.cubeIn, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
-						
+
 		Lua_helper.add_callback(lua,"tweenHudAngleIn", function(toAngle:Float, time:Float, onComplete:String) {
 			FlxTween.tween(PlayState.instance.camHUD, {angle:toAngle}, time, {ease: FlxEase.cubeIn, onComplete: function(flxTween:FlxTween) { if (onComplete != '' && onComplete != null) {callLua(onComplete,["camera"]);}}});
 		});
@@ -705,7 +706,7 @@ class ModchartState
 		});
 		//forgot and accidentally commit to master branch
 		// shader
-		
+
 		/*Lua_helper.add_callback(lua,"createShader", function(frag:String,vert:String) {
 			var shader:LuaShader = new LuaShader(frag,vert);
 			trace(shader.glFragmentSource);
@@ -713,7 +714,7 @@ class ModchartState
 			// if theres 1 shader we want to say theres 0 since 0 index and length returns a 1 index.
 			return shaders.length == 1 ? 0 : shaders.length;
 		});
-		
+
 		Lua_helper.add_callback(lua,"setFilterHud", function(shaderIndex:Int) {
 			PlayState.instance.camHUD.setFilters([new ShaderFilter(shaders[shaderIndex])]);
 		});

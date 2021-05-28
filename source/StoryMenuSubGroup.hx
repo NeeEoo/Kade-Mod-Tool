@@ -86,7 +86,7 @@ class StoryMenuSubGroup extends FlxGroup
 		Paths.setCurrentMod(curModStr);
 
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
-		
+
 		storyBG = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400);
 		changeStoryColor(StoryMenuState.storyColor);
 
@@ -153,7 +153,7 @@ class StoryMenuSubGroup extends FlxGroup
 		var keys = weeks.keys();
 
 		keys.sort(Reflect.compare);
-		
+
 		for(week in keys) {
 			var weekInfo:SwagWeek = weeks[week];
 			var tracks = weekInfo.tracks;
@@ -174,12 +174,12 @@ class StoryMenuSubGroup extends FlxGroup
 				visTrack.push(weekText);
 				weekTracks.push(weekTrack);
 			}
-			
+
 			{
-				var weekThing:MenuItem = new MenuItem(0, storyBG.y + storyBG.height + 10, totalWeeks);
+				var weekThing = new MenuItem(0, storyBG.y + storyBG.height + 10, totalWeeks, weekInfo.weekText);
 				weekThing.y += ((weekThing.height + 20) * totalWeeks);
 				weekThing.targetY = totalWeeks;
-				
+
 				weekThing.screenCenter(X);
 				// if (axes != FlxAxes.Y)
 				// 	x = (FlxG.width / 2) - (width / 2);
@@ -225,7 +225,7 @@ class StoryMenuSubGroup extends FlxGroup
 				Direction.LEFT,
 				ui_tex
 			);
-			
+
 			difficultySelectors.add(leftArrow);
 
 			sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
@@ -435,6 +435,7 @@ class StoryMenuSubGroup extends FlxGroup
 
 			var diffic = "";
 
+			// TODO: Refactor to use Song.getSongFilename
 			switch (curDifficulty)
 			{
 				case 0:
@@ -454,6 +455,7 @@ class StoryMenuSubGroup extends FlxGroup
 			LoadingState.setGlobals();
 			PlayState.visualSongName = PlayState.storyVisNamePlaylist[0];
 			PlayState.SONG = Song.loadFromJson(songName + diffic, songName);
+			PlayState.MOD = modInfo;
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				LoadingState.loadAndSwitchState(new PlayState(), true);
@@ -521,7 +523,7 @@ class StoryMenuSubGroup extends FlxGroup
 		for (item in grpWeekText.members)
 		{
 			item.targetY = i - curWeek;
-			
+
 			if (item.targetY == 0 && weekUnlocked[curWeek])
 				item.alpha = 1;
 			else
@@ -576,7 +578,7 @@ class StoryMenuSubGroup extends FlxGroup
 				arrow.animation.addByPrefix('press', "arrow push right", 24, false);
 			}
 		}
-		
+
 		arrow.animation.play('idle');
 		arrow.updateHitbox();
 

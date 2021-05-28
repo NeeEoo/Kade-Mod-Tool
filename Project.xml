@@ -134,7 +134,9 @@
 	</section>
 	<haxelib name="linc_luajit" if="windows"/>
 
-	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
+	<!-- <section if="debug">
+		<haxelib name="hxcpp-debug-server" if="desktop"/>
+	</section> -->
 
 	<!-- <haxelib name="markdown" /> -->
 	<!-- <haxelib name="HtmlParser" /> -->

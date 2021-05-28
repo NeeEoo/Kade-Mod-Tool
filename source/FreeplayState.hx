@@ -81,7 +81,7 @@ class FreeplayState extends MusicBeatState
 			var keys = weeks.keys();
 
 			keys.sort(Reflect.compare);
-			
+
 			for(week in keys) {
 				var weekInfo:SwagWeek = weeks[week];
 				var tracks = weekInfo.tracks;
@@ -197,6 +197,7 @@ class FreeplayState extends MusicBeatState
 				LoadingState.setGlobals();
 				PlayState.visualSongName = songs[curSelected].visualSongName;
 				PlayState.SONG = Song.loadFromJson(songFilename, songName);
+				PlayState.MOD = currentSelectedMod.getModInfo();
 				trace('CUR WEEK' + PlayState.storyWeek);
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
@@ -328,6 +329,10 @@ class ModCatagory
 
 	public final function getName() {
 		return _modInfo.modName;
+	}
+
+	public final function getModInfo() {
+		return _modInfo;
 	}
 
 	public function new (modInfo:SwagWeeks, mod:String, songs:Array<SongMetadata>)

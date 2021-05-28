@@ -80,7 +80,7 @@ class DFJKOption extends Option
 	public override function press():Bool
 	{
 		FlxG.save.data.dfjk = !FlxG.save.data.dfjk;
-		
+
 		if (FlxG.save.data.dfjk)
 			controls.setKeyboardScheme(KeyboardScheme.Solo, true);
 		else
@@ -167,7 +167,7 @@ class Judgement extends Option
 		description = desc;
 		acceptValues = true;
 	}
-	
+
 	public override function press():Bool
 	{
 		return true;
@@ -187,10 +187,10 @@ class Judgement extends Option
 
 		Conductor.recalculateTimings();
 
-		OptionsMenu.versionShit.text = "Current Safe Frames: " + Conductor.safeFrames + " - Description - " + description + 
+		OptionsMenu.versionShit.text = "Current Safe Frames: " + Conductor.safeFrames + " - Description - " + description +
 		" - SIK: " + OptionsMenu.truncateFloat(45 * Conductor.timeScale, 0) +
 		"ms GD: " + OptionsMenu.truncateFloat(90 * Conductor.timeScale, 0) +
-		"ms BD: " + OptionsMenu.truncateFloat(135 * Conductor.timeScale, 0) + 
+		"ms BD: " + OptionsMenu.truncateFloat(135 * Conductor.timeScale, 0) +
 		"ms SHT: " + OptionsMenu.truncateFloat(155 * Conductor.timeScale, 0) +
 		"ms TOTAL: " + OptionsMenu.truncateFloat(Conductor.safeZoneOffset,0) + "ms";
 		return true;
@@ -205,10 +205,10 @@ class Judgement extends Option
 
 		Conductor.recalculateTimings();
 
-		OptionsMenu.versionShit.text = "Current Safe Frames: " + Conductor.safeFrames + " - Description - " + description + 
+		OptionsMenu.versionShit.text = "Current Safe Frames: " + Conductor.safeFrames + " - Description - " + description +
 		" - SIK: " + OptionsMenu.truncateFloat(45 * Conductor.timeScale, 0) +
 		"ms GD: " + OptionsMenu.truncateFloat(90 * Conductor.timeScale, 0) +
-		"ms BD: " + OptionsMenu.truncateFloat(135 * Conductor.timeScale, 0) + 
+		"ms BD: " + OptionsMenu.truncateFloat(135 * Conductor.timeScale, 0) +
 		"ms SHT: " + OptionsMenu.truncateFloat(155 * Conductor.timeScale, 0) +
 		"ms TOTAL: " + OptionsMenu.truncateFloat(Conductor.safeZoneOffset,0) + "ms";
 		return true;
@@ -255,7 +255,7 @@ class FPSCapOption extends Option
 	{
 		return "FPS Cap";
 	}
-	
+
 	override function right():Bool {
 		if (FlxG.save.data.fpsCap > 290)
 			return false;
@@ -376,7 +376,7 @@ class ReplayOption extends Option
 		super();
 		description = desc;
 	}
-	
+
 	public override function press():Bool
 	{
 		trace("switch");
@@ -397,7 +397,7 @@ class AccuracyDOption extends Option
 		super();
 		description = desc;
 	}
-	
+
 	public override function press():Bool
 	{
 		FlxG.save.data.accuracyMod = FlxG.save.data.accuracyMod == 1 ? 0 : 1;
@@ -473,6 +473,7 @@ class OffsetMenu extends Option
 		PlayState.storyDifficulty = 0;
 		PlayState.storyWeek = 0;
 		PlayState.offsetTesting = true;
+		PlayState.MOD = null;
 		trace('CUR WEEK' + PlayState.storyWeek);
 		LoadingState.loadAndSwitchState(new PlayState());
 		return false;

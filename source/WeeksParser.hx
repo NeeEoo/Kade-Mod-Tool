@@ -10,6 +10,7 @@ typedef SwagWeeks =
 	var modName:String;
 	var weeks:haxe.DynamicAccess<SwagWeek>;
 	@:optional var storyMenuColor:String;
+	@:optional var hudColors:SwagHudColors;
 	@:optional var introTexts:Array<Array<String>>;
 }
 
@@ -23,6 +24,14 @@ typedef SwagWeek =
 	var freeplay:Array<String>;
 }
 
+typedef SwagHudColors =
+{
+	@:optional var healthBarGreen:String;
+	@:optional var healthBarRed:String;
+	@:optional var timeBarFilled:String;
+	@:optional var timeBarBackground:String;
+}
+
 class WeeksParser
 {
 	public function new(song, notes, bpm)
@@ -32,7 +41,7 @@ class WeeksParser
 	public static function getWeeksInfoFromJson(folder:String):SwagWeeks
 	{
 		var assetKey = Paths.jsonWeekTop("weeks", "weeks", folder);
-		
+
 		var rawJson = Assets.getText(assetKey).trim();
 
 		while (!rawJson.endsWith("}"))

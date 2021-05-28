@@ -101,7 +101,7 @@ class Alphabet extends FlxSpriteGroup
 				if(character == " " || character == "-") {
 					continue;
 				}
-				
+
 				if (lastSprite != null)
 				{
 					xPos = lastSprite.x + lastSprite.width;
@@ -270,20 +270,12 @@ class AlphaCharacter extends FlxSprite
 
 	public static var symbols:String = "|~#$%()*+-:;<=>@[]^_.,'!?";
 
-	private static var imageCache:Map<String, FlxAtlasFrames> = [];
-
 	public var row:Int = 0;
 
 	public function new(x:Float, y:Float, ?image:String="alphabet")
 	{
 		super(x, y);
-		var tex: FlxAtlasFrames;
-		if(!imageCache.exists(image)) {
-			tex = Paths.getSparrowAtlas(image);
-			imageCache.set(image, tex);
-		} else {
-			tex = imageCache.get(image);
-		}
+		var tex = Paths.getSparrowAtlas(image);
 		frames = tex;
 
 		antialiasing = true;
