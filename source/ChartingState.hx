@@ -93,7 +93,7 @@ class ChartingState extends MusicBeatState
 	override function create()
 	{
 		#if (windows && DISCORD)
-		DiscordClient.changePresence("Chart Editor", null, null, true);
+		DiscordClient.changePresence("Chart Editor", null, null, null, true);
 		#end
 
 		curSection = lastSection;

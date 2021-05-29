@@ -34,6 +34,8 @@ function update (elapsed) -- example https://twitter.com/KadeDeveloper/status/13
 					setActorX(_G['defaultStrum'..i..'X'] + 32 * math.sin((currentBeat + i*0.25) * math.pi), i)
 					setActorY(_G['defaultStrum'..i..'Y'] + 2* 32 * math.cos((currentBeat + i*0.25) * math.pi), i)
 				end
+
+				-- camHudAngle = camHudAngle + currentBeat/100;
 				-- setCamPosition(32 * math.sin((currentBeat) * math.pi), 32 * math.cos((currentBeat) * math.pi))
 				-- setHudPosition(32 * math.cos((currentBeat) * math.pi), 32 * math.sin((currentBeat) * math.pi))
 				-- setActorAngle(currentBeat, "dad")
