@@ -267,7 +267,7 @@ class ChartingState extends MusicBeatState
 		});
 		player1DropDown.selectedLabel = _song.player1;
 
-		var player1Label = new FlxText(10, 80, 64,'Player 1');
+		var player1Label = new FlxText(10, 80, 64, 'Player 1');
 
 		var player2DropDown = new FlxUIDropDownMenu(140, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -276,7 +276,7 @@ class ChartingState extends MusicBeatState
 
 		player2DropDown.selectedLabel = _song.player2;
 
-		var player2Label = new FlxText(140, 80, 64,'Player 2');
+		var player2Label = new FlxText(140, 80, 64, 'Player 2');
 
 		var gfVersionDropDown = new FlxUIDropDownMenu(10, 200, FlxUIDropDownMenu.makeStrIdLabelArray(gfVersions, true), function(gfVersion:String)
 		{
@@ -284,7 +284,7 @@ class ChartingState extends MusicBeatState
 		});
 		gfVersionDropDown.selectedLabel = _song.gfVersion;
 
-		var gfVersionLabel = new FlxText(10, 180, 64,'Girlfriend');
+		var gfVersionLabel = new FlxText(10, 180, 64, 'Girlfriend');
 
 		var stageDropDown = new FlxUIDropDownMenu(140, 200, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 		{
@@ -292,7 +292,7 @@ class ChartingState extends MusicBeatState
 		});
 		stageDropDown.selectedLabel = _song.stage;
 
-		var stageLabel = new FlxText(140, 180, 64,'Stage');
+		var stageLabel = new FlxText(140, 180, 64, 'Stage');
 
 		var noteStyleDropDown = new FlxUIDropDownMenu(10, 300, FlxUIDropDownMenu.makeStrIdLabelArray(noteStyles, true), function(noteStyle:String)
 		{
@@ -300,7 +300,7 @@ class ChartingState extends MusicBeatState
 		});
 		noteStyleDropDown.selectedLabel = _song.noteStyle;
 
-		var noteStyleLabel = new FlxText(10, 280, 64,'Note Skin');
+		var noteStyleLabel = new FlxText(10, 280, 64, 'Note Skin');
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
@@ -366,7 +366,7 @@ class ChartingState extends MusicBeatState
 			copySection(Std.int(stepperCopy.value));
 		});
 
-		var clearSectionButton:FlxButton = new FlxButton(10, 150, "Clearr Section", clearSection);
+		var clearSectionButton:FlxButton = new FlxButton(10, 150, "Clear Section", clearSection);
 
 		var swapSection:FlxButton = new FlxButton(10, 170, "Swap Section", function()
 		{
