@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' Kade Engine" file="Kade Engine" packageName="com.ninjamuffin99.funkin" package="com.ninjamuffin99.funkin" main="Main" version="0.2.7.1" company="ninjamuffin99" />
+	<app title="Friday Night Funkin' Kade Mod Tool" file="Kade Mod Tool" packageName="com.ninjamuffin99.funkin" package="com.ninjamuffin99.funkin" main="Main" version="0.2.7.1" company="ninjamuffin99" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -107,7 +107,9 @@
 	<assets path='art/readme.txt' rename='do NOT readme.txt' embed='false'/>
 	<!-- <template path='mods' /> -->
 	
-	<assets path="CHANGELOG.md" rename='changelog.txt' embed='false'/>
+	<!--<assets path="CHANGELOG.md" rename='changelog.txt' embed='false'/>-->
+	<assets path="CustomMods.md" rename='CustomMods.txt' embed='false'/>
+	<assets path="version.txt" embed='false'/>
 
 	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY 
 		TO FIX ONE OF THEM, I CONVERTED IT TO OTF. DUNNO IF YOU NEED TO

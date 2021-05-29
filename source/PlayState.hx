@@ -890,13 +890,12 @@ class PlayState extends MusicBeatState
 		add(healthBar);
 
 		// Add Kade Engine watermark
-		// kadeEngineWatermark = new FlxText(4,healthBarBG.y + 50,0,SONG.song + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") + (Main.watermarks ? " - KE " + MainMenuState.kadeEngineVer : ""), 16);
 		kadeEngineWatermark = new FlxText(
 			4,
 			healthBarBG.y + 50 #if TESTING - 10 #end,
 			0,
 			visualSongName + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") +
-				#if TESTING "\nMOD TOOL TESTING BUILD - 0000000\n" #else (Main.watermarks ? " - KE " + MainMenuState.kadeEngineVer : "") #end,
+				#if TESTING "\nMOD TOOL TESTING BUILD - 0000000\n" #else (Main.watermarks ? " - KMT " + MainMenuState.kadeModToolVer : "") #end,
 			16);
 		kadeEngineWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, #if TESTING LEFT #else RIGHT #end, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		kadeEngineWatermark.scrollFactor.set();
