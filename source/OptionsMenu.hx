@@ -12,7 +12,7 @@ import lime.utils.Assets;
 
 class OptionsMenu extends MusicBeatState
 {
-	var selector:FlxText;
+	// var selector:FlxText;
 	var curSelected:Int = 0;
 
 	var options:Array<OptionCategory> = [

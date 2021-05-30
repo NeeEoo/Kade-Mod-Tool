@@ -5,7 +5,6 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.effects.FlxFlicker;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
@@ -14,7 +13,6 @@ import flixel.util.FlxColor;
 #if ng
 import io.newgrounds.NG;
 #end
-import lime.app.Application;
 
 #if (windows && DISCORD)
 import Discord.DiscordClient;
@@ -38,10 +36,10 @@ class MainMenuState extends MusicBeatState
 	// var newGaming2:FlxText;
 	// var newInput:Bool = true;
 
-	public static var nightly:String = "";
+	public static inline final nightly:String = "";
 
-	public static var kadeModToolVer:String = "3.0" + nightly;
-	public static var gameVer:String = "0.2.7.1";
+	public static inline final kadeModToolVer:String = "3.0" + nightly;
+	public static inline final gameVer:String = "0.2.7.1";
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -258,7 +256,8 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y); // TODO: Refactor
+				var sprMid = spr.getGraphicMidpoint();
+				camFollow.setPosition(sprMid.x, sprMid.y);
 			}
 
 			spr.updateHitbox();

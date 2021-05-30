@@ -181,6 +181,9 @@
 
 	<haxedef name="shaders_supported" unless="flash || openfl-legacy" />
 
+	<haxeflag name="-dce full" unless="debug" />
+	<haxeflag name="-dce" value="full" unless="debug" />
+
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->

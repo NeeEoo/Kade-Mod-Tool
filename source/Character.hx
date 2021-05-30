@@ -9,7 +9,7 @@ using StringTools;
 
 class Character extends FlxSprite
 {
-	public var animOffsets:Map<String, Array<Dynamic>>;
+	public var animOffsets:Map<String, Array<Dynamic>>; // Fix this? Better performance?
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
@@ -521,10 +521,10 @@ class Character extends FlxSprite
 				left.frames = oldRight;
 
 				// IF THEY HAVE MISS ANIMATIONS??
-				if (animation.getByName('singRIGHTmiss') != null)
+				var rightMiss = animation.getByName('singRIGHTmiss');
+				if (rightMiss != null)
 				{
 					var leftMiss = animation.getByName('singLEFTmiss');
-					var rightMiss = animation.getByName('singRIGHTmiss');
 					var oldMiss = rightMiss.frames;
 
 					rightMiss.frames = leftMiss.frames;

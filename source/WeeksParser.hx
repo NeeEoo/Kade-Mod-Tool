@@ -55,7 +55,7 @@ class WeeksParser
 		return parseJSONshit(rawJson);
 	}
 
-	public static function addCustomIntroTexts(mods:Array<String>) {
+	inline public static function addCustomIntroTexts(mods:Array<String>) {
 		for(mod in mods) {
 			var info = getWeeksInfoFromJson(mod);
 			var introTexts = info.introTexts;
@@ -68,7 +68,7 @@ class WeeksParser
 		}
 	}
 
-	public static function parseJSONshit(rawJson:String):SwagWeeks
+	inline public static function parseJSONshit(rawJson:String):SwagWeeks
 	{
 		var swagShit:SwagWeeks = cast Json.parse(rawJson);
 		return swagShit;

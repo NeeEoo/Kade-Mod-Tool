@@ -57,9 +57,9 @@ class GameplayCustomizeState extends MusicBeatState
 
 		dad = new Character(100, 100, 'dad');
 
-		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x + 400, dad.getGraphicMidpoint().y); // TODO: Refactor
+        var dadMidpoint = dad.getGraphicMidpoint();
 
-		camFollow.setPosition(camPos.x, camPos.y);
+		camFollow.setPosition(dadMidpoint.x + 400, dadMidpoint.y);
 
         add(bf);
         add(dad);

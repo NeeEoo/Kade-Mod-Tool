@@ -17,7 +17,7 @@ class DialogueBox extends FlxSpriteGroup
 
 	var curCharacter:String = '';
 
-	var dialogue:Alphabet;
+	// var dialogue:Alphabet;
 	var dialogueList:Array<String> = [];
 
 	// SECOND DIALOGUE FOR THE PIXEL SHIT INSTEAD???
@@ -30,7 +30,7 @@ class DialogueBox extends FlxSpriteGroup
 	var portraitLeft:FlxSprite;
 	var portraitRight:FlxSprite;
 
-	var handSelect:FlxSprite;
+	// var handSelect:FlxSprite;
 	var bgFade:FlxSprite;
 
 	public function new(talkingRight:Bool = true, ?dialogueList:Array<String>)
@@ -121,14 +121,14 @@ class DialogueBox extends FlxSpriteGroup
 		box.screenCenter(X);
 		portraitLeft.screenCenter(X);
 
-		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('pixelUI/hand_textbox'));
+		var handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('pixelUI/hand_textbox'));
 		add(handSelect);
 
 
-		if (!talkingRight)
-		{
+		//if (!talkingRight)
+		//{
 			// box.flipX = true;
-		}
+		//}
 
 		dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.6), "", 32);
 		dropText.font = 'Pixel Arial 11 Bold';
@@ -141,7 +141,7 @@ class DialogueBox extends FlxSpriteGroup
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
 		add(swagDialogue);
 
-		dialogue = new Alphabet(0, 80, "", false, true);
+		// dialogue = new Alphabet(0, 80, "", false, true);
 		// dialogue.x = 90;
 		// add(dialogue);
 	}
@@ -182,7 +182,7 @@ class DialogueBox extends FlxSpriteGroup
 
 		if (FlxG.keys.justPressed.ANY && dialogueStarted == true)
 		{
-			remove(dialogue);
+			// remove(dialogue);
 				
 			FlxG.sound.play(Paths.sound('clickText'), 0.8);
 

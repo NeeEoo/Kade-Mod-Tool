@@ -13,7 +13,6 @@ import sys.io.File;
 using StringTools;
 
 class FakeAssetLibrary {
-	var id:String = "";
 	var library:AssetLibrary = null;
 	public static var modsFound:Array<String> = [];
 
@@ -32,7 +31,7 @@ class FakeAssetLibrary {
 	
 	public function loadDynamicWeeks()
 	{
-		id = "weeks";
+		var id = "weeks";
 
 		library = new AssetLibrary();
 

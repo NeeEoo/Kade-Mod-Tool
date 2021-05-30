@@ -33,7 +33,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		bf = new Boyfriend(x, y, daBf);
 		add(bf);
 
-		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1); // TODO: Refactor
+		var bfMidpoint = bf.getGraphicMidpoint();
+		camFollow = new FlxObject(bfMidpoint.x, bfMidpoint.y, 1, 1);
 		add(camFollow);
 
 		FlxG.sound.play(Paths.sound('fnf_loss_sfx' + stageSuffix));

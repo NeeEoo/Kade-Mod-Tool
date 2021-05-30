@@ -61,7 +61,7 @@ class ChartingState extends MusicBeatState
 	var writingNotesText:FlxText;
 	var highlight:FlxSprite;
 
-	var GRID_SIZE:Int = 40;
+	static inline final GRID_SIZE:Int = 40;
 
 	var dummyArrow:FlxSprite;
 
@@ -82,8 +82,8 @@ class ChartingState extends MusicBeatState
 	var gridBlackLine:FlxSprite;
 	var vocals:FlxSound;
 
-	var player2:Character = new Character(0,0, "dad");
-	var player1:Boyfriend = new Boyfriend(0,0, "bf");
+	var player2:Character = new Character(0, 0, "dad");
+	var player1:Boyfriend = new Boyfriend(0, 0, "bf");
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;

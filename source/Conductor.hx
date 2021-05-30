@@ -3,11 +3,6 @@ package;
 import Song.SwagSong;
 import flixel.FlxG;
 
-/**
- * ...
- * @author
- */
-
 typedef BPMChangeEvent =
 {
 	var stepTime:Int;

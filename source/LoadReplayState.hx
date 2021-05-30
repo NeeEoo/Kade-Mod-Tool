@@ -1,8 +1,5 @@
 package;
 
-import Controls.KeyboardScheme;
-import Controls.Control;
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;

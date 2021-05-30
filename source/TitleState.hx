@@ -10,8 +10,6 @@ import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 #if ng
@@ -30,7 +28,7 @@ class TitleState extends MusicBeatState
 {
 	static var initialized:Bool = false;
 
-	var blackScreen:FlxSprite;
+	// var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
 	//var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
@@ -41,7 +39,7 @@ class TitleState extends MusicBeatState
 
 	var curWacky:Array<String> = [];
 
-	var wackyImage:FlxSprite;
+	// var wackyImage:FlxSprite;
 
 	override public function create():Void
 	{
@@ -208,7 +206,7 @@ class TitleState extends MusicBeatState
 		add(credGroup);
 		textGroup = new FlxGroup();
 
-		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		credGroup.add(blackScreen);
 
 		//credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er", true);
