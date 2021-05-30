@@ -3,10 +3,9 @@ package;
 import flixel.util.FlxColor;
 import Controls.KeyboardScheme;
 import flixel.FlxG;
-import openfl.display.FPS;
 import openfl.Lib;
 
-class OptionCatagory
+class OptionCategory
 {
 	private var _options:Array<Option> = new Array<Option>();
 	public final function getOptions():Array<Option>
@@ -24,7 +23,7 @@ class OptionCatagory
 		_options.remove(opt);
 	}
 
-	private var _name:String = "New Catagory";
+	private var _name:String = "New Category";
 	public final function getName() {
 		return _name;
 	}

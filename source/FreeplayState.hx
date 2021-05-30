@@ -2,7 +2,6 @@ package;
 
 import WeeksParser.SwagWeek;
 import WeeksParser.SwagWeeks;
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -21,10 +20,9 @@ using StringTools;
 class FreeplayState extends MusicBeatState
 {
 	var curSelected:Int = 0;
+	var modCategories:Array<ModCategory> = [];
 
-	var modCatagories:Array<ModCatagory> = [];
-
-	var currentSelectedMod:ModCatagory;
+	var currentSelectedMod:ModCategory;
 
 	var songs:Array<SongMetadata> = [];
 
@@ -75,7 +73,7 @@ class FreeplayState extends MusicBeatState
 	function parseModSongs() {
 		for(mod in TitleState.mods) {
 			var modInfo = WeeksParser.getWeeksInfoFromJson(mod);
-			var catagory = new ModCatagory(modInfo, mod, []);
+			var category = new ModCategory(modInfo, mod, []);
 
 			var weeks = modInfo.weeks;
 			var keys = weeks.keys();
@@ -101,12 +99,12 @@ class FreeplayState extends MusicBeatState
 					}
 					var metadata = new SongMetadata(weekTrack, weekNum, freeplayCharacters[songNum], mod, weekText);
 
-					catagory.addSong(metadata);
+					category.addSong(metadata);
 					songNum++;
 				}
 			}
 
-			modCatagories.push(catagory);
+			modCategories.push(category);
 		}
 	}
 
@@ -114,9 +112,9 @@ class FreeplayState extends MusicBeatState
 		if(clear) {
 			grpSongs.clear();
 		}
-		for (i in 0...modCatagories.length)
+		for (i in 0...modCategories.length)
 		{
-			var modLabel = new Alphabet(0, (70 * i) + 30, modCatagories[i].getName(), true, false);
+			var modLabel = new Alphabet(0, (70 * i) + 30, modCategories[i].getName(), true, false);
 			modLabel.isMenuItem = true;
 			modLabel.targetY = i;
 			grpSongs.add(modLabel);
@@ -203,7 +201,7 @@ class FreeplayState extends MusicBeatState
 			}
 			else
 			{
-				currentSelectedMod = modCatagories[curSelected];
+				currentSelectedMod = modCategories[curSelected];
 				isInModCat = true;
 				curSelected = 0;
 				grpSongs.clear();
@@ -307,7 +305,7 @@ class FreeplayState extends MusicBeatState
 	}
 }
 
-class ModCatagory
+class ModCategory
 {
 	private var _songs = new Array<SongMetadata>();
 	private var _modInfo:SwagWeeks;

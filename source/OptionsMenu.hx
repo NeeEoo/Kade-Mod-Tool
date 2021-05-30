@@ -1,9 +1,6 @@
 package;
 
-import openfl.Lib;
 import Options;
-import Controls.Control;
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -18,8 +15,8 @@ class OptionsMenu extends MusicBeatState
 	var selector:FlxText;
 	var curSelected:Int = 0;
 
-	var options:Array<OptionCatagory> = [
-		new OptionCatagory("Gameplay", [
+	var options:Array<OptionCategory> = [
+		new OptionCategory("Gameplay", [
 			new DFJKOption(controls),
 			new Judgement("Customize your Hit Timings (LEFT or RIGHT)"),
 			#if desktop
@@ -30,7 +27,7 @@ class OptionsMenu extends MusicBeatState
 			// new OffsetMenu("Get a note offset based off of your inputs!"),
 			new CustomizeGameplay("Drag'n'Drop Gameplay Modules around to your preference")
 		]),
-		new OptionCatagory("Appearence", [
+		new OptionCategory("Appearence", [
 			new SongPositionOption("Show the songs current position (as a bar)"),
 			new DownscrollOption("Change the layout of the strumline."),
 			#if desktop
@@ -40,7 +37,7 @@ class OptionsMenu extends MusicBeatState
 			new NPSDisplayOption("Shows your current Notes Per Second.")
 		]),
 		
-		new OptionCatagory("Misc", [
+		new OptionCategory("Misc", [
 			#if desktop
 			new FPSOption("Toggle the FPS Counter"),
 			new ReplayOption("View replays"),
@@ -55,7 +52,7 @@ class OptionsMenu extends MusicBeatState
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	public static var versionShit:FlxText;
 
-	var currentSelectedCat:OptionCatagory;
+	var currentSelectedCat:OptionCategory;
 
 	override function create()
 	{
@@ -158,7 +155,7 @@ class OptionsMenu extends MusicBeatState
 				else if (FlxG.keys.pressed.LEFT)
 					FlxG.save.data.offset -= 0.1;
 				
-				versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset,2) + " - Description - " + currentDescription;
+				versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
 			}
 		}
 		else
@@ -175,7 +172,7 @@ class OptionsMenu extends MusicBeatState
 			else if (FlxG.keys.pressed.LEFT)
 				FlxG.save.data.offset -= 0.1;
 			
-			versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset,2) + " - Description - " + currentDescription;
+			versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
 		}
 	
 
@@ -232,8 +229,8 @@ class OptionsMenu extends MusicBeatState
 		if (isCat)
 			currentDescription = currentSelectedCat.getOptions()[curSelected].getDescription();
 		else
-			currentDescription = "Please select a catagory";
-		versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset,2) + " - Description - " + currentDescription;
+			currentDescription = "Please select a category";
+		versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
 
 		// selector.y = (70 * curSelected) + 30;
 
