@@ -48,7 +48,7 @@ class MainMenuState extends MusicBeatState
 	{
 		#if (windows && DISCORD)
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresence("In the Main Menu", null);
 		#end
 
 		if (!FlxG.sound.music.playing)

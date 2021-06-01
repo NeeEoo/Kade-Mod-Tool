@@ -5,9 +5,6 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
-#if polymod
-import polymod.format.ParseRules.TargetSignatureElement;
-#end
 import PlayState;
 
 using StringTools;
@@ -15,15 +12,17 @@ using StringTools;
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
+	public var noteSpeed:Float = 0;
+	public var altAnim:Bool = false;
+	public var noteData:Int = 0;
+	public var sustainLength:Float = 0;
 
 	public var mustPress:Bool = false;
-	public var noteData:Int = 0;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
 	public var modifiedByLua:Bool = false;
-	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 
 	// public var noteScore:Float = 1;
@@ -36,7 +35,7 @@ class Note extends FlxSprite
 
 	public var rating:String = "shit";
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
+	public function new(strumTime:Float, noteData:Int, noteSpeed:Null<Float>, ?prevNote:Note, ?sustainNote:Bool = false)
 	{
 		super();
 
@@ -54,7 +53,11 @@ class Note extends FlxSprite
 		if (this.strumTime < 0)
 			this.strumTime = 0;
 
+		if (noteSpeed == null)
+			noteSpeed = PlayState.SONG.speed;
+
 		this.noteData = noteData;
+		this.noteSpeed = noteSpeed;
 
 		switch (PlayState.SONG.noteStyle)
 		{
@@ -127,7 +130,7 @@ class Note extends FlxSprite
 		// we make sure its downscroll and its a SUSTAIN NOTE (aka a trail, not a note)
 		// and flip it so it doesn't look weird.
 		// THIS DOESN'T FUCKING FLIP THE NOTE, CONTRIBUTERS DON'T JUST COMMENT THIS OUT JESUS
-		if (FlxG.save.data.downscroll && sustainNote) 
+		if (FlxG.save.data.downscroll && sustainNote)
 			flipY = true;
 
 		if (isSustainNote && prevNote != null)
@@ -173,7 +176,7 @@ class Note extends FlxSprite
 				if(FlxG.save.data.scrollSpeed != 1)
 					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * FlxG.save.data.scrollSpeed;
 				else
-					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * noteSpeed;
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}

@@ -31,7 +31,7 @@ class EtternaFunctions
 			for (ii in 0...PlayState.SONG.notes[i].sectionNotes.length)
 			{
 				var n = PlayState.SONG.notes[i].sectionNotes[ii];
-				if (n[1] <= 0)
+				if (n.noteData <= 0)
 					notes++;
 			}
 		}
@@ -48,7 +48,7 @@ class EtternaFunctions
 			{
 				var n = PlayState.SONG.notes[i].sectionNotes[ii];
 				trace(n);
-				if (n[1] > 0)
+				if (n.noteData > 0)
 					notes++;
 			}
 		}

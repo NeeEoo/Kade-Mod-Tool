@@ -126,7 +126,7 @@ class FreeplayState extends MusicBeatState
 	function setDiscordStatus() {
 		#if (windows && DISCORD)
 		if(isInModCat) {
-			DiscordClient.changePresence("In the Story Mode Menu", "\nCurrent Mod: " + currentSelectedMod.getName());
+			DiscordClient.changePresence("In the Freeplay Menu", "\nCurrent Mod: " + currentSelectedMod.getName());
 		} else {
 			DiscordClient.changePresence("In the Freeplay Menu", null);
 		}

@@ -165,7 +165,7 @@ class GameplayCustomizeState extends MusicBeatState
             babyArrow.animation.addByPrefix('red', 'arrowRIGHT');
             babyArrow.antialiasing = true;
             babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
-            switch (Math.abs(i))
+            switch (i)
             {
                 case 0:
                     babyArrow.x += Note.swagWidth * 0;

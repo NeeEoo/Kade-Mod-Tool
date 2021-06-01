@@ -137,6 +137,7 @@ class PlayState extends MusicBeatState
 
 	private var camZooming:Bool = false;
 
+	private var noteSpeed:Float = 1;
 	private var gfSpeed:Int = 1;
 	private var health:Float = 1;
 	private var combo:Int = 0;
@@ -314,6 +315,7 @@ class PlayState extends MusicBeatState
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
+		noteSpeed = FlxG.save.data.scrollSpeed != 1 ? FlxG.save.data.scrollSpeed : SONG.speed;
 
 		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + Conductor.safeFrames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTime Scale: ' + Conductor.timeScale);
 
@@ -1358,14 +1360,20 @@ class PlayState extends MusicBeatState
 
 			for (songNotes in section.sectionNotes)
 			{
-				var daStrumTime:Float = songNotes[0] + FlxG.save.data.offset + songOffset;
+				var daStrumTime:Float = songNotes.strumTime + FlxG.save.data.offset + songOffset;
 				if (daStrumTime < 0)
 					daStrumTime = 0;
-				var daNoteData:Int = Std.int(songNotes[1] % 4);
+				var daNoteData:Int = Std.int(songNotes.noteData % 4);
+				var daNoteSpeed = songNotes.noteSpeed;
+				var daAltAnim = songNotes.altAnim == 1;
+
+				if(daNoteSpeed == null) {
+					daNoteSpeed = SONG.speed;
+				}
 
 				var gottaHitNote:Bool = section.mustHitSection;
 
-				if (songNotes[1] > 3)
+				if (songNotes.noteData > 3)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
@@ -1374,8 +1382,9 @@ class PlayState extends MusicBeatState
 				if (unspawnNotes.length > 0)
 					oldNote = unspawnNotes[unspawnNotes.length - 1];
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
-				swagNote.sustainLength = songNotes[2];
+				var swagNote:Note = new Note(daStrumTime, daNoteData, daNoteSpeed, oldNote);
+				swagNote.altAnim = daAltAnim;
+				swagNote.sustainLength = songNotes.holdLength;
 				swagNote.scrollFactor.set(0, 0);
 
 				var susLength:Float = swagNote.sustainLength / Conductor.stepCrochet;
@@ -1386,7 +1395,8 @@ class PlayState extends MusicBeatState
 				{
 					oldNote = unspawnNotes[unspawnNotes.length - 1];
 
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, daNoteSpeed, oldNote, true);
+					sustainNote.altAnim = daAltAnim;
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
 
@@ -1442,7 +1452,7 @@ class PlayState extends MusicBeatState
 					babyArrow.updateHitbox();
 					babyArrow.antialiasing = false;
 
-					switch (Math.abs(i))
+					switch (i)
 					{
 						case 0:
 							babyArrow.x += Note.swagWidth * 0;
@@ -1478,7 +1488,7 @@ class PlayState extends MusicBeatState
 					babyArrow.antialiasing = true;
 					babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
 
-					switch (Math.abs(i))
+					switch (i)
 					{
 						case 0:
 							babyArrow.x += Note.swagWidth * 0;
@@ -2194,8 +2204,8 @@ class PlayState extends MusicBeatState
 
 		if (unspawnNotes[0] != null)
 		{
-			//if (unspawnNotes[0].strumTime - Conductor.songPosition < 3500)
-			if (unspawnNotes[0].strumTime - Conductor.songPosition < 1500)
+			//if (unspawnNotes[0].strumTime - Conductor.songPosition < 1500)
+			if (unspawnNotes[0].strumTime - Conductor.songPosition < 3500)
 			{
 				var dunceNote:Note = unspawnNotes.shift();
 				notes.add(dunceNote);
@@ -2226,7 +2236,7 @@ class PlayState extends MusicBeatState
 						else
 							daNote.y = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y;
 
-						var noteOffsetY = 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? SONG.speed : FlxG.save.data.scrollSpeed, 2);
+						var noteOffsetY = 0.45 * (Conductor.songPosition - daNote.strumTime) * FlxMath.roundDecimal(FlxG.save.data.scrollSpeed == 1 ? daNote.noteSpeed : FlxG.save.data.scrollSpeed, 2);
 
 						if (FlxG.save.data.downscroll)
 						{
@@ -2302,6 +2312,9 @@ class PlayState extends MusicBeatState
 						if (section != null && section.altAnim)
 							altAnim = '-alt';
 
+						if (daNote.altAnim)
+							altAnim = '-alt';
+
 						switch (Math.abs(daNote.noteData))
 						{
 							case 2:
@@ -2355,9 +2368,9 @@ class PlayState extends MusicBeatState
 
 					//trace(daNote.y);
 					// WIP interpolation shit? Need to fix the pause issue
-					// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
+					// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * noteSpeed));
 
-					if ((daNote.mustPress && daNote.tooLate && !FlxG.save.data.downscroll || daNote.mustPress && daNote.tooLate && FlxG.save.data.downscroll) && daNote.mustPress)
+					if (daNote.mustPress && daNote.tooLate)
 					{
 						if (daNote.isSustainNote && daNote.wasGoodHit)
 						{

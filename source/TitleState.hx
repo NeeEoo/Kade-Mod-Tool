@@ -27,6 +27,7 @@ using StringTools;
 class TitleState extends MusicBeatState
 {
 	static var initialized:Bool = false;
+	var titleLoaded:Bool = false;
 
 	// var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
@@ -43,56 +44,61 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{
-		#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
-		#end
-
-		#if sys
-		if (!sys.FileSystem.exists(Sys.getCwd() + "/assets/replays"))
-			sys.FileSystem.createDirectory(Sys.getCwd() + "/assets/replays");
-		#end
-
-		@:privateAccess
-		{
-			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
+		if(!initialized) {
+			#if polymod
+			polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
+			#end
+	
+			#if sys
+			if (!sys.FileSystem.exists(Sys.getCwd() + "/assets/replays"))
+				sys.FileSystem.createDirectory(Sys.getCwd() + "/assets/replays");
+			#end
+	
+			@:privateAccess
+			{
+				trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
+			}
+	
+			PlayerSettings.init();
+	
+			#if sys
+			var modsFound = FakeAssetLibrary.modsFound;
+			WeeksParser.addCustomIntroTexts(modsFound);
+			mods = FakeAssetLibrary.modsFound;
+			#else
+			mods = ["base"];
+			#end
+	
+			#if (windows && DISCORD)
+			DiscordClient.initialize();
+	
+			Application.current.onExit.add(function(exitCode) {
+				DiscordClient.shutdown();
+			});
+			#end
+	
+			curWacky = FlxG.random.getObject(getIntroTextShit());
 		}
-
-		PlayerSettings.init();
-
-		#if sys
-		var modsFound = FakeAssetLibrary.modsFound;
-		WeeksParser.addCustomIntroTexts(modsFound);
-		mods = FakeAssetLibrary.modsFound;
-		#else
-		mods = ["base"];
-		#end
-
-		#if (windows && DISCORD)
-		DiscordClient.initialize();
-
-		Application.current.onExit.add(function(exitCode) {
-			DiscordClient.shutdown();
-		});
-		#end
-
-		curWacky = FlxG.random.getObject(getIntroTextShit());
 
 		// DEBUG BULLSHIT
 
 		super.create();
 
-		// NGio.noLogin(APIStuff.API);
-
-		#if ng
-		var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
-		trace('NEWGROUNDS LOL');
-		#end
-
-		FlxG.save.bind('funkin', 'kademodtool');
-
-		KadeEngineData.initSave();
-
-		Highscore.load();
+		
+		if(!initialized) {
+			// NGio.noLogin(APIStuff.API);
+			
+			#if ng
+			var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
+			trace('NEWGROUNDS LOL');
+			#end
+	
+			FlxG.save.bind('funkin', 'kademodtool');
+	
+			KadeEngineData.initSave();
+	
+			Highscore.load();
+		}
 
 		/*if (FlxG.save.data.weekUnlocked != null)
 		{
@@ -228,6 +234,8 @@ class TitleState extends MusicBeatState
 
 		FlxG.mouse.visible = false;
 
+		titleLoaded = true;
+
 		if (initialized)
 			skipIntro();
 		else
@@ -362,6 +370,8 @@ class TitleState extends MusicBeatState
 	override function beatHit()
 	{
 		super.beatHit();
+
+		if(!titleLoaded) return;
 
 		logoBl.animation.play('bump');
 
