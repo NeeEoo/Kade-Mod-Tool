@@ -1,0 +1,10 @@
+KMTStoryBoard v0.1
+
+--SECTION-Gameplay--
+0,SetTimeUnit,beats
+31,PlayAnim,dad,cheer,1
+31,PlayAnim,bf,hey,1
+
+47,PlayAnim,dad,cheer,1
+47,PlayAnim,bf,hey,1
+--END-SECTION--

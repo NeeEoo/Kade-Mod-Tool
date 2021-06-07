@@ -13,7 +13,7 @@ import sys.io.File;
 using StringTools;
 
 class FakeAssetLibrary {
-	var library:AssetLibrary = null;
+	public var library:AssetLibrary = null;
 	public static var modsFound:Array<String> = [];
 
 	var knownExtensions = [
@@ -89,14 +89,22 @@ class FakeAssetLibrary {
 		}
 	}
 
+	public static function resetCache(library:AssetLibrary) {
+		@:privateAccess {
+			library.cachedText.clear();
+			library.cachedBytes.clear();
+			library.cachedFonts.clear();
+			library.cachedImages.clear();
+			library.cachedAudioBuffers.clear();
+		}
+	}
+
 	private function getAssetType(filename:String) {
 		var extension = Path.extension(filename);
 		if (extension != null) extension = extension.toLowerCase();
 
 		if (knownExtensions.exists(extension))
-		{
 			return knownExtensions.get(extension);
-		}
 		else
 		{
 			switch (extension)
@@ -111,28 +119,16 @@ class FakeAssetLibrary {
 
 						// if (stat.size > 1024 * 128) {
 						if (stat.size > 1024 * 1024)
-						{
 							return AssetType.MUSIC;
-						}
-						else
-						{
-							return AssetType.SOUND;
-						}
 					}
-					else
-					{
-						return AssetType.SOUND;
-					}
+
+					return AssetType.SOUND;
 
 				default:
 					if (filename != "" && isText(filename))
-					{
 						return AssetType.TEXT;
-					}
 					else
-					{
 						return AssetType.BINARY;
-					}
 			}
 		}
 	}
@@ -141,9 +137,7 @@ class FakeAssetLibrary {
 
 	// Code from lime/tools/helpers/FileHelper.hx (File doesn't exist anymore)
 	public static function isText(source:String):Bool {
-		if (!FileSystem.exists(source)) {
-			return false;
-		}
+		if (!FileSystem.exists(source)) return false;
 		
 		var input = File.read(source, true);
 		

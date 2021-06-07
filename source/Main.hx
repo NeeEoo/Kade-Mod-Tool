@@ -19,7 +19,8 @@ class Main extends Sprite
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets.
 
-	public static var watermarks = true; // Whether to put Kade Engine liteartly anywhere
+	public static var fakeAssetLibrary:FakeAssetLibrary;
+	public static var watermarks = true; // Whether to put Kade Engine literately anywhere
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
@@ -34,7 +35,7 @@ class Main extends Sprite
 	{
 		super();
 
-		var fakeAssetLibrary = new FakeAssetLibrary();
+		fakeAssetLibrary = new FakeAssetLibrary();
 		fakeAssetLibrary.loadDynamicWeeks();
 
 		if (stage != null)

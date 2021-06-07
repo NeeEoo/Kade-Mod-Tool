@@ -128,6 +128,24 @@ class Paths
 		return 'assets/weeks/$currentMod/tracks/$key.lua';
 	}
 
+	inline static public function fileWeekPath(key:String)
+	{
+		return 'weeks:assets/weeks/$currentMod/$currentWeek/tracks/$key';
+	}
+
+	inline static public function storyBoardWeekPath(key:String)
+	{
+		return 'weeks:assets/weeks/$currentMod/$currentWeek/tracks/$key.sbf';
+	}
+
+	inline static public function storyBoardExists(key:String)
+	{
+		var key = 'weeks:assets/weeks/$currentMod/$currentWeek/tracks/$key.sbf';
+		if (OpenFlAssets.exists(key, TEXT))
+			return true;
+		return false;
+	}
+
 	inline static public function doesLuaExistWeek(key:String, library:String = "weeks")
 	{
 		var key = getPath('$currentMod/$currentWeek/tracks/$key.lua', TEXT, library);
