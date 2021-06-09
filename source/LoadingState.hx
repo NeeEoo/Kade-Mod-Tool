@@ -182,7 +182,7 @@ class LoadingState extends MusicBeatState
 		return Assets.cache.hasSound(path);
 	}
 	
-	static function isLibraryLoaded(library:String):Bool
+	static inline function isLibraryLoaded(library:String):Bool
 	{
 		return Assets.getLibrary(library) != null;
 	}

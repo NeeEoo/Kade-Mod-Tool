@@ -65,6 +65,7 @@ using StringTools;
 class PlayState extends MusicBeatState
 {
 	public static var instance:PlayState = null;
+	public static var openedSubState:FlxSubState = null;
 
 	public static inline final DEFAULT_TIME_BG = FlxColor.GRAY;
 	public static inline final DEFAULT_TIME_FILLED = FlxColor.LIME;
@@ -936,7 +937,7 @@ class PlayState extends MusicBeatState
 			visualSongName + " " + (storyDifficulty == 2 ? "Hard" : storyDifficulty == 1 ? "Normal" : "Easy") +
 				#if TESTING "\nMOD TOOL TESTING BUILD - 0000000\n" #else (Main.watermarks ? " - KMT " + MainMenuState.kadeModToolVer : "") #end,
 			16);
-		kadeEngineWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, #if TESTING LEFT #else RIGHT #end, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		kadeEngineWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, #if TESTING LEFT #else RIGHT #end, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		kadeEngineWatermark.scrollFactor.set();
 		add(kadeEngineWatermark);
 
@@ -946,7 +947,7 @@ class PlayState extends MusicBeatState
 		scoreTxt = new FlxText(FlxG.width / 2 - 235, healthBarBG.y + 50, 0, "", 20);
 		if (!FlxG.save.data.accuracyDisplay)
 			scoreTxt.x = healthBarBG.x + healthBarBG.width / 2;
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		if (offsetTesting)
 			scoreTxt.x += 300;
@@ -991,6 +992,7 @@ class PlayState extends MusicBeatState
 			storyBoard.currentSection = SBSection.STARTING_CUTSCENE;
 			hasIntroCutscene = true;
 			Conductor.songPosition = -introLength;
+			transIn = null; // So that videos don't bug out
 		}
 		else
 		{
@@ -1003,21 +1005,21 @@ class PlayState extends MusicBeatState
 						add(blackScreen);
 						blackScreen.scrollFactor.set();
 						camHUD.visible = false;
-	
+
 						new FlxTimer().start(0.1, function(tmr:FlxTimer)
 						{
 							remove(blackScreen);
 							FlxG.sound.play(Paths.sound('Lights_Turn_On'));
 							camFollow.y = -2050;
 							camFollow.x += 200;
-	
+
 							var cameras = [storyBoardTopFlw, storyBoardFGFlw, storyBoardBGFlw, FlxG.camera];
 							for(camera in cameras)
 							{
 								camera.focusOn(camFollow.getPosition());
 								camera.zoom = 1.5;
 							}
-	
+
 							new FlxTimer().start(0.8, function(tmr:FlxTimer)
 							{
 								camHUD.visible = true;
@@ -1025,7 +1027,7 @@ class PlayState extends MusicBeatState
 								var extraCameras = [storyBoardTopFlw, storyBoardFGFlw, storyBoardBGFlw];
 								for(camera in extraCameras)
 									Tween.tween(camera, {zoom: defaultCamZoom}, 2.5, {ease: FlxEase.quadInOut});
-	
+
 								Tween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
 									ease: FlxEase.quadInOut,
 									onComplete: function(twn:FlxTween)
@@ -1266,7 +1268,6 @@ class PlayState extends MusicBeatState
 			}
 
 			swagCounter += 1;
-			// generateSong('fresh');
 		}, 5);
 	}
 
@@ -1338,8 +1339,6 @@ class PlayState extends MusicBeatState
 		DiscordClient.changePresence(detailsText + " " + visualSongName + " (" + storyDifficultyText + ") " + generateRanking(), "\nAcc: " + truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, largeText, iconRPC);
 		#end
 	}
-
-	var debugNum:Int = 0;
 
 	private function generateSong(dataPath:String):Void // paramater is unused
 	{
@@ -1585,7 +1584,7 @@ class PlayState extends MusicBeatState
 			Tween.tween(camera, {zoom: 1.3}, duration, {ease: FlxEase.elasticInOut});
 	}
 
-	override function openSubState(subState:FlxSubState)
+	public function openPausedSubState(subState:FlxSubState)
 	{
 		if (paused)
 		{
@@ -1607,10 +1606,11 @@ class PlayState extends MusicBeatState
 				startTimer.active = false;
 		}
 
-		super.openSubState(subState);
+		openedSubState = subState;
+		openSubState(subState);
 	}
 
-	override function closeSubState()
+	public function closePausedSubState()
 	{
 		if (paused)
 		{
@@ -1637,9 +1637,9 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		super.closeSubState();
+		openedSubState = null;
+		closeSubState();
 	}
-
 
 	function resyncVocals():Void
 	{
@@ -1655,15 +1655,15 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	private var paused:Bool = false;
+	public var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
 
-	function truncateFloat( number : Float, precision : Int): Float {
+	function truncateFloat(number:Float, precision:Int): Float {
 		var num = number;
 		var perc = Math.pow(10, precision);
 		num = num * perc;
-		num = Math.round( num ) / perc;
+		num = Math.round(num) / perc;
 		return num;
 	}
 
@@ -1907,12 +1907,13 @@ class PlayState extends MusicBeatState
 			else
 			{
 				var pos = boyfriend.getScreenPosition();
-				openSubState(new PauseSubState(pos.x, pos.y));
+				openPausedSubState(new PauseSubState(pos.x, pos.y));
 			}
 		}
 
 		if (FlxG.keys.justPressed.SEVEN)
 		{
+			Tween.active = false;
 			FlxG.switchState(new ChartingState());
 			destroyStuff();
 		}
@@ -1944,12 +1945,14 @@ class PlayState extends MusicBeatState
 		#if debug
 		if (FlxG.keys.justPressed.EIGHT)
 		{
+			Tween.active = false;
 			FlxG.switchState(new AnimationDebug(SONG.player2));
 			destroyStuff();
 		}
 
 		if (FlxG.keys.justPressed.ZERO)
 		{
+			Tween.active = false;
 			FlxG.switchState(new AnimationDebug(SONG.player1));
 			destroyStuff();
 		}
@@ -1966,7 +1969,8 @@ class PlayState extends MusicBeatState
 			else if(hasIntroCutscene)
 			{
 				Conductor.songPosition += FlxG.elapsed * 1000;
-				if(Conductor.songPosition >= 0 - Conductor.crochet * 5) {
+				//if(Conductor.songPosition >= 0 - Conductor.crochet * 5) {
+				if(Conductor.songPosition >= -5000) {
 					startCountdown();
 				}
 			}
@@ -2237,7 +2241,7 @@ class PlayState extends MusicBeatState
 			vocals.stop();
 			FlxG.sound.music.stop();
 
-			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			openPausedSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
 			#if (windows && DISCORD)
 			// Game Over doesn't get his own variable because it's only used here
@@ -3594,5 +3598,21 @@ class PlayState extends MusicBeatState
 				storyBoard.runGameplayStep(curBeat);
 			}
 		}
+	}
+
+	override function onFocusLost() {
+		if(openedSubState != null) {
+			openedSubState.onFocusLost();
+		}
+
+		super.onFocusLost();
+	}
+
+	override function onFocus() {
+		if(openedSubState != null) {
+			openedSubState.onFocus();
+		}
+
+		super.onFocus();
 	}
 }

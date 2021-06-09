@@ -336,6 +336,22 @@ class SBConfig extends SBAction {
 	}
 }
 
+class SBPlayVideo extends SBAction {
+	public var filename:String;
+
+	public function new(filename:String) {
+		this.filename = filename;
+	}
+
+	override public function runAction() {
+		PlayState.instance.persistentUpdate = false;
+		PlayState.instance.persistentDraw = false;
+		PlayState.instance.paused = true;
+
+		PlayState.instance.openPausedSubState(new VideoSubState(filename));
+	}
+}
+
 enum SBSection {
 	STARTING_CUTSCENE;
 	GAMEPLAY;
@@ -497,7 +513,7 @@ class StoryBoardParser
 						case "AttribInt": value = Std.parseInt(data[4]);
 						case "AttribBool": value = data[4] == "1";
 						case "AttribNull": value = null;
-						default: throw "Invalid Attrib Type";
+						default: throw 'Invalid Attrib Type at line $rowNum';
 					}
 
 					actionClass = new SBAttrib(spriteID, attribute, value, isRelative);
@@ -513,10 +529,16 @@ class StoryBoardParser
 						case "ConfigInt": value = Std.parseInt(data[3]);
 						case "ConfigBool": value = data[3] == "1";
 						case "ConfigNull": value = null;
-						default: throw "Invalid Config Type";
+						default: throw 'Invalid Config Type at line $rowNum';
 					}
 
 					actionClass = new SBConfig(key, value);
+				}
+				else if(action == "PlayVideo")
+				{
+					var filename = StoryBoardParser.convertSpecialPath(data[2], false);
+
+					actionClass = new SBPlayVideo(filename);
 				}
 
 				if(actionClass != null) {
@@ -526,7 +548,7 @@ class StoryBoardParser
 			}
 			if(row == "--END-SECTION--")
 			{
-				if(parsingSection == null) throw 'Unexpected End Section on line $rowNum';
+				if(parsingSection == null) throw 'Unexpected End Section at line $rowNum';
 				
 				for (action in parseActions)
 					action.storyBoard = this;
@@ -569,7 +591,7 @@ class StoryBoardParser
 		}
 	}
 
-	public static function convertSpecialPath(path:String) {
+	public static function convertSpecialPath(path:String, useLibrary:Bool = true) {
 		var realPath = path;
 		if(realPath.startsWith('"')) realPath = realPath.substr(1);
 		if(realPath.endsWith('"')) realPath = realPath.substr(0, realPath.length-1);
@@ -583,10 +605,12 @@ class StoryBoardParser
 		else if(realPath.startsWith("&"))
 			realPath = Path.join(['assets', 'weeks', Paths.currentMod, Paths.currentWeek, 'tracks', Paths.currentSong, realPath.substr(1)]);
 
-		if(realPath.startsWith("assets/weeks"))
-			return 'weeks:' + realPath;
-		else if(realPath.startsWith("assets/shared"))
-			return 'shared:' + realPath;
+		if(useLibrary) {
+			if(realPath.startsWith("assets/weeks"))
+				return 'weeks:' + realPath;
+			else if(realPath.startsWith("assets/shared"))
+				return 'shared:' + realPath;
+		}
 
 		return realPath;
 	}
@@ -633,7 +657,7 @@ class StoryBoardParser
 			case 'pp': FlxTweenType.PINGPONG;
 			case 'os': FlxTweenType.ONESHOT;
 			case 'bw': FlxTweenType.BACKWARD;
-			default: throw "Missing Tween Type";
+			default: throw 'Missing Tween Type "$data"';
 		}
 	}
 
@@ -647,7 +671,7 @@ class StoryBoardParser
 			case 'topflw':PlayState.instance.storyBoardTopFlw;
 			case 'game': PlayState.instance.camGame;
 			case 'hud': PlayState.instance.camHUD;
-			default: throw "Invalid Layer";
+			default: throw 'Invalid Layer "$data"';
 		}
 	}
 
@@ -690,7 +714,7 @@ class StoryBoardParser
 			case 'elasticin': FlxEase.elasticIn;
 			case 'elasticout': FlxEase.elasticOut;
 			case 'elasticinout': FlxEase.elasticInOut;
-			default: throw 'Missing Ease Type - $data';
+			default: throw 'Invalid ease type "$data"';
 		}
 	}
 }

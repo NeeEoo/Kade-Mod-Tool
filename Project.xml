@@ -136,6 +136,9 @@
 	</section>
 	<haxelib name="linc_luajit" if="windows"/>
 
+	<haxelib name="actuate" if="web" />
+	<haxelib name="extension-webm" if="desktop" />
+
 	<!-- <section if="debug">
 		<haxelib name="hxcpp-debug-server" if="desktop"/>
 	</section> -->
