@@ -55,7 +55,7 @@ class EtternaFunctions
 		return notes;
 	}
 
-	public static function getMapMaxScore():Int
+	public inline static function getMapMaxScore():Int
 	{
 		return (getNotes() * 350);
 	}

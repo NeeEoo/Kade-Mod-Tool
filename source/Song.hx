@@ -36,7 +36,7 @@ class Song
 	public var noteStyle:String = 'normal';
 	public var stage:String = 'stage';
 
-	public function new(song, notes, bpm)
+	public function new(song:String, notes:Array<SwagSection>, bpm:Float)
 	{
 		this.song = song;
 		this.notes = notes;

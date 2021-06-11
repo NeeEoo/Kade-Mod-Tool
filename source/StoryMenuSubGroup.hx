@@ -27,14 +27,14 @@ class StoryMenuSubGroup extends FlxGroup
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
 
-	var visualTrackNames:Array<Dynamic> = [];
-	var weekData:Array<Dynamic> = [];
+	var visualTrackNames:Array<Array<String>> = [];
+	var weekTracks:Array<Array<String>> = [];
 	var curDifficulty:Int = 1;
 
 	public var weekUnlocked:Array<Bool> = [];
 	public var tween:FlxTween = null;
 
-	var weekCharacters:Array<Dynamic> = [];
+	var weekCharacters:Array<Array<String>> = [];
 	var weekComment:Array<String> = [];
 
 	var txtWeekTitle:FlxText;
@@ -101,7 +101,7 @@ class StoryMenuSubGroup extends FlxGroup
 
 		leftModArrow = makeArrow(
 			10,
-			0,//10,
+			0,
 			Direction.LEFT,
 			ui_tex
 		);
@@ -116,7 +116,7 @@ class StoryMenuSubGroup extends FlxGroup
 
 		rightModArrow = makeArrow(
 			FlxG.width,
-			0,//10,
+			0,
 			Direction.RIGHT,
 			ui_tex,
 			scale
@@ -125,7 +125,6 @@ class StoryMenuSubGroup extends FlxGroup
 
 		// X position is overwritten later
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
-		// txtWeekTitle = new FlxText(rightModArrow.x - 10, 10, 0, "", 32);
 		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 
@@ -134,12 +133,6 @@ class StoryMenuSubGroup extends FlxGroup
 		rankText.setFormat(Paths.font("vcr.ttf"), 32);
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
-
-		var visTrackNames:Array<Array<String>> = [];
-		var visWeekComment:Array<String> = [];
-		var unlockedWeeks:Array<Bool> = [];
-		var modWeekCharacters:Array<Array<String>> = [];
-		var modTracks:Array<Array<String>> = [];
 
 		var weeks = modInfo.weeks;
 		var totalWeeks = 0;
@@ -150,16 +143,17 @@ class StoryMenuSubGroup extends FlxGroup
 		modNameText.screenCenter(X);
 		modNameText.antialiasing = true;
 
-		var keys = weeks.keys();
+		var keys = weeks.keys().map(Std.parseInt);
 
-		keys.sort(Reflect.compare);
+		keys.sort((a, b) -> a - b);
 
-		for(week in keys) {
+		for(_week in keys) {
+			var week = (_week + "");
 			var weekInfo:SwagWeek = weeks[week];
 			var tracks = weekInfo.tracks;
 
 			var visTrack:Array<String> = [];
-			var weekTracks:Array<String> = [];
+			var curWeekTracks:Array<String> = [];
 
 			for(track in tracks) {
 				var weekText = "";
@@ -172,7 +166,7 @@ class StoryMenuSubGroup extends FlxGroup
 					weekText = track;
 				}
 				visTrack.push(weekText);
-				weekTracks.push(weekTrack);
+				curWeekTracks.push(weekTrack);
 			}
 
 			{
@@ -181,9 +175,6 @@ class StoryMenuSubGroup extends FlxGroup
 				weekThing.targetY = totalWeeks;
 
 				weekThing.screenCenter(X);
-				// if (axes != FlxAxes.Y)
-				// 	x = (FlxG.width / 2) - (width / 2);
-				// weekThing.x += FlxG.width * curMod;
 				weekThing.antialiasing = true;
 				grpWeekText.add(weekThing);
 				// weekThing.updateHitbox();
@@ -201,13 +192,11 @@ class StoryMenuSubGroup extends FlxGroup
 				}
 			}
 
-			visWeekComment.push(weekInfo.comment);
-			unlockedWeeks.push(!weekInfo.locked);
-			visTrackNames.push(visTrack);
-			modWeekCharacters.push(weekInfo.menuCharacters);
-			modTracks.push(weekTracks);
-
-			// trace(modWeekCharacters);
+			visualTrackNames.push(visTrack);
+			weekComment.push(weekInfo.comment);
+			weekUnlocked.push(!weekInfo.locked);
+			weekCharacters.push(weekInfo.menuCharacters);
+			weekTracks.push(curWeekTracks);
 
 			totalWeeks++;
 		}
@@ -255,12 +244,6 @@ class StoryMenuSubGroup extends FlxGroup
 		add(storyBG);
 		add(grpWeekCharacters);
 
-		weekComment = visWeekComment;
-		weekUnlocked = unlockedWeeks;
-		visualTrackNames = visTrackNames;
-		weekCharacters = modWeekCharacters;
-		weekData = modTracks;
-
 		if(modInfo.storyMenuColor != null) {
 			modStoryColor = Std.parseInt(modInfo.storyMenuColor);
 		} else {
@@ -286,16 +269,6 @@ class StoryMenuSubGroup extends FlxGroup
 		updateText();
 
 		trace("Line 165");
-
-		// FlxG.watch.add(this, "weekCharacters", "Characters");
-		// FlxG.watch.add(this, "curModStr", "Current Mod");
-		// FlxG.watch.add(this, "curMod", "Mod INDEX");
-		// FlxG.watch.add(this, "curWeek", "Current Week");
-		// FlxG.watch.add(this, "curDifficulty", "Current Difficulty");
-		// FlxG.watch.add(this, "weekData", "Week Tracks");
-		// FlxG.watch.add(this, "visualTrackNames", "Vis Track Name");
-		// FlxG.watch.add(this, "weekComment", "Week Comments");
-		// FlxG.watch.add(this, "weekUnlocked", "Unlocked Weeks");
 	}
 
 	public function moveEverything(x:Float, y:Float) {
@@ -429,7 +402,7 @@ class StoryMenuSubGroup extends FlxGroup
 			}
 
 			PlayState.storyVisNamePlaylist = visualTrackNames[curWeek];
-			PlayState.storyPlaylist = weekData[curWeek];
+			PlayState.storyPlaylist = weekTracks[curWeek];
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 
@@ -508,11 +481,11 @@ class StoryMenuSubGroup extends FlxGroup
 	{
 		curWeek += change;
 
-		if (curWeek >= weekData.length) {
+		if (curWeek >= weekTracks.length) {
 			curWeek = 0;
 		}
 		else if (curWeek < 0) {
-			curWeek = weekData.length - 1;
+			curWeek = weekTracks.length - 1;
 		}
 
 		updateSelected();

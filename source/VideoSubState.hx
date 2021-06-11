@@ -30,7 +30,6 @@ class VideoSubState extends MusicBeatSubstate
 	public var prevSoundMultiplier:Float = 1;
 	public var videoFrames:Int = 0;
 	public var defaultText:String = #if web "You Are Using HTML5!\nTap Anything..." #else "The Video Didnt Load!" #end;
-	private var doShit:Bool = false;
 	private var pauseText:String = "Press P To Pause/Unpause";
 	private var lostFocusPause:Bool = false;
 
@@ -42,8 +41,6 @@ class VideoSubState extends MusicBeatSubstate
 		if (frameSkipLimit != -1)
 			GlobalVideo.get().webm.SKIP_STEP_LIMIT = frameSkipLimit;
 		#end
-
-		doShit = false;
 
 		var leAsset:String = source;
 		
@@ -111,7 +108,6 @@ class VideoSubState extends MusicBeatSubstate
 						vidSound.time = vidSound.length * soundMultiplier;
 					}
 				}, 0);*/
-				doShit = true;
 			//}, 1);
 		}
 	}
@@ -134,12 +130,10 @@ class VideoSubState extends MusicBeatSubstate
 			if (soundMultiplier < 0)
 				soundMultiplier = 0;
 
-			if (doShit)
-			{
-				var compareShit:Float = 50;
-				if (vidSound.time >= (vidSound.length * soundMultiplier) + compareShit || vidSound.time <= (vidSound.length * soundMultiplier) - compareShit)
-					vidSound.time = vidSound.length * soundMultiplier;
-			}
+			var compareShit:Float = 50;
+			if (vidSound.time >= (vidSound.length * soundMultiplier) + compareShit || vidSound.time <= (vidSound.length * soundMultiplier) - compareShit)
+				vidSound.time = vidSound.length * soundMultiplier;
+
 			if (wasFuckingHit)
 			{
 				if (soundMultiplier == 0) {

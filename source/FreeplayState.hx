@@ -76,11 +76,12 @@ class FreeplayState extends MusicBeatState
 			var category = new ModCategory(modInfo, mod, []);
 
 			var weeks = modInfo.weeks;
-			var keys = weeks.keys();
+			var keys = weeks.keys().map(Std.parseInt);
 
-			keys.sort(Reflect.compare);
+			keys.sort((a, b) -> a - b);
 
-			for(week in keys) {
+			for(_week in keys) {
+				var week = (_week + "");
 				var weekInfo:SwagWeek = weeks[week];
 				var tracks = weekInfo.tracks;
 				var weekNum = Std.parseInt(week);

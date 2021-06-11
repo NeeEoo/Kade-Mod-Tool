@@ -26,7 +26,7 @@ class ModchartState
 
 	function callLua(func_name: String, args: Array<Dynamic>, ?type: String): Dynamic
 	{
-		var result: Any = null;
+		var result:Any = null;
 
 		Lua.getglobal(lua, func_name);
 
@@ -35,14 +35,14 @@ class ModchartState
 		}
 
 		result = Lua.pcall(lua, args.length, 1, 0);
-		var p = Lua.tostring(lua,result);
+		var p = Lua.tostring(lua, result);
 		var e = getLuaErrorMessage(lua);
 
 		if (e != null)
 		{
 			if (p != null)
 			{
-				Application.current.window.alert("LUA ERROR:\n" + p + "\nhaxe things: " + e,"Kade Engine Modcharts");
+				Application.current.window.alert("LUA ERROR:\n" + p + "\nhaxe things: " + e, "Kade Engine Modcharts");
 				lua = null;
 				LoadingState.loadAndSwitchState(new MainMenuState());
 			}
@@ -80,7 +80,6 @@ class ModchartState
 	}
 
 	static function objectToLua(l:State, res:Any) {
-
 		var FUCK = 0;
 		for(n in Reflect.fields(res))
 		{
@@ -90,7 +89,7 @@ class ModchartState
 
 		Lua.createtable(l, FUCK, 0); // TODONE: I did it
 
-		for (n in Reflect.fields(res)){
+		for (n in Reflect.fields(res)) {
 			if (!Reflect.isObject(n))
 				continue;
 			Lua.pushstring(l, n);
@@ -101,7 +100,7 @@ class ModchartState
 
 	function getType(l, type):Any
 	{
-		return switch Lua.type(l,type) {
+		return switch Lua.type(l, type) {
 			case t if (t == Lua.LUA_TNIL): null;
 			case t if (t == Lua.LUA_TNUMBER): Lua.tonumber(l, type);
 			case t if (t == Lua.LUA_TSTRING): (Lua.tostring(l, type):String);
@@ -114,7 +113,7 @@ class ModchartState
 		var lua_v:Int;
 		var v:Any = null;
 		while((lua_v = Lua.gettop(l)) != 0) {
-			var type:String = getType(l,lua_v);
+			var type:String = getType(l, lua_v);
 			v = convert(lua_v, type);
 			Lua.pop(l, 1);
 		}
@@ -125,17 +124,16 @@ class ModchartState
 		if(Std.is(v, String) && type != null) {
 			var v: String = v;
 			if(type.substr(0, 4) == 'array') {
+				var array: Array<String> = v.split(',');
 				if(type.substr(4) == 'float') {
-					var array: Array<String> = v.split(',');
 					var array2: Array<Float> = new Array();
 
-					for( vars in array ) {
+					for(vars in array) {
 						array2.push(Std.parseFloat(vars));
 					}
 
 					return array2;
 				} else if(type.substr(4) == 'int') {
-					var array: Array<String> = v.split(',');
 					var array2: Array<Int> = new Array();
 
 					for(vars in array) {
@@ -144,7 +142,6 @@ class ModchartState
 
 					return array2;
 				} else {
-					var array: Array<String> = v.split(',');
 					return array;
 				}
 			} else if(type == 'float') {
@@ -152,11 +149,7 @@ class ModchartState
 			} else if(type == 'int') {
 				return Std.parseInt(v);
 			} else if(type == 'bool') {
-				if(v == 'true') {
-					return true;
-				} else {
-					return false;
-				}
+				return v == 'true';
 			} else {
 				return v;
 			}
@@ -190,9 +183,7 @@ class ModchartState
 		if(result == null) {
 			return null;
 		} else {
-			var result = convert(result, type);
-			//trace(var_name + ' result: ' + result);
-			return result;
+			return convert(result, type);
 		}
 	}
 
@@ -212,7 +203,7 @@ class ModchartState
 		if (luaSprites.get(id) == null)
 		{
 			if (Std.parseInt(id) == null)
-				return Reflect.getProperty(PlayState.instance,id);
+				return Reflect.getProperty(PlayState.instance, id);
 			return PlayState.PlayState.strumLineNotes.members[Std.parseInt(id)];
 		}
 		return luaSprites.get(id);
@@ -220,7 +211,7 @@ class ModchartState
 
 	function getPropertyByName(id:String)
 	{
-		return Reflect.field(PlayState.instance,id);
+		return Reflect.field(PlayState.instance, id);
 	}
 
 	public static var luaSprites:Map<String,FlxSprite> = [];
@@ -228,7 +219,6 @@ class ModchartState
 	function makeLuaSprite(spritePath:String, toBeCalled:String, drawBehind:Bool)
 	{
 		#if sys
-		// var data:BitmapData = BitmapData.fromFile(Sys.getCwd() + "assets/data/" + PlayState.SONG.song.toLowerCase() + '/' + spritePath + ".png");
 		var data:BitmapData = BitmapData.fromFile(Sys.getCwd() + "assets/weeks/" + PlayState.currentMod.toLowerCase() + '/luasprites/' + spritePath + ".png");
 
 		var sprite:FlxSprite = new FlxSprite(0,0);
@@ -726,7 +716,7 @@ class ModchartState
 
 		for (i in 0...PlayState.strumLineNotes.length) {
 			var member = PlayState.strumLineNotes.members[i];
-			trace(PlayState.strumLineNotes.members[i].x + " " + PlayState.strumLineNotes.members[i].y + " " + PlayState.strumLineNotes.members[i].angle + " | strum" + i);
+			trace(member.x + " " + member.y + " " + member.angle + " | strum" + i);
 			//setVar("strum" + i + "X", Math.floor(member.x));
 			setVar("defaultStrum" + i + "X", Math.floor(member.x));
 			//setVar("strum" + i + "Y", Math.floor(member.y));
@@ -737,12 +727,12 @@ class ModchartState
 		}
 	}
 
-	public function executeState(name,args:Array<Dynamic>)
+	public function executeState(name, args:Array<Dynamic>)
 	{
-		return Lua.tostring(lua,callLua(name, args));
+		return Lua.tostring(lua, callLua(name, args));
 	}
 
-	public static function createModchartState():ModchartState
+	public inline static function createModchartState():ModchartState
 	{
 		return new ModchartState();
 	}
