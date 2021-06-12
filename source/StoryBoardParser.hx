@@ -1,5 +1,6 @@
 package;
 
+import flixel.text.FlxText;
 import flixel.FlxG;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -399,6 +400,46 @@ class SBVideo extends SBAction {
 	}
 }
 
+class SBText extends SBAction {
+	public var spriteID:String;
+	public var layer:String;
+	public var origin:String;
+	public var text:String;
+	public var x:Float;
+	public var y:Float;
+	public var fontSize:Int;
+
+	public function new(spriteID:String, layer:String, origin:String, text:String, x:Float, y:Float, fontSize:Int = 8) {
+		this.spriteID = spriteID;
+		this.layer = layer;
+		this.origin = origin;
+		this.text = text;
+		this.x = x;
+		this.y = y;
+		this.fontSize = fontSize;
+	}
+
+	override public function runAction() {
+		if(storyBoard.sprites.exists(spriteID)) throw 'Sprite ID "$spriteID" already exists';
+
+		var text = new FlxText(x, y, 0, text);
+		text.setFormat(Paths.font("vcr.ttf"), fontSize);
+		text.borderStyle = FlxTextBorderStyle.OUTLINE;
+
+		var w = text.width;
+		var h = text.height;
+
+		var originPoint = StoryBoardParser.getOriginPoint(origin, w, h);
+
+		text.origin.set(originPoint.x, originPoint.y);
+
+		text.cameras = [StoryBoardParser.getLayer(layer)];
+
+		storyBoard.sprites[spriteID] = text;
+		PlayState.instance.add(text);
+	}
+}
+
 enum SBSection {
 	STARTING_CUTSCENE;
 	GAMEPLAY;
@@ -610,6 +651,27 @@ class StoryBoardParser
 
 					actionClass = new SBVideo(spriteID, layer, origin, filename, x, y, endAction);
 				}
+				else if(action == "Text" || action == "TextRaw")
+				{
+					var spriteID = data[2];
+					var layer = data[3];
+					var origin = data[4].toLowerCase().replace("centre", "center");
+					var text = data[5];
+					var x = Std.parseFloat(data[6]);
+					var y = Std.parseFloat(data[7]);
+					var fontSize = data.length > 8 ? Std.parseInt(data[8]) : 8;
+
+					if(action == "Text") {
+						if(text.startsWith('"')) text = text.substr(1);
+						if(text.endsWith('"')) text = text.substr(0, text.length-1);
+						if(text.contains("\\n")) {
+							text = text.replace("\\n", "\n");
+							text += "\n";
+						}
+					}
+
+					actionClass = new SBText(spriteID, layer, origin, text, x, y, fontSize);
+				}
 
 				if(actionClass != null) {
 					actionClass.time = time;
@@ -619,7 +681,7 @@ class StoryBoardParser
 			if(row == "--END-SECTION--")
 			{
 				if(parsingSection == null) throw 'Unexpected End Section at line $rowNum';
-				
+
 				for (action in parseActions)
 					action.storyBoard = this;
 

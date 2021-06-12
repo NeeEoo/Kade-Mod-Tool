@@ -175,8 +175,6 @@ If the song is named "Cocoa" the gf will cheer every 16th beat. But only if the 
 
 If the song is named "Eggnog" the gf will cheer every 8th beat, during beat 11 to 219, but not on beat 111. `(beat > 10 and beat != 111 and beat < 220 and beat % 8 == 7)`
 
-If the song is named "Tutorial", the bf and gf plays an animation on every 16th beat, from beat 17 to beat 47 `(beat % 16 == 15 and beat > 16 and beat < 48)` but only if the dad is set to gf.
-
 If the song is named "Philly" the gf will cheer every 16th beat. `(beat % 16 == 8)` It will only play when the beat number is below 250. It won't play on beat 184 or 216.
 
 If the song is named "Fresh" the camera will be able to zoom on beat 16 and the gf speed is set to 2. On beats 48 and 112 the gf speed is set to 1. On beat 80 the gf speed is set to 2.

@@ -32,13 +32,9 @@ class MainMenuState extends MusicBeatState
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
 	#end
 
-	// var newGaming:FlxText;
-	// var newGaming2:FlxText;
-	// var newInput:Bool = true;
-
 	public static inline final nightly:String = "";
 
-	public static inline final kadeModToolVer:String = "3.0" + nightly;
+	public static inline final kadeModToolVer:String = "4.0" + nightly;
 	public static inline final gameVer:String = "0.2.7.1";
 
 	var magenta:FlxSprite;
@@ -107,9 +103,9 @@ class MainMenuState extends MusicBeatState
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-		
+
 		#if TESTING
-		var testerStuff:FlxText = new FlxText(10, FlxG.height - 300, 0, "", 12);
+		var testerStuff:FlxText = new FlxText(10, FlxG.height - 500, 0, "", 12);
 		testerStuff.text += "This is a TESTING build\n";
 		testerStuff.text += "for the Kade Mod Tool\n";
 		testerStuff.text += "made by Ne_Eo and Lelmaster\n";
@@ -131,13 +127,128 @@ class MainMenuState extends MusicBeatState
 		#if debug
 		controlsStuff.text += "Press F2 to open debugger\n";
 		#end
-		// controlsStuff.text += "Do not share this exectuable\n";
 		controlsStuff.scrollFactor.set();
 		controlsStuff.setFormat("VCR OSD Mono", 28, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		controlsStuff.alignment = CENTER;
 		add(controlsStuff);
 
-		// NG.core.calls.event.logEvent('swag').send();
+		var http = new haxe.Http("https://raw.githubusercontent.com/NeeEoo/Kade-Mod-Tool/master/version.check");
+		
+		http.onData = function(data:String)
+		{
+			var NUM_NULL = -20210612;
+			var bgWidth = Std.int(FlxG.width * 0.25);
+			var text1:String = null;
+			var newVersion:String = "";
+			var alignment1:FlxTextAlign = LEFT;
+			var alignment2:FlxTextAlign = LEFT;
+			var bgHeight:Int = NUM_NULL;
+			var x:Float = 0;
+			var y:Float = NUM_NULL;
+			var bx:Float = NUM_NULL;
+			var by:Float = NUM_NULL;
+			var cx:Float = NUM_NULL;
+			var cy:Float = NUM_NULL;
+			var bgAlpha:Float = 0.6;
+			var fontSize1:Int = 24;
+			var fontSize2:Int = 18;
+			var textColor1:Int = FlxColor.WHITE;
+			var textColor2:Int = FlxColor.WHITE;
+			var bgColor:Int = 0xFF000000;
+			var font1:String = Paths.font("vcr.ttf");
+			var font2:String = Paths.font("vcr.ttf");
+			var sysFont1:String = "";
+			var sysFont2:String = "";
+
+			var rows = data.split("\n");
+			var changes:Array<String> = [];
+			var inChanges = false;
+			for(row in rows)
+			{
+				if(row.trim().toLowerCase() == ":changes:") {
+					inChanges = true;
+					continue;
+				} else if(inChanges) {
+					changes.push(row.trim());
+					continue;
+				}
+				var setting = row.split("=");
+				var key = setting[0].trim();
+				var value = setting[1].trim();
+
+				switch(key) {
+					case 'w': bgWidth = Std.parseInt(value);
+					case 'h': bgHeight = Std.parseInt(value);
+					case 'x': x = Std.parseFloat(value);
+					case 'y': y = Std.parseFloat(value);
+					case 'bx': bx = Std.parseFloat(value);
+					case 'by': by = Std.parseFloat(value);
+					case 'cx': cx = Std.parseFloat(value);
+					case 'cy': cy = Std.parseFloat(value);
+					case 'fs1': fontSize1 = Std.parseInt(value);
+					case 'fs2': fontSize2 = Std.parseInt(value);
+					case 'c1': textColor1 = Std.parseInt(value);
+					case 'c2': textColor2 = Std.parseInt(value);
+					case 'a1': alignment1 = value.toLowerCase();
+					case 'a2': alignment2 = value.toLowerCase();
+					case 'f1': font1 = value;
+					case 'f2': font2 = value;
+					case 'sf1': sysFont1 = value;
+					case 'sf2': sysFont2 = value;
+					case 't': text1 = value.replace("\\n","\n");
+					case 'a': bgAlpha = Std.parseFloat(value);
+					case 'cb': bgColor = Std.parseInt(value);
+					case 'v': newVersion = value;
+				}
+			}
+
+			if (kadeModToolVer != newVersion && MainMenuState.nightly == "")
+			{
+				trace('Outdated! ' + newVersion + ' != ' + kadeModToolVer);
+
+				if(bgHeight == NUM_NULL) {
+					var changesRows = changes.length;
+					bgHeight = fontSize1 * 3 + fontSize2 * changesRows;
+				}
+
+				if(y == NUM_NULL) y = FlxG.height - bgHeight;
+
+				if(text1 == null) text1 = 'New Version Available\nNewest version is $newVersion\n';
+
+				if(!text1.endsWith("\n")) text1 += "\n";
+
+				var outdatedText = new FlxText(x, y, 0, text1, fontSize1);
+				outdatedText.setFormat(font1, fontSize1, textColor1, alignment1);
+				if(sysFont1 != "") outdatedText.systemFont = sysFont1;
+				outdatedText.scrollFactor.set();
+
+				if(bx == NUM_NULL) bx = outdatedText.x - 6;
+				if(by == NUM_NULL) by = y;
+
+				var background:FlxSprite = new FlxSprite(bx, by).makeGraphic(bgWidth, bgHeight, bgColor);
+				background.alpha = bgAlpha;
+				background.scrollFactor.set();
+
+				if(cx == NUM_NULL) cx = outdatedText.x;
+				if(cy == NUM_NULL) cy = outdatedText.y + (fontSize1 * 2);
+
+				var changesText = new FlxText(cx, cy, 0, "", fontSize2);
+				changesText.text = changes.join("\n") + "\n";
+				changesText.setFormat(font2, fontSize2, textColor2, alignment2);
+				if(sysFont2 != "") changesText.systemFont = sysFont2;
+				changesText.scrollFactor.set();
+
+				add(background);
+				add(changesText);
+				add(outdatedText);
+			}
+		}
+
+		http.onError = function (error) {
+			trace('http error: $error');
+		}
+
+		http.request();
 
 		if (FlxG.save.data.dfjk)
 			controls.setKeyboardScheme(KeyboardScheme.Solo, true);

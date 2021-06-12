@@ -1,0 +1,179 @@
+Storyboards:
+
+Every command starts a time
+And every argument is separated by a ,
+Bools are represented as a 1 or 0. Where 1 equals true
+The things in [] Means it optional. If there is a | that means either one.
+
+Don't include ` when copying stuff.
+
+Do not put the videos in the videos folder. Put it in your mod folder.
+
+------------------
+
+The file must start with
+`
+KMTStoryBoard v0.1
+`
+
+Intro cutscenes only allows the milliseconds time unit.
+The storyboard defaults to milliseconds
+
+To make a section you write:
+`
+--SECTION-SectionName--
+
+--END-SECTION--
+`
+
+In between the section tags you put your actions.
+
+The only section names that currently works are intro and gameplay
+Comments in storyboard files starts with ;
+If IntroLength isn't set it defaults to 5 seconds
+
+If the section is Intro you can write
+`
+IntroLength 5000
+`
+Instead of
+`
+time,ConfigInt,introLength,5000
+`
+
+To hide characters/sprites/actors you do `time,AttribFloat,<sprite>,alpha,0`
+To set the scroll factor, you use `time,AttribFloat,<sprite>,scrollfactor,<num>`
+If you make a sprite with an existing ID the game crashes
+
+To make something fade in, you do:
+```
+time,Sprite,<sprite>,<layer>,<origin>,<filename>,<x>,<y>
+time,AttribFloat,<sprite>,alpha,0
+time,Tween,<sprite>,alpha,1,<duration in ms>
+```
+
+------------------
+
+Actions:
+
+SetTimeUnit takes 1 argument
+    ms or beats or steps
+
+PlayAnim takes 2-5 arguments
+    Actor, animation name, force (Bool), reverse (Bool), frame (Bool)
+
+Move takes 3 arguments
+    Actor, X, Y
+MoveRel takes the same arguments as Move. MoveRel moves a actor relative.
+
+Sprite takes 6 arguments
+    SpriteID/Actor, Layer, Origin, Filename, x, y
+
+Remove takes 1 argument
+    The actor name/spriteID
+
+Text. Takes 6-7 arguments
+    SpriteID, Layer, Origin, Text, x, y, fontSize
+        fontSize defaults to 8
+
+Tween takes 4-6 arguments
+    SpriteID, attribute, value (float), endTime (ms), tween type, easing
+TweenRel takes has the same arguments as Tween. But it modifies the attribute relatively
+
+Audio takes 1-2 arguments
+    Filename, volume (defaults to 100)
+
+Attrib[Rel][Float|String|Int|Bool|Null]. Takes 2 arguments
+    SpriteId, attribute
+
+Config[Float|String|Int|Bool|Null]. Takes 2 arguments
+    Key, Value
+
+PlayVideo takes 1 arguments.
+    Filename
+It opens a video in full screen and pauses everything until it's finished.
+Only accepts webm. Codec must be VP8
+To use audio with this you must export the audio to an ogg file, and have a text file which says how many frames there are.
+To get this number, you must install FFmpeg.
+And then run this command in a terminal:
+
+`
+ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nokey=1:noprint_wrappers=1 "videoFile.mp4"
+`
+
+Read more here: https://github.com/GrowtopiaFli/openfl-haxeflixel-video-code/blob/6c9e8a5c13dceba3f7e/README.md#solution-for-the-desktop-build
+
+
+Video takes 6-7 arguments.
+    SpriteID/Actor, Layer, Origin, Filename, x, y, endAction
+endAction can be either none or remove. By default, it is set to remove.
+Only accepts webm. Codec must be VP8
+This doesn't allow audio.
+This action acts just like a sprite, but it will play a webm.
+
+------------------
+
+Config currently only has 3 settings.
+
+showCountdown (Bool)
+introLength (Int milliseconds)
+showOnlyStrums (Bool)
+
+Paths have a special syntax.
+
+The character that starts in the path resolves to different stuff.
+
+@ resolves to assets
+# resolves to assets/weeks/<CurrentMOD>
+$ resolves to assets/weeks/<CurrentMOD>/<CurrentWeek>
+& resolves to assets/weeks/<CurrentMOD>/<CurrentWeek>/tracks/<CurrentSong>
+
+------------------
+
+ActorID:
+Special Predefined Ids:
+
+boyfriend/bf resolves to the boyfriend
+girlfriend/gf resolves to the girlfriend
+dad resolves to the dad
+
+0 to 7 resolves to the strums. (Larger numbers will crash the game)
+They are ordered from left to right.
+
+Actor Camera IDS:
+camHUD
+camGame
+storyBoardFG
+storyBoardBG
+storyBoardTop
+storyBoardFGFlw
+storyBoardBGFlw
+storyBoardTopFlw
+
+Cameras ending with flw. Moves with the game camera.
+
+------------------
+
+Layers:
+hud
+game
+fg
+bg
+top
+fgflw
+bgflw
+topflw
+
+------------------
+
+Origin:
+(Centre also works)
+topleft
+topright
+bottomleft
+bottomright
+center
+centerleft
+centerright
+topcenter
+bottomcenter
