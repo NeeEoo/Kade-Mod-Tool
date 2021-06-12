@@ -45,8 +45,6 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		// trace(jsonInput, folder);
-
 		var weekString:String = Paths.currentWeek;
 
 		if(weekString == null) {
@@ -55,7 +53,6 @@ class Song
 
 		var assetKey = Paths.jsonWeek(folder.toLowerCase() + '/' + jsonInput.toLowerCase(), weekString, "weeks");
 
-		// trace(assetKey);
 		
 		var rawJson = Assets.getText(assetKey).trim();
 

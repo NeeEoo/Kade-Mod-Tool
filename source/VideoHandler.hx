@@ -20,6 +20,7 @@ class VideoHandler
 	public var vidPath:String = "";
 	public var video:Video;
 	public var ignoreShit:Bool = false;
+	public var isSprite:Bool = false;
 
 	public function new()
 	{
@@ -93,10 +94,12 @@ class VideoHandler
 
 	public function update(elapsed:Float):Void
 	{
-		video.x = GlobalVideo.calc(0);
-		video.y = GlobalVideo.calc(1);
-		video.width = GlobalVideo.calc(2);
-		video.height = GlobalVideo.calc(3);
+		if(!isSprite) {
+			video.x = GlobalVideo.calc(0);
+			video.y = GlobalVideo.calc(1);
+			video.width = GlobalVideo.calc(2);
+			video.height = GlobalVideo.calc(3);
+		}
 	}
 
 	public var stopped:Bool = false;

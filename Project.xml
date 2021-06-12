@@ -109,6 +109,7 @@
 	
 	<!--<assets path="CHANGELOG.md" rename='changelog.txt' embed='false'/>-->
 	<assets path="CustomMods.md" rename='CustomMods.txt' embed='false'/>
+	<assets path="SpecialThanks.txt" embed='false'/>
 	<assets path="version.txt" embed='false'/>
 
 	<!-- NOTE FOR FUTURE SELF SINCE FONTS ARE ALWAYS FUCKY 

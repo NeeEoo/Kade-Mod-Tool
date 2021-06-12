@@ -1,7 +1,5 @@
 package;
 
-import flixel.FlxG;
-import openfl.display.Sprite;
 #if desktop
 import webm.*;
 #end
@@ -13,6 +11,7 @@ class WebmHandler
 	public var vidPath:String = "";
 	public var io:WebmIo;
 	public var initialized:Bool = false;
+	public var isSprite:Bool = false;
 
 	public function new()
 	{
@@ -71,10 +70,12 @@ class WebmHandler
 
 	public function update(elapsed:Float)
 	{
-		webm.x = GlobalVideo.calc(0);
-		webm.y = GlobalVideo.calc(1);
-		webm.width = GlobalVideo.calc(2);
-		webm.height = GlobalVideo.calc(3);
+		if(!isSprite) {
+			webm.x = GlobalVideo.calc(0);
+			webm.y = GlobalVideo.calc(1);
+			webm.width = GlobalVideo.calc(2);
+			webm.height = GlobalVideo.calc(3);
+		}
 	}
 
 	public var stopped:Bool = false;
@@ -129,7 +130,8 @@ class WebmHandler
 		trace("IT ENDED!");
 		ended = true;
 
-		PlayState.instance.closePausedSubState();
+		if(!isSprite)
+			PlayState.instance.closePausedSubState();
 	}
 
 	public function alpha():Void

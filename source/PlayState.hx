@@ -1596,6 +1596,9 @@ class PlayState extends MusicBeatState
 
 			Tween.active = false;
 
+			if(hasStoryBoard)
+				for(video in storyBoard.videos) video.pause();
+
 			var cameras = FlxG.cameras.list;
 			for(camera in cameras) camera.active = false;
 
@@ -1625,6 +1628,9 @@ class PlayState extends MusicBeatState
 			paused = false;
 
 			Tween.active = true;
+
+			if(hasStoryBoard)
+				for(video in storyBoard.videos) video.resume();
 
 			var cameras = FlxG.cameras.list;
 			for(camera in cameras) camera.active = true;

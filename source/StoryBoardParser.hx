@@ -7,6 +7,7 @@ import flixel.util.FlxStringUtil;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import haxe.io.Path;
+import openfl.display.BitmapData;
 
 using StringTools;
 
@@ -50,19 +51,7 @@ class SBSprite extends SBAction {
 		var w = sprite.width;
 		var h = sprite.height;
 
-		var originPoint = switch(origin)
-		{
-			case 'topleft': new FlxPoint(0, 0);
-			case 'topright': new FlxPoint(w, 0);
-			case 'bottomleft': new FlxPoint(0, h);
-			case 'bottomright': new FlxPoint(w, h);
-			case 'center': new FlxPoint(w*.5, h*.5);
-			case 'centerleft': new FlxPoint(0, h*.5);
-			case 'centerright': new FlxPoint(w, h*.5);
-			case 'topcenter': new FlxPoint(w*.5, 0);
-			case 'bottomcenter': new FlxPoint(w*.5, h);
-			default: new FlxPoint(0, 0);
-		}
+		var originPoint = StoryBoardParser.getOriginPoint(origin, w, h);
 
 		sprite.origin.set(originPoint.x, originPoint.y);
 
@@ -290,6 +279,10 @@ class SBRemove extends SBAction {
 				}
 				storyBoard.attachedTweens[spriteID] = null;
 			}
+
+			var video:VideoSprite = storyBoard.videos.get(spriteID);
+			if(video != null) storyBoard.videos.remove(spriteID);
+
 			PlayState.instance.remove(sprite);
 			sprite.destroy();
 			sprite = null;
@@ -352,6 +345,60 @@ class SBPlayVideo extends SBAction {
 	}
 }
 
+class SBVideo extends SBAction {
+	public inline static var NONE:Int = 0;
+	public inline static var REMOVE:Int = 1;
+
+	public var spriteID:String;
+	public var layer:String;
+	public var origin:String;
+	public var filename:String;
+	public var x:Float;
+	public var y:Float;
+	public var endAction:Int;
+
+	public function new(spriteID:String, layer:String, origin:String, filename:String, x:Float, y:Float, ?endAction:Int = 0) {
+		this.spriteID = spriteID;
+		this.layer = layer;
+		this.origin = origin;
+		this.filename = filename;
+		this.x = x;
+		this.y = y;
+		this.endAction = endAction;
+	}
+
+	override public function runAction() {
+		if(storyBoard.sprites.exists(spriteID)) throw 'Sprite ID "$spriteID" already exists';
+
+		var vidSprite = new VideoSprite(x, y, filename);
+		vidSprite.endAction = endAction;
+		vidSprite.storyBoard = storyBoard;
+		vidSprite.spriteId = spriteID;
+
+		//vidSprite.antialiasing = false;
+		//vidSprite.updateHitbox();
+
+		#if web
+		throw "Video Sprites are unsupported on web";
+		#else
+		var bitmap:BitmapData = vidSprite.handler.webm.bitmapData;
+		#end
+
+		var w = bitmap.width;
+		var h = bitmap.height;
+
+		var originPoint = StoryBoardParser.getOriginPoint(origin, w, h);
+
+		vidSprite.origin.set(originPoint.x, originPoint.y);
+
+		vidSprite.cameras = [StoryBoardParser.getLayer(layer)];
+
+		storyBoard.sprites[spriteID] = vidSprite;
+		storyBoard.videos[spriteID] = vidSprite;
+		PlayState.instance.add(vidSprite);
+	}
+}
+
 enum SBSection {
 	STARTING_CUTSCENE;
 	GAMEPLAY;
@@ -373,6 +420,7 @@ class StoryBoardParser
 
 	public var sectionActions = new Map<SBSection, Array<SBAction>>();
 
+	public var videos = new Map<String, VideoSprite>();
 	public var sprites = new Map<String, Dynamic>();
 	public var attachedTweens = new Map<String, Array<FlxTween>>();
 
@@ -463,11 +511,9 @@ class StoryBoardParser
 					var spriteID = data[2];
 					var layer = data[3];
 					var origin = data[4].toLowerCase().replace("centre", "center");
-					var filename = data[5];
+					var filename = StoryBoardParser.convertSpecialPath(data[5]);
 					var x = Std.parseFloat(data[6]);
 					var y = Std.parseFloat(data[7]);
-
-					filename = StoryBoardParser.convertSpecialPath(filename);
 
 					actionClass = new SBSprite(spriteID, layer, origin, filename, x, y);
 				}
@@ -538,7 +584,31 @@ class StoryBoardParser
 				{
 					var filename = StoryBoardParser.convertSpecialPath(data[2], false);
 
+					if(!filename.endsWith(".webm")) throw 'Invalid file format - Use "webm" at line $rowNum';
+
 					actionClass = new SBPlayVideo(filename);
+				}
+				else if(action == "Video")
+				{
+					var spriteID = data[2];
+					var layer = data[3];
+					var origin = data[4].toLowerCase().replace("centre", "center");
+					var filename = StoryBoardParser.convertSpecialPath(data[5], false);
+					var x = Std.parseFloat(data[6]);
+					var y = Std.parseFloat(data[7]);
+					var endAction = SBVideo.REMOVE;
+
+					if(data.length > 8) {
+						endAction = switch(data[8].toLowerCase()) {
+							case 'none' | '0': SBVideo.NONE;
+							case 'remove' | '1': SBVideo.REMOVE;
+							default: SBVideo.REMOVE;
+						}
+					}
+
+					if(!filename.endsWith(".webm")) throw 'Invalid file format - Use "webm" at line $rowNum';
+
+					actionClass = new SBVideo(spriteID, layer, origin, filename, x, y, endAction);
 				}
 
 				if(actionClass != null) {
@@ -648,6 +718,22 @@ class StoryBoardParser
 		}
 
 		return sprites.get(spriteID);
+	}
+
+	public static function getOriginPoint(origin:String, w:Float, h:Float):FlxPoint {
+		return switch(origin)
+		{
+			case 'topleft': new FlxPoint(0, 0);
+			case 'topright': new FlxPoint(w, 0);
+			case 'bottomleft': new FlxPoint(0, h);
+			case 'bottomright': new FlxPoint(w, h);
+			case 'center': new FlxPoint(w*.5, h*.5);
+			case 'centerleft': new FlxPoint(0, h*.5);
+			case 'centerright': new FlxPoint(w, h*.5);
+			case 'topcenter': new FlxPoint(w*.5, 0);
+			case 'bottomcenter': new FlxPoint(w*.5, h);
+			default: new FlxPoint(0, 0);
+		}
 	}
 
 	public static function convertToTweenType(data:String) {
