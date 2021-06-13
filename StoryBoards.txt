@@ -1,5 +1,7 @@
 Storyboards:
 
+The storyboards are stored in a file named "storyboard.sbf"
+
 Every command starts a time
 And every argument is separated by a ,
 Bools are represented as a 1 or 0. Where 1 equals true
@@ -54,6 +56,30 @@ time,Tween,<sprite>,alpha,1,<duration in ms>
 
 ------------------
 
+Converting Videos to webm
+
+You can use either FFmpeg or cloudconvert.
+
+FFmpeg:
+`
+ffmpeg -i "videoFile.mp4" -c:v vp8 -crf 22 "output.webm"
+`
+
+Change the number after `-crf` to change the quality.
+The lower the number the higher quality it is, but the file is larger.
+
+cloudconvert:
+Input your mp4 video and select webm as the output format.
+Then click the wrench/settings icon-
+There you must change Video Codec to vp8.
+
+Optional: Change the Constant Quality (CRF) to a number.
+The lower the number the higher quality it is, but the file is larger.
+
+Then when you are done click Okay, and then click Convert.
+
+------------------
+
 Actions:
 
 SetTimeUnit takes 1 argument
@@ -94,7 +120,7 @@ PlayVideo takes 1 arguments.
 It opens a video in full screen and pauses everything until it's finished.
 Only accepts webm. Codec must be VP8
 To use audio with this you must export the audio to an ogg file, and have a text file which says how many frames there are.
-To get this number, you must install FFmpeg.
+To get this number, you must install FFmpeg (https://ffmpeg.org/download.html).
 And then run this command in a terminal:
 
 `

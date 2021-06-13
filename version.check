@@ -1,6 +1,6 @@
-v=4.0
+v=4.0.1
+w=340
 
 :CHANGES:
-- Added Storyboards
-- Added Cutscenes
-- Bug Fixes
+- Critical Bug Fix
+- Updated Storyboard docs

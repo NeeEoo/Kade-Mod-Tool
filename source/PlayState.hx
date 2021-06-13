@@ -97,8 +97,9 @@ class PlayState extends MusicBeatState
 	public static var goods:Int = 0;
 	public static var sicks:Int = 0;
 
-	public static var songPosBG:FlxSprite;
-	public static var songPosBar:FlxBar;
+	var songPosBG:FlxSprite;
+	var songPosBar:FlxBar;
+	var songPosName:FlxText;
 
 	public static var rep:Replay;
 	public static var loadRep:Bool = false;
@@ -193,7 +194,6 @@ class PlayState extends MusicBeatState
 	var limo:FlxSprite;
 	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
 	var fastCar:FlxSprite;
-	var songPosName:FlxText; // Unused?
 	var upperBoppers:FlxSprite;
 	var bottomBoppers:FlxSprite;
 	var santa:FlxSprite;
@@ -1828,9 +1828,11 @@ class PlayState extends MusicBeatState
 			iconP1.visible = false;
 			iconP2.visible = false;
 			scoreTxt.visible = false;
-			songPosName.visible = false;
-			songPosBar.visible = false;
-			songPosBG.visible = false;
+			if(FlxG.save.data.songPosition) {
+				songPosName.visible = false;
+				songPosBar.visible = false;
+				songPosBG.visible = false;
+			}
 		}
 		else
 		{
@@ -1840,9 +1842,11 @@ class PlayState extends MusicBeatState
 			iconP1.visible = true;
 			iconP2.visible = true;
 			scoreTxt.visible = true;
-			songPosName.visible = true;
-			songPosBar.visible = true;
-			songPosBG.visible = true;
+			if(FlxG.save.data.songPosition) {
+				songPosName.visible = true;
+				songPosBar.visible = true;
+				songPosBG.visible = true;
+			}
 		}
 
 		{
