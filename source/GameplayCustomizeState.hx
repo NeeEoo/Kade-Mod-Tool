@@ -159,10 +159,6 @@ class GameplayCustomizeState extends MusicBeatState
             // FlxG.log.add(i);
             var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
             babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets', 'shared');
-            babyArrow.animation.addByPrefix('green', 'arrowUP');
-            babyArrow.animation.addByPrefix('blue', 'arrowDOWN');
-            babyArrow.animation.addByPrefix('purple', 'arrowLEFT');
-            babyArrow.animation.addByPrefix('red', 'arrowRIGHT');
             babyArrow.antialiasing = true;
             babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
             switch (i)

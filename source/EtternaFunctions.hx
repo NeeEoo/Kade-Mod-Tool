@@ -23,53 +23,17 @@ class EtternaFunctions
 		return sign*y;
 	}
 
-	public static function getNotes():Int
-	{
-		var notes:Int = 0;
-		for (i in 0...PlayState.SONG.notes.length) 
-		{
-			for (ii in 0...PlayState.SONG.notes[i].sectionNotes.length)
-			{
-				var n = PlayState.SONG.notes[i].sectionNotes[ii];
-				if (n.noteData <= 0)
-					notes++;
-			}
-		}
-		return notes;
-	}
-
-	public static function getHolds():Int
-	{
-		var notes:Int = 0;
-		for (i in 0...PlayState.SONG.notes.length) 
-		{
-			trace(PlayState.SONG.notes[i]);
-			for (ii in 0...PlayState.SONG.notes[i].sectionNotes.length)
-			{
-				var n = PlayState.SONG.notes[i].sectionNotes[ii];
-				trace(n);
-				if (n.noteData > 0)
-					notes++;
-			}
-		}
-		return notes;
-	}
-
-	public inline static function getMapMaxScore():Int
-	{
-		return (getNotes() * 350);
-	}
 
 	public static function wife3(maxms:Float, ts:Float)
 	{
 		var max_points = 1.0;
 		var miss_weight = -5.5;
-		var ridic= 5 * ts;
+		var ridic = 5 * ts;
 		var max_boo_weight = 180 * ts;
 		var ts_pow = 0.75;
-		var zero = 65 * (Math.pow(ts,ts_pow));
-		var power = 2.5;
-		var dev = 22.7 * (Math.pow(ts,ts_pow));
+		var factor = Math.pow(ts, ts_pow);
+		var zero = 65 * factor;
+		var dev = 22.7 * factor;
 
 		if (maxms <= ridic) // anything below this (judge scaled) threshold is counted as full pts
 			return max_points;

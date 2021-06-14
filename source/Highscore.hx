@@ -46,12 +46,12 @@ class Highscore
 		{
 			var oldScore = songScores.get(daWeek);
 			if (oldScore < score) {
-				trace('New Highscore on week: $week on mod $mod. Old was $oldScore. New is $score. Went up ${score - oldScore}');
+				trace('New Highscore on week $week on mod $mod. Old was $oldScore. New is $score. Went up ${score - oldScore}');
 				setScore(daWeek, score);
 			}
 		}
 		else {
-			trace('New Highscore on week: $week on mod $mod. Old was 0. New is $score. Went up ${score}');
+			trace('New Highscore on week $week on mod $mod. Old was 0. New is $score. Went up ${score}');
 			setScore(daWeek, score);
 		}
 	}

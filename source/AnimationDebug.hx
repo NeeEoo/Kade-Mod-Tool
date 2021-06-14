@@ -139,6 +139,11 @@ class AnimationDebug extends FlxState
 			camFollow.velocity.set();
 		}
 
+		if (FlxG.keys.justPressed.ESCAPE)
+		{
+			FlxG.switchState(new MainMenuState());
+		}
+
 		if (FlxG.keys.justPressed.W)
 		{
 			curAnim -= 1;
