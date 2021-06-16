@@ -503,6 +503,10 @@ class Character extends FlxSprite
 				playAnim('idle');
 		}
 
+		if(frames == null) {
+			throw 'Character "$curCharacter" doesn\'t exist.';
+		}
+
 		dance();
 
 		if (isPlayer)

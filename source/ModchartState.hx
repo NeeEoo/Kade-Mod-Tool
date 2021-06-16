@@ -712,6 +712,23 @@ class ModchartState
 			FlxG.camera.setFilters([new ShaderFilter(shaders[shaderIndex])]);
 		});*/
 
+
+		Lua_helper.add_callback(lua, "kmt_runStoryBoardAction", function(command:String) {
+			var data = ~/,(?=(?:[^"]*"[^"]*")*[^"]*$)/gm.split("0," + command); // row.split(",") but it doesn't split in quotes
+			var action = StoryBoardParser.makeAction(data);
+
+			if(action != null) {
+				if(StoryBoardParser.instance == null) {
+					StoryBoardParser.instance = new StoryBoardParser(true);
+				}
+				action.storyBoard = StoryBoardParser.instance;
+				action.runAction();
+			} else {
+				throw "Invalid StoryBoard Command " + command;
+			}
+		});
+
+
 		// default strums
 
 		for (i in 0...PlayState.strumLineNotes.length) {

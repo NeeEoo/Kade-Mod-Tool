@@ -454,6 +454,8 @@ enum SBTimeUnit {
 
 class StoryBoardParser
 {
+	public static var instance:StoryBoardParser = null;
+
 	private var parsingSection:SBSection = null;
 	public var currentSection:SBSection = null;
 	public var version:String = "";
@@ -465,8 +467,12 @@ class StoryBoardParser
 	public var sprites = new Map<String, Dynamic>();
 	public var attachedTweens = new Map<String, Array<FlxTween>>();
 
-	public function new()
+	public function new(createBare:Bool = false)
 	{
+		instance = this;
+
+		if(createBare) return;
+
 		var filename = Paths.storyBoardWeekPath(PlayState.SONG.song.toLowerCase() + "/storyboard");
 
 		var storyboardData = CoolUtil.coolTextFile(filename);
@@ -509,169 +515,7 @@ class StoryBoardParser
 			{
 				var data = ~/,(?=(?:[^"]*"[^"]*")*[^"]*$)/gm.split(row); // row.split(",") but it doesn't split in quotes
 				var time = Std.parseInt(data[0]);
-				var action = data[1];
-				var actionClass:SBAction = null;
-				if(action == "SetTimeUnit")
-				{
-					var timeString = data[2];
-					var timeUnit = switch(timeString.toLowerCase()) {
-						case 'ms': SBTimeUnit.MS;
-						case 'beats': SBTimeUnit.BEATS;
-						case 'steps': SBTimeUnit.STEPS;
-						default: throw 'Invalid Storyboard File - Time Unit "$timeString" is invalid at line $rowNum';
-					}
-
-					actionClass = new SBSetTimeUnit(timeUnit);
-				}
-				else if(action == "PlayAnim")
-				{
-					var actor = data[2];
-					var animationName = data[3];
-					var force = data.length > 4 ? data[4] == "1" : false;
-					var reverse = data.length > 5 ? data[5] == "1" : false;
-					var frame = data.length > 6 ? Std.parseInt(data[6]) : 0;
-
-					if(frame == null) {
-						trace("Invalid Frame value, defaulting to 0");
-						frame = 0;
-					}
-
-					actionClass = new SBAnim(actor, animationName, force, reverse, frame);
-				}
-				else if(action == "Move" || action == "MoveRel")
-				{
-					var actor = data[2];
-					var x = Std.parseFloat(data[3]);
-					var y = Std.parseFloat(data[4]);
-					var isRelative = action == "MoveRel";
-
-					actionClass = new SBMove(actor, x, y, isRelative);
-				}
-				else if(action == "Sprite")
-				{
-					var spriteID = data[2];
-					var layer = data[3];
-					var origin = data[4].toLowerCase().replace("centre", "center");
-					var filename = StoryBoardParser.convertSpecialPath(data[5]);
-					var x = Std.parseFloat(data[6]);
-					var y = Std.parseFloat(data[7]);
-
-					actionClass = new SBSprite(spriteID, layer, origin, filename, x, y);
-				}
-				else if(action == "Remove")
-				{
-					var spriteID = data[2];
-
-					actionClass = new SBRemove(spriteID);
-				}
-				else if(action == "Tween" || action == "TweenRel")
-				{
-					var spriteID = data[2];
-					var attribute = data[3];
-					var value = Std.parseFloat(data[4]);
-					var endTime = Std.parseInt(data[5]);
-					var tweenType = data.length > 6 ? convertToTweenType(data[6]) : FlxTweenType.ONESHOT;
-					var easeAnim = data.length > 7 ? convertToEase(data[7]) : null;
-					var isRelative = action == "TweenRel";
-
-					var _actionClass = new SBTween(spriteID, attribute, value, endTime, tweenType, easeAnim);
-					_actionClass.relative = isRelative;
-					actionClass = _actionClass;
-				}
-				else if(action == "Audio")
-				{
-					var filename = StoryBoardParser.convertSpecialPath(data[2]);
-					var volume = data.length > 3 ? Std.parseInt(data[3]) : 100;
-
-					actionClass = new SBAudio(filename, volume);
-				}
-				else if(action.startsWith("Attrib"))
-				{
-					var spriteID = data[2];
-					var attribute = data[3];
-					var isRelative = action.startsWith("AttribRel");
-					if(isRelative) action = action.replace("AttribRel", "Attrib");
-
-					var value:Dynamic = null;
-					switch(action)
-					{
-						case "Attrib" | "AttribString": value = data[4];
-						case "AttribFloat": value = Std.parseFloat(data[4]);
-						case "AttribInt": value = Std.parseInt(data[4]);
-						case "AttribBool": value = data[4] == "1";
-						case "AttribNull": value = null;
-						default: throw 'Invalid Attrib Type at line $rowNum';
-					}
-
-					actionClass = new SBAttrib(spriteID, attribute, value, isRelative);
-				}
-				else if(action.startsWith("Config"))
-				{
-					var key = data[2].toLowerCase();
-					var value:Dynamic = null;
-					switch(action)
-					{
-						case "Config" | "ConfigString": value = data[3];
-						case "ConfigFloat": value = Std.parseFloat(data[3]);
-						case "ConfigInt": value = Std.parseInt(data[3]);
-						case "ConfigBool": value = data[3] == "1";
-						case "ConfigNull": value = null;
-						default: throw 'Invalid Config Type at line $rowNum';
-					}
-
-					actionClass = new SBConfig(key, value);
-				}
-				else if(action == "PlayVideo")
-				{
-					var filename = StoryBoardParser.convertSpecialPath(data[2], false);
-
-					if(!filename.endsWith(".webm")) throw 'Invalid file format - Use "webm" at line $rowNum';
-
-					actionClass = new SBPlayVideo(filename);
-				}
-				else if(action == "Video")
-				{
-					var spriteID = data[2];
-					var layer = data[3];
-					var origin = data[4].toLowerCase().replace("centre", "center");
-					var filename = StoryBoardParser.convertSpecialPath(data[5], false);
-					var x = Std.parseFloat(data[6]);
-					var y = Std.parseFloat(data[7]);
-					var endAction = SBVideo.REMOVE;
-
-					if(data.length > 8) {
-						endAction = switch(data[8].toLowerCase()) {
-							case 'none' | '0': SBVideo.NONE;
-							case 'remove' | '1': SBVideo.REMOVE;
-							default: SBVideo.REMOVE;
-						}
-					}
-
-					if(!filename.endsWith(".webm")) throw 'Invalid file format - Use "webm" at line $rowNum';
-
-					actionClass = new SBVideo(spriteID, layer, origin, filename, x, y, endAction);
-				}
-				else if(action == "Text" || action == "TextRaw")
-				{
-					var spriteID = data[2];
-					var layer = data[3];
-					var origin = data[4].toLowerCase().replace("centre", "center");
-					var text = data[5];
-					var x = Std.parseFloat(data[6]);
-					var y = Std.parseFloat(data[7]);
-					var fontSize = data.length > 8 ? Std.parseInt(data[8]) : 8;
-
-					if(action == "Text") {
-						if(text.startsWith('"')) text = text.substr(1);
-						if(text.endsWith('"')) text = text.substr(0, text.length-1);
-						if(text.contains("\\n")) {
-							text = text.replace("\\n", "\n");
-							text += "\n";
-						}
-					}
-
-					actionClass = new SBText(spriteID, layer, origin, text, x, y, fontSize);
-				}
+				var actionClass = makeAction(data, rowNum);
 
 				if(actionClass != null) {
 					actionClass.time = time;
@@ -690,6 +534,174 @@ class StoryBoardParser
 				parsingSection = null;
 			}
 		}
+	}
+
+	public static function makeAction(data:Array<String>, rowNum:Int=-1) {
+		var action = data[1];
+		var actionClass:SBAction = null;
+		if(action == "SetTimeUnit")
+		{
+			var timeString = data[2];
+			var timeUnit = switch(timeString.toLowerCase()) {
+				case 'ms': SBTimeUnit.MS;
+				case 'beats': SBTimeUnit.BEATS;
+				case 'steps': SBTimeUnit.STEPS;
+				default: throw 'Invalid Storyboard File - Time Unit "$timeString" is invalid at line $rowNum';
+			}
+
+			actionClass = new SBSetTimeUnit(timeUnit);
+		}
+		else if(action == "PlayAnim")
+		{
+			var actor = data[2];
+			var animationName = data[3];
+			var force = data.length > 4 ? data[4] == "1" : false;
+			var reverse = data.length > 5 ? data[5] == "1" : false;
+			var frame = data.length > 6 ? Std.parseInt(data[6]) : 0;
+
+			if(frame == null) {
+				trace("Invalid Frame value, defaulting to 0");
+				frame = 0;
+			}
+
+			actionClass = new SBAnim(actor, animationName, force, reverse, frame);
+		}
+		else if(action == "Move" || action == "MoveRel")
+		{
+			var actor = data[2];
+			var x = Std.parseFloat(data[3]);
+			var y = Std.parseFloat(data[4]);
+			var isRelative = action == "MoveRel";
+
+			actionClass = new SBMove(actor, x, y, isRelative);
+		}
+		else if(action == "Sprite")
+		{
+			var spriteID = data[2];
+			var layer = data[3];
+			var origin = data[4].toLowerCase().replace("centre", "center");
+			var filename = StoryBoardParser.convertSpecialPath(data[5]);
+			var x = Std.parseFloat(data[6]);
+			var y = Std.parseFloat(data[7]);
+
+			actionClass = new SBSprite(spriteID, layer, origin, filename, x, y);
+		}
+		else if(action == "Remove")
+		{
+			var spriteID = data[2];
+
+			actionClass = new SBRemove(spriteID);
+		}
+		else if(action == "Tween" || action == "TweenRel")
+		{
+			var spriteID = data[2];
+			var attribute = data[3];
+			var value = Std.parseFloat(data[4]);
+			var endTime = Std.parseInt(data[5]);
+			var tweenType = data.length > 6 ? convertToTweenType(data[6]) : FlxTweenType.ONESHOT;
+			var easeAnim = data.length > 7 ? convertToEase(data[7]) : null;
+			var isRelative = action == "TweenRel";
+
+			var _actionClass = new SBTween(spriteID, attribute, value, endTime, tweenType, easeAnim);
+			_actionClass.relative = isRelative;
+			actionClass = _actionClass;
+		}
+		else if(action == "Audio")
+		{
+			var filename = StoryBoardParser.convertSpecialPath(data[2]);
+			var volume = data.length > 3 ? Std.parseInt(data[3]) : 100;
+
+			actionClass = new SBAudio(filename, volume);
+		}
+		else if(action.startsWith("Attrib"))
+		{
+			var spriteID = data[2];
+			var attribute = data[3];
+			var isRelative = action.startsWith("AttribRel");
+			if(isRelative) action = action.replace("AttribRel", "Attrib");
+
+			var value:Dynamic = null;
+			switch(action)
+			{
+				case "Attrib" | "AttribString": value = data[4];
+				case "AttribFloat": value = Std.parseFloat(data[4]);
+				case "AttribInt": value = Std.parseInt(data[4]);
+				case "AttribBool": value = data[4] == "1";
+				case "AttribNull": value = null;
+				default: throw 'Invalid Attrib Type at line $rowNum';
+			}
+
+			actionClass = new SBAttrib(spriteID, attribute, value, isRelative);
+		}
+		else if(action.startsWith("Config"))
+		{
+			var key = data[2].toLowerCase();
+			var value:Dynamic = null;
+			switch(action)
+			{
+				case "Config" | "ConfigString": value = data[3];
+				case "ConfigFloat": value = Std.parseFloat(data[3]);
+				case "ConfigInt": value = Std.parseInt(data[3]);
+				case "ConfigBool": value = data[3] == "1";
+				case "ConfigNull": value = null;
+				default: throw 'Invalid Config Type at line $rowNum';
+			}
+
+			actionClass = new SBConfig(key, value);
+		}
+		else if(action == "PlayVideo")
+		{
+			var filename = StoryBoardParser.convertSpecialPath(data[2], false);
+
+			if(!filename.endsWith(".webm")) throw 'Invalid file format - Use "webm" at line $rowNum';
+
+			actionClass = new SBPlayVideo(filename);
+		}
+		else if(action == "Video")
+		{
+			var spriteID = data[2];
+			var layer = data[3];
+			var origin = data[4].toLowerCase().replace("centre", "center");
+			var filename = StoryBoardParser.convertSpecialPath(data[5], false);
+			var x = Std.parseFloat(data[6]);
+			var y = Std.parseFloat(data[7]);
+			var endAction = SBVideo.REMOVE;
+
+			if(data.length > 8) {
+				endAction = switch(data[8].toLowerCase()) {
+					case 'none' | '0': SBVideo.NONE;
+					case 'remove' | '1': SBVideo.REMOVE;
+					default: SBVideo.REMOVE;
+				}
+			}
+
+			if(!filename.endsWith(".webm")) throw 'Invalid file format - Use "webm" at line $rowNum';
+
+			actionClass = new SBVideo(spriteID, layer, origin, filename, x, y, endAction);
+		}
+		else if(action == "Text" || action == "TextRaw")
+		{
+			var spriteID = data[2];
+			var layer = data[3];
+			var origin = data[4].toLowerCase().replace("centre", "center");
+			var text = data[5];
+			var x = Std.parseFloat(data[6]);
+			var y = Std.parseFloat(data[7]);
+			var fontSize = data.length > 8 ? Std.parseInt(data[8]) : 8;
+
+			if(action == "Text") {
+				if(text.startsWith('"')) text = text.substr(1);
+				if(text.endsWith('"')) text = text.substr(0, text.length-1);
+				if(text.contains("\\n")) {
+					text = text.replace("\\n", "\n");
+					text += "\n";
+				}
+			}
+
+			actionClass = new SBText(spriteID, layer, origin, text, x, y, fontSize);
+		}
+
+		return actionClass;
 	}
 
 	public function runIntroCutsceneStep(time:Int) {
