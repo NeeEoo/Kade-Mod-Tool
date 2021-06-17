@@ -33,6 +33,7 @@ In between the section tags you put your actions.
 The only section names that currently works are intro and gameplay
 Comments in storyboard files starts with ;
 If IntroLength isn't set it defaults to 5 seconds
+If OutroLength isn't set it defaults to 5 seconds
 
 If the section is Intro you can write
 `
@@ -41,6 +42,15 @@ IntroLength 5000
 Instead of
 `
 time,ConfigInt,introLength,5000
+`
+
+If the section is Outro you can write
+`
+OutroLength 5000
+`
+Instead of
+`
+time,ConfigInt,outroLength,5000
 `
 
 To hide characters/sprites/actors you do `time,AttribFloat,<sprite>,alpha,0`
@@ -143,6 +153,7 @@ Config currently only has 3 settings.
 
 showCountdown (Bool)
 introLength (Int milliseconds)
+outroLength (Int milliseconds)
 showOnlyStrums (Bool)
 
 Paths have a special syntax.

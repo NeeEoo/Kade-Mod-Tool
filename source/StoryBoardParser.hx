@@ -320,6 +320,8 @@ class SBConfig extends SBAction {
 				PlayState.instance.showIntroCountdown = value;
 			case "introlength":
 				PlayState.instance.introLength = value;
+			case "outrolength":
+				PlayState.instance.outroLength = value;
 			case "showonlystrums":
 				PlayState.instance.showOnlyStrums = value;
 				#if windows
@@ -510,6 +512,10 @@ class StoryBoardParser
 			else if(parsingSection == SBSection.STARTING_CUTSCENE && row.toLowerCase().startsWith("introlength "))
 			{
 				PlayState.instance.introLength = Std.parseInt(row.substr(12));
+			}
+			else if(parsingSection == SBSection.STARTING_CUTSCENE && row.toLowerCase().startsWith("outrolength "))
+			{
+				PlayState.instance.outroLength = Std.parseInt(row.substr(12));
 			}
 			else if(parsingSection != null)
 			{
@@ -707,6 +713,22 @@ class StoryBoardParser
 	public function runIntroCutsceneStep(time:Int) {
 		if(currentSection != SBSection.STARTING_CUTSCENE) return;
 		if(timeUnit != SBTimeUnit.MS) throw "Only Milliseconds are allowed for intro cutscene";
+		var curActions = sectionActions[currentSection];
+		if(curActions == null) return;
+
+		while(curActions.length > 0 && curActions[0].time <= time)
+		{
+			var action = curActions.shift();
+
+			action.runAction();
+
+			if(Std.is(action, SBSetTimeUnit)) break; // Unsafe if there is a action on that exact time. Will cause it to happen next step
+		}
+	}
+
+	public function runOutroCutsceneStep(time:Int) {
+		if(currentSection != SBSection.ENDING_CUTSCENE) return;
+		if(timeUnit != SBTimeUnit.MS) throw "Only Milliseconds are allowed for outro cutscene";
 		var curActions = sectionActions[currentSection];
 		if(curActions == null) return;
 

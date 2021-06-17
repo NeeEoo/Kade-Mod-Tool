@@ -156,12 +156,13 @@ class PlayState extends MusicBeatState
 	public var storyBoard:StoryBoardParser;
 	public var Tween:FlxTweenManager;
 	public var hasIntroCutscene = false;
-	public var hasGameplaySB = false;
-	public var hasOutroCutscene = false;
+	public var inOutroCutscene = false;
 
 	public var showOnlyStrums = false;
 	public var showIntroCountdown = true;
 	public var introLength:Int = 5000;
+	public var outroLength:Int = 5000;
+	public var outroStartTime:Int = 0;
 
 	public static var offsetTesting:Bool = false;
 
@@ -1276,7 +1277,7 @@ class PlayState extends MusicBeatState
 		if (!paused)
 			FlxG.sound.playMusic(Paths.instWeek(PlayState.SONG.song.toLowerCase(), "week" + storyWeek), 1, false);
 
-		FlxG.sound.music.onComplete = endSong;
+		FlxG.sound.music.onComplete = shouldEndSong;
 		vocals.play();
 
 		// Song duration in a float, useful for the time left feature
@@ -1737,7 +1738,7 @@ class PlayState extends MusicBeatState
 		return ranking;
 	}
 
-	//public static var songRate = 1.5;
+	public var hasEnded:Bool = false;
 
 	override public function update(elapsed:Float)
 	{
@@ -1746,8 +1747,10 @@ class PlayState extends MusicBeatState
 		#end*/
 
 		if(hasStoryBoard) {
-			if(Conductor.songPosition >= 0) {
-				storyBoard.currentSection = SBSection.GAMEPLAY;
+			if(!inOutroCutscene) {
+				if(storyBoard.currentSection != SBSection.GAMEPLAY && Conductor.songPosition >= 0) {
+					storyBoard.currentSection = SBSection.GAMEPLAY;
+				}
 			}
 		}
 
@@ -1806,6 +1809,13 @@ class PlayState extends MusicBeatState
 			}
 			if(hasIntroCutscene) {
 				storyBoard.runIntroCutsceneStep(introLength + Std.int(Conductor.songPosition));
+			}
+			if(inOutroCutscene) {
+				var currentTime = Std.int(Conductor.songPosition) - outroStartTime;
+				storyBoard.runOutroCutsceneStep(currentTime);
+				if(!hasEnded && currentTime > outroLength) {
+					endSong();
+				}
 			}
 		}
 
@@ -2444,6 +2454,9 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
+
+		if (FlxG.keys.justPressed.THREE)
+			shouldEndSong();
 		#end
 	}
 
@@ -2458,6 +2471,23 @@ class PlayState extends MusicBeatState
 		Tween.forEach(tween -> tween.destroy());
 	}
 
+	function shouldEndSong() {
+		if(hasStoryBoard && storyBoard.sectionActions.exists(SBSection.ENDING_CUTSCENE))
+		{
+			inCutscene = true;
+			inOutroCutscene = true;
+
+			FlxG.sound.music.volume = 0;
+			vocals.volume = 0;
+
+			outroStartTime = Std.int(Conductor.songPosition);
+			storyBoard.currentSection = SBSection.ENDING_CUTSCENE;
+			storyBoard.timeUnit = SBTimeUnit.MS;
+		} else {
+			endSong();
+		}
+	}
+
 	function endSong():Void
 	{
 		if (!loadRep)
@@ -2465,6 +2495,7 @@ class PlayState extends MusicBeatState
 
 		destroyStuff();
 
+		hasEnded = true;
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
@@ -3073,17 +3104,17 @@ class PlayState extends MusicBeatState
 					switch (daNote.noteData)
 					{
 						// NOTES YOU ARE HOLDING
+						case 0:
+							if (left || leftHold)
+								goodNoteHit(daNote);
+						case 1:
+							if (down || downHold)
+								goodNoteHit(daNote);
 						case 2:
 							if (up || upHold)
 								goodNoteHit(daNote);
 						case 3:
 							if (right || rightHold)
-								goodNoteHit(daNote);
-						case 1:
-							if (down || downHold)
-								goodNoteHit(daNote);
-						case 0:
-							if (left || leftHold)
 								goodNoteHit(daNote);
 					}
 				}
@@ -3421,9 +3452,11 @@ class PlayState extends MusicBeatState
 	override function stepHit()
 	{
 		super.stepHit();
-		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
-		{
-			resyncVocals();
+		if(!inOutroCutscene) {
+			if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
+			{
+				resyncVocals();
+			}
 		}
 
 		#if windows
@@ -3447,8 +3480,10 @@ class PlayState extends MusicBeatState
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
 
-		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText + " " + visualSongName + " (" + storyDifficultyText + ") " + generateRanking(), "Acc: " + truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, largeText, iconRPC, true, songLength - Conductor.songPosition);
+		if(!inOutroCutscene) {
+			// Updating Discord Rich Presence (with Time Left)
+			DiscordClient.changePresence(detailsText + " " + visualSongName + " (" + storyDifficultyText + ") " + generateRanking(), "Acc: " + truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, largeText, iconRPC, true, songLength - Conductor.songPosition);
+		}
 		#end
 	}
 
@@ -3524,6 +3559,8 @@ class PlayState extends MusicBeatState
 
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
+
+		if(inOutroCutscene) return;
 
 		if (curBeat % gfSpeed == 0)
 		{
