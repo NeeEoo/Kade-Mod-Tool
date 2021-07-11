@@ -1,6 +1,10 @@
-v=4.0.1
-w=340
+v=4.1
+t=New Version Available\nNewest version is 4.1\nStoryboard Update part 2
+y=297
+w=360
+cy=367
 
 :CHANGES:
-- Critical Bug Fix
-- Updated Storyboard docs
+- Added a dialogue system
+- Added outro cutscenes
+- Bug fixes
