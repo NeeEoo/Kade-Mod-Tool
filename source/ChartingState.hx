@@ -200,7 +200,6 @@ class ChartingState extends MusicBeatState
 		check_voices.callback = function()
 		{
 			_song.needsVoices = check_voices.checked;
-			trace('CHECKED!');
 		};
 
 		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, "Mute Instrumental (in editor)", 100);
@@ -445,15 +444,12 @@ class ChartingState extends MusicBeatState
 
 		var stepperNoteSpeedLabel = new FlxText(150+64, 80, 'Note Speed');
 
-		var applyLength:FlxButton = new FlxButton(10, 100, 'Apply Data');
-
 		tab_group_note.add(writingNotesText);
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(stepperSusLengthLabel);
 		tab_group_note.add(stepperNoteSpeed);
 		tab_group_note.add(stepperNoteSpeedLabel);
 		tab_group_note.add(check_altNoteAnim);
-		tab_group_note.add(applyLength);
 
 		UI_box.addGroup(tab_group_note);
 
@@ -775,9 +771,11 @@ class ChartingState extends MusicBeatState
 
 		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
 		{
+			#if debug
 			trace(curStep);
 			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
 			trace('DUMBSHIT');
+			#end
 
 			if (_song.notes[curSection + 1] == null)
 			{
@@ -816,7 +814,6 @@ class ChartingState extends MusicBeatState
 					&& FlxG.mouse.y > gridBG.y
 					&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
 				{
-					FlxG.log.add('added note');
 					addNote();
 				}
 			}
@@ -1031,8 +1028,6 @@ class ChartingState extends MusicBeatState
 
 	override function beatHit() 
 	{
-		trace('beat');
-
 		super.beatHit();
 		if (!player2.animation.curAnim.name.startsWith("sing"))
 		{
@@ -1230,6 +1225,7 @@ class ChartingState extends MusicBeatState
 			var daSus = note.holdLength;
 
 			var note:Note = new Note(daStrumTime, daNoteInfo % 4, note.noteSpeed);
+			note.rawNoteData = daNoteInfo;
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
@@ -1272,7 +1268,7 @@ class ChartingState extends MusicBeatState
 
 		for (i in _song.notes[curSection].sectionNotes)
 		{
-			if (i.strumTime == note.strumTime && i.noteData % 4 == note.noteData)
+			if (i.strumTime == note.strumTime && i.noteData == note.rawNoteData)
 			{
 				curSelectedNote = _song.notes[curSection].sectionNotes[swagNum];
 			}
@@ -1289,7 +1285,7 @@ class ChartingState extends MusicBeatState
 		lastNote = note;
 		for (i in _song.notes[curSection].sectionNotes)
 		{
-			if (i.strumTime == note.strumTime && i.noteData % 4 == note.noteData)
+			if (i.strumTime == note.strumTime && i.noteData == note.rawNoteData)
 			{
 				_song.notes[curSection].sectionNotes.remove(i);
 			}
