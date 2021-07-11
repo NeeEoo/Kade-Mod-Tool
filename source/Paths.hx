@@ -141,17 +141,13 @@ class Paths
 	inline static public function storyBoardExists(key:String)
 	{
 		var key = 'weeks:assets/weeks/$currentMod/$currentWeek/tracks/$key.sbf';
-		if (OpenFlAssets.exists(key, TEXT))
-			return true;
-		return false;
+		return OpenFlAssets.exists(key, TEXT);
 	}
 
 	inline static public function doesLuaExistWeek(key:String, library:String = "weeks")
 	{
 		var key = getPath('$currentMod/$currentWeek/tracks/$key.lua', TEXT, library);
-		if (OpenFlAssets.exists(key, TEXT))
-			return true;
-		return false;
+		return OpenFlAssets.exists(key, TEXT);
 	}
 
 	inline static public function txt(key:String, ?library:String)
@@ -235,14 +231,22 @@ class Paths
 	inline static public function doesWeekTextImage(key:String)
 	{
 		var key = 'weeks:assets/weeks/$currentMod/$key.png';
-		if (OpenFlAssets.exists(key, IMAGE))
-			return true;
-		return false;
+		return OpenFlAssets.exists(key, IMAGE);
 	}
 
 	inline static public function font(key:String)
 	{
 		return 'assets/fonts/$key';
+	}
+
+	inline static public function fontLib(key:String, ?library:String)
+	{
+		return getPath('fonts/$key', FONT, library);
+	}
+
+	inline static public function exists(key:String, type:AssetType = TEXT)
+	{
+		return OpenFlAssets.exists(key, type);
 	}
 
 	inline static public function getSparrowAtlas(key:String, ?library:String)

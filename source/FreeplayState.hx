@@ -192,7 +192,7 @@ class FreeplayState extends MusicBeatState
 				PlayState.storyDifficulty = curDifficulty;
 				PlayState.storyWeek = songs[curSelected].week;
 				PlayState.currentMod = songs[curSelected].mod;
-				PlayState.songFilename = songName;
+				PlayState.songName = songName;
 				LoadingState.setGlobals();
 				PlayState.visualSongName = songs[curSelected].visualSongName;
 				PlayState.SONG = Song.loadFromJson(songFilename, songName);

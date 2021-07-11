@@ -133,12 +133,12 @@ class LoadingState extends MusicBeatState
 	
 	static inline function getSongPath()
 	{
-		return Paths.inst(PlayState.SONG.song);
+		return Paths.inst(PlayState.songName);
 	}
 	
 	static inline function getVocalPath()
 	{
-		return Paths.voices(PlayState.SONG.song);
+		return Paths.voices(PlayState.songName);
 	}
 	
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
@@ -156,7 +156,7 @@ class LoadingState extends MusicBeatState
 		Paths.setCurrentMod(PlayState.currentMod);
 		Paths.setCurrentWeek(curWeekStr);
 		Paths.setCurrentLevel("week" + PlayState.storyWeek);
-		Paths.setCurrentSong(PlayState.songFilename.toLowerCase());
+		Paths.setCurrentSong(PlayState.songName);
 	}
 
 	static function getNextState(target:FlxState, stopMusic = false):FlxState

@@ -1,0 +1,264 @@
+To make dialogue for a song you'll have to make a file named: dialogue.txt
+This will play when you start the song unless you have an intro cutscene in the storyboard.
+
+If you have a storyboard, you will have to add these lines:
+
+```
+--SECTION-Intro--
+0,Dialogue,"&dialogue.txt"
+--END-SECTION--
+```
+
+If you want dialogue in the middle of a song you'll want to use storyboards.
+
+Here is an example of a storyboard that will open a dialogue box after 5 seconds.
+
+```
+KMTStoryBoard v0.2
+
+--SECTION-Gameplay--
+5000,Dialogue,"&good_work.txt"
+--END-SECTION--
+```
+
+---------
+
+Syntax:
+
+Dialogue syntax is `:character:text`
+
+Command syntax is `>command<arguments`
+
+Arguments are separated by a comma ,
+
+Example:
+```
+>togglebgfade<
+>toggletextfx<
+>toggledroptext<
+>fontcolor<0xFF000000,0xFFaabbcc
+
+>flip<
+:dad:You think you can defeat me?
+
+>flip<
+:bf:Beepboop
+
+:gf:Good luck
+```
+
+---------
+
+Dialogue.
+
+The format is almost the same as the original game, just that you can have any portrait as you want to.
+
+Custom portraits should be put in the `images/dialogue/portraits` folder.
+This should be done in the mod folder.
+
+When the text `PORTRAIT_NAME` appears, you should replace it with a custom name.
+
+Single image portraits and animated intro portraits are both options that you can use.
+
+Single Image Portraits are defined by just having an image named `PORTRAIT_NAME.png`
+
+Animated Intro Portraits are defined by having 2 files named `PORTRAIT_NAME.png` and `PORTRAIT_NAME.xml`
+
+The XML file animation-name should be named `portrait enter`.
+
+If you override an existing portrait that has an XML with a single image portrait, then you'll need to create a file named `PORTRAIT_NAME.noanim`
+
+If the portrait is placed incorrectly, you can make a file named `PORTRAIT_NAME.offset`.
+The file should contain 2 numbers separated by a comma.
+Example:
+
+```
+-40,20
+```
+
+Offsets the portrait by -40 on the x-axis and 20 on the y-axis.
+If you want to make the portrait in the center you just write "center" in the file
+
+If you want to flip the portrait you can make a file named `PORTRAIT_NAME.flip`
+
+The pre-existing portraits are:
+bf
+bfChristmas
+bfPixel (animated)
+dad
+gf
+mom
+monster
+monsterChristmas
+none
+parentsChristmas
+pico
+senpai (animated)
+spooky
+
+---------
+
+Here is a list of commands in the dialogue system:
+
+Flip
+    Flips the box. And if the portrait is a single image, it places itself in the correct place.
+    By default, it points right
+
+ToggleBGFade
+    Toggles the tint of the background. (Active by default)
+
+IsPixel
+    Only use this if the portrait and the box are the same pixel size. The school stages use this.
+    This must be at the top of the file.
+
+BGMusic
+    Takes 1 argument. Filename
+        Plays a music file on loop until the dialogue box closes.
+        Reads the file from the `music/` folder
+
+Sample
+    Takes 1 argument. Filename
+        Plays an audio file
+        Reads the file from the `sounds/` folder
+
+ToggleClickFX
+    Toggles the sound that plays when you progress the dialogue. (Active by default)
+
+ToggleTextFX
+    Toggles the sound that plays for the text typing. (Active by default)
+
+ToggleDropText
+    Toggles the shadow on the text. (Active by default)
+
+TextDelay
+    Takes 1 argument. Duration (Float)
+        Changes the delay of the typing.
+        By default, it's set to 0.04.
+
+Image
+    Takes 3-4 arguments. X (float), Y (Float), filename, scale (float, optional, set to 1)
+        Places an image on the screen.
+        Reads the image from the `images/` folder.
+
+Font
+    Takes 1 argument. Filename
+        Sets the font of the text.
+        Reads the file from the `fonts/` folder.
+        You must include the file extension.
+
+FontColor
+    Takes 1-2 arguments. Font Color, Drop Text Color
+        Sets the color of the text.
+
+FontSize
+    Takes 1 argument. Size
+        Sets the size of the text.
+        By default, it's set to 32.
+
+ChangeBox
+    Takes 1-3 arguments. Filename, fps, start animation
+        Changes the box.
+        Fps sets the speed of the animation.
+        Start Animation sets the starting animation.
+        Reads the image from the `images/` folder.
+
+BoxAnim
+    Takes 1 argument. Animation name
+        Plays the animation on the box.
+        Only 2 animations exist. appear and normal
+
+BoxScale
+    Takes 1 argument. Scale (Float)
+        Sets the scale of the box.
+        Must be at the top.
+        By default, it is set to 0.9
+
+PortraitColors
+    Takes 1 argument. Color (Int)
+        This doesn't work as you might guess.
+        It just sets the tint of the image.
+        Setting it to 0 makes the portrait pure black.
+
+MoveBox and MoveBoxRel
+    Takes 2 arguments. X (float), Y (Float)
+        Moves the box
+        If the command is MoveBox it sets the position to the arguments.
+        If the command is MoveBoxRel it moves the box by the arguments.
+
+Timer
+    Takes 1 argument. Duration (Float)
+        This only works for timed dialogue,
+        After the duration has passed, it progresses the dialogue.
+
+Background
+    Shorthand: BG
+    Takes 1 argument. Filename.
+        Sets the background to the image.
+        Reads the image from the `images/` folder.
+
+HideBackground
+    Shorthand: HideBG
+        Hides the background that was set by the Background command.
+
+---------
+
+If there is an image named `hand_textbox` in the dialogue folder, that will show in the corner.
+
+---------
+
+Examples:
+```
+>BGMusic<LunchboxScary
+>isPixel<
+>Image<320,170,spiritFaceForward,6
+>FontColor<0xffffffff,0xff000000
+>PortraitColors<0
+```
+
+This plays the "LunchboxScary" music
+Sets it to pixel size
+Adds the image "spiritFaceForward" at x=320 y=170 with a scale of 6
+Sets the font colors to text to white and shadow to black
+Sets the portrait color to pure black
+
+---------
+
+```
+>ToggleBGFade<
+>ToggleClickFX<
+>ToggleTextFX<
+>ToggleDropText<
+>FontColor<0xff000000
+>BG<stages/limo/limoSunset
+
+:gf:Look at that sunset
+:gf:Isn't it pretty?
+
+:bf:Beep Boop
+
+>TextDelay<0.1
+:gf:Ahhhh
+```
+
+---------
+
+This example is a mod that is named example
+
+The mod has a image named `monke.png` in `assets/weeks/example/images/dialogue/portraits`
+
+```
+>ToggleBGFade<
+>ToggleClickFX<
+>ToggleTextFX<
+>ToggleDropText<
+>FontColor<0xff000000
+
+>flip<
+:dad:GF what is that animal?
+
+>flip<
+:gf:It's a monkey.
+
+>flip<
+:monke:oo oo a a
+```

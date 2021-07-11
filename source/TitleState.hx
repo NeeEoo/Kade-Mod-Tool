@@ -48,35 +48,34 @@ class TitleState extends MusicBeatState
 			#if polymod
 			polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
 			#end
-	
+
 			#if sys
 			if (!sys.FileSystem.exists(Sys.getCwd() + "/assets/replays"))
 				sys.FileSystem.createDirectory(Sys.getCwd() + "/assets/replays");
 			#end
-	
+
 			@:privateAccess
 			{
 				trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
 			}
-	
+
 			PlayerSettings.init();
-	
+
 			#if sys
-			var modsFound = FakeAssetLibrary.modsFound;
-			WeeksParser.addCustomIntroTexts(modsFound);
 			mods = FakeAssetLibrary.modsFound;
+			WeeksParser.addCustomIntroTexts(mods);
 			#else
 			mods = ["base"];
 			#end
-	
+
 			#if (windows && DISCORD)
 			DiscordClient.initialize();
-	
+
 			Application.current.onExit.add(function(exitCode) {
 				DiscordClient.shutdown();
 			});
 			#end
-	
+
 			curWacky = FlxG.random.getObject(getIntroTextShit());
 		}
 
@@ -84,19 +83,18 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		
 		if(!initialized) {
 			// NGio.noLogin(APIStuff.API);
-			
+
 			#if ng
 			var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
 			trace('NEWGROUNDS LOL');
 			#end
-	
+
 			FlxG.save.bind('funkin', 'kademodtool');
-	
+
 			KadeEngineData.initSave();
-	
+
 			Highscore.load();
 		}
 

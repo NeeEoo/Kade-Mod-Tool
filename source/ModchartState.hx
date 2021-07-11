@@ -280,7 +280,7 @@ class ModchartState
 
 		//shaders = new Array<LuaShader>();
 
-		var result = LuaL.dofile(lua, Paths.luaWeekPath(PlayState.SONG.song.toLowerCase() + "/modchart")); // execute le file
+		var result = LuaL.dofile(lua, Paths.luaWeekPath(PlayState.songName + "/modchart")); // execute le file
 
 		if (result != 0)
 		{
@@ -552,15 +552,15 @@ class ModchartState
 			return Application.current.window.y;
 		});
 
-		Lua_helper.add_callback(lua,"resizeWindow",function(Width:Int,Height:Int) {
-			Application.current.window.resize(Width,Height);
+		Lua_helper.add_callback(lua,"resizeWindow", function(width:Int, height:Int) {
+			Application.current.window.resize(width, height);
 		});
 
-		Lua_helper.add_callback(lua,"getScreenWidth",function() {
+		Lua_helper.add_callback(lua,"getScreenWidth", function() {
 			return Application.current.window.displayMode.width;
 		});
 
-		Lua_helper.add_callback(lua,"getScreenHeight",function() {
+		Lua_helper.add_callback(lua,"getScreenHeight", function() {
 			return Application.current.window.displayMode.height;
 		});
 

@@ -8,14 +8,12 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.ui.FlxInputText;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
-import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
@@ -55,7 +53,6 @@ class ChartingState extends MusicBeatState
 	var bpmTxt:FlxText;
 
 	var strumLine:FlxSprite;
-	var curSong:String = 'Dadbattle';
 	var amountSteps:Int = 0;
 	var bullshitUI:FlxGroup;
 	var writingNotesText:FlxText;
@@ -71,11 +68,12 @@ class ChartingState extends MusicBeatState
 	var gridBG:FlxSprite;
 
 	var _song:SwagSong;
+	var _songName:String;
 
 	var typingShit:FlxInputText;
-	/*
+	/**
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
-	**/
+	 */
 	var curSelectedNote:AbstractNote;
 
 	var tempBpm:Float = 0;
@@ -98,8 +96,10 @@ class ChartingState extends MusicBeatState
 
 		curSection = lastSection;
 
-		if (PlayState.SONG != null)
+		if (PlayState.SONG != null) {
 			_song = PlayState.SONG;
+			_songName = PlayState.songName;
+		}
 		else
 		{
 			_song = {
@@ -115,6 +115,7 @@ class ChartingState extends MusicBeatState
 				speed: 1,
 				validScore: false
 			};
+			_songName = "Test";
 		}
 
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
@@ -137,7 +138,7 @@ class ChartingState extends MusicBeatState
 
 		updateGrid();
 
-		loadSong(_song.song);
+		loadSong(_songName);
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
@@ -191,7 +192,7 @@ class ChartingState extends MusicBeatState
 
 	function addSongUI():Void
 	{
-		var UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
+		var UI_songTitle = new FlxUIInputText(10, 10, 70, _songName, 8);
 		typingShit = UI_songTitle;
 
 		var check_voices = new FlxUICheckBox(10, 25, null, null, "Has voice track", 100);
@@ -221,12 +222,12 @@ class ChartingState extends MusicBeatState
 
 		var reloadSong:FlxButton = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y, "Reload Audio", function()
 		{
-			loadSong(_song.song);
+			loadSong(_songName);
 		});
 
 		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, "Reload JSON", function()
 		{
-			loadJson(_song.song.toLowerCase());
+			loadJson(_songName);
 		});
 
 		
@@ -665,7 +666,7 @@ class ChartingState extends MusicBeatState
 				resyncVocals();
 			}
 		}
-		_song.song = typingShit.text;
+		_songName = typingShit.text;
 
 		var upP = controls.UP_P;
 		var rightP = controls.RIGHT_P;
@@ -1398,7 +1399,7 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+			_file.save(data.trim(), _songName.toLowerCase() + ".json");
 		}
 	}
 

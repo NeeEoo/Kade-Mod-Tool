@@ -36,16 +36,14 @@ class OptionsMenu extends MusicBeatState
 			new AccuracyOption("Display accuracy information."),
 			new NPSDisplayOption("Shows your current Notes Per Second.")
 		]),
-		
+
 		new OptionCategory("Misc", [
 			#if desktop
 			new FPSOption("Toggle the FPS Counter"),
 			new ReplayOption("View replays"),
 			#end
 			new WatermarkOption("Turn off all watermarks from the engine.")
-			
 		])
-		
 	];
 
 	private var currentDescription:String = "";
@@ -78,7 +76,8 @@ class OptionsMenu extends MusicBeatState
 
 		currentDescription = "none";
 
-		versionShit = new FlxText(5, FlxG.height - 18, 0, "Offset (Left, Right): " + FlxG.save.data.offset + " - Description - " + currentDescription, 12);
+		versionShit = new FlxText(5, FlxG.height - 18, 0, "", 12);
+		updateOffsetText();
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -87,7 +86,11 @@ class OptionsMenu extends MusicBeatState
 	}
 
 	var isCat:Bool = false;
-	
+
+	function updateOffsetText() {
+		versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
+	}
+
 	public static function truncateFloat( number : Float, precision : Int): Float {
 		var num = number;
 		num = num * Math.pow(10, precision);
@@ -119,7 +122,7 @@ class OptionsMenu extends MusicBeatState
 			changeSelection(-1);
 		if (controls.DOWN_P)
 			changeSelection(1);
-		
+
 		if (isCat)
 		{
 			var currentCategoryOption = currentSelectedCat.getOptions()[curSelected];
@@ -154,8 +157,8 @@ class OptionsMenu extends MusicBeatState
 					FlxG.save.data.offset += 0.1;
 				else if (FlxG.keys.pressed.LEFT)
 					FlxG.save.data.offset -= 0.1;
-				
-				versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
+
+				updateOffsetText();
 			}
 		}
 		else
@@ -171,10 +174,9 @@ class OptionsMenu extends MusicBeatState
 				FlxG.save.data.offset += 0.1;
 			else if (FlxG.keys.pressed.LEFT)
 				FlxG.save.data.offset -= 0.1;
-			
-			versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
+
+			updateOffsetText();
 		}
-	
 
 		if (controls.RESET)
 			FlxG.save.data.offset = 0;
@@ -213,10 +215,6 @@ class OptionsMenu extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		#if !switch
-		// NGio.logEvent("Fresh");
-		#end
-		
 		FlxG.sound.play(Paths.sound("scrollMenu"), 0.4);
 
 		curSelected += change;
@@ -230,7 +228,7 @@ class OptionsMenu extends MusicBeatState
 			currentDescription = currentSelectedCat.getOptions()[curSelected].getDescription();
 		else
 			currentDescription = "Please select a category";
-		versionShit.text = "Offset (Left, Right, Shift for slow): " + truncateFloat(FlxG.save.data.offset, 2) + " - Description - " + currentDescription;
+		updateOffsetText();
 
 		// selector.y = (70 * curSelected) + 30;
 

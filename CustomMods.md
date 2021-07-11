@@ -151,7 +151,23 @@ Modcharts should be placed in the same folder as your song charts are located.
 
 You can read the docs of the modcharts [here](https://github.com/KadeDev/Kade-Engine/blob/f20493cd84cbbca5c87e6621912085a130f89d50/docs/modchart.md)
 
-The only differences from the Kade Engine and the mod tool is that the sprites are loaded from a folder named `luasprites` that should be placed in the mod folder.
+Differences from the Kade Engine Modcharts:
+
+Sprites are loaded from a folder named `luasprites` that should be placed in the mod folder.
+
+New function called `kmt_runStoryBoardAction()`. Takes a string as an argument (Should not include the time). It runs the same commands as the storyboard
+
+## Storyboards
+
+Read the StoryBoards.txt file for info on how to use storyboards.
+
+## Dialogue
+
+IMPORTANT: The portrait enter animation name has been changed to `portrait enter`.
+
+The dialogue box image animation names are now named `appear` and `normal`
+
+Read the Dialogue.txt file for info on how to add dialogue.
 
 ## Tips
 
@@ -159,27 +175,27 @@ If your sprite is offset or jumps around. You can use `frameX="0"` and `frameY="
 
 ## Quirks with some songs
 
-Capitalization is important.
-
 These values are hardcoded i'm just listing the things they do.
 
 If you don't want these things to happen you can just set the name to for example "blammed2" and have a visual name that says "Blammed". You might need to change the name in the song chart file also.
 
-If the song is named "Bopeebo" the bf plays the hey animation on every 8th beat. `(beat % 8 == 7)`
+If the song is named "bopeebo" the bf plays the hey animation on every 8th beat. `(beat % 8 == 7)`
 The gf will cheer every 8th beat but only if during when the beat is in a range of 6 to 129. `(beat % 8 == 7 and beat > 5 and beat < 130)`
 The vocals are muted on beat 128, 129 and 130.
 
-If the song is named "Blammed" the gf will cheer every 4th beat during beat 31 to 89, and beat 129 to 189. `(beat % 4 == 2) and ((beat > 30 and beat < 90) and (beat > 128 and beat < 190))`
+If the song is named "blammed" the gf will cheer every 4th beat during beat 31 to 89, and beat 129 to 189. `(beat % 4 == 2) and ((beat > 30 and beat < 90) and (beat > 128 and beat < 190))`
 
-If the song is named "Cocoa" the gf will cheer every 16th beat. But only if the beat is below 170, and if beat is below 65 or in range from 131 to 144. `(beat < 170) and (beat < 65 or (beat > 130 and beat < 145)) and (beat % 16 == 15)`
+If the song is named "cocoa" the gf will cheer every 16th beat. But only if the beat is below 170, and if beat is below 65 or in range from 131 to 144. `(beat < 170) and (beat < 65 or (beat > 130 and beat < 145)) and (beat % 16 == 15)`
 
-If the song is named "Eggnog" the gf will cheer every 8th beat, during beat 11 to 219, but not on beat 111. `(beat > 10 and beat != 111 and beat < 220 and beat % 8 == 7)`
+If the song is named "eggnog" the gf will cheer every 8th beat, during beat 11 to 219, but not on beat 111. `(beat > 10 and beat != 111 and beat < 220 and beat % 8 == 7)`
 
-If the song is named "Philly" the gf will cheer every 16th beat. `(beat % 16 == 8)` It will only play when the beat number is below 250. It won't play on beat 184 or 216.
+If the song is named "philly" the gf will cheer every 16th beat. `(beat % 16 == 8)` It will only play when the beat number is below 250. It won't play on beat 184 or 216.
 
-If the song is named "Fresh" the camera will be able to zoom on beat 16 and the gf speed is set to 2. On beats 48 and 112 the gf speed is set to 1. On beat 80 the gf speed is set to 2.
+If the song is named "fresh" the camera will be able to zoom on beat 16 and the gf speed is set to 2. On beats 48 and 112 the gf speed is set to 1. On beat 80 the gf speed is set to 2.
 
 If the stage is either "school" or "schoolEvil" the ready, set, go will be using the pixelated versions. And play the "-pixel" version of "intro_". Same with the score.
+
+If the song is named "roses" and the current stage is school, the girls in the background gets scared. You can use the stage name "schoolWorry". To make the girls get scared regardless of the song name.
 
 ### This only applies for storymode
 
@@ -189,6 +205,6 @@ If the song is named "winter-horrorland". It will play the sound effect "Lights_
 
 If the song name is any one of these "senpai", "roses", "thorns". It will open a dialogue box with the contents of "dialogue.txt".
 
-If the song is named "roses" it will play the sound effect "ANGRY". If the current stage is school, the girls in the background gets scared.
+If the song is named "roses" it will play the sound effect "ANGRY".
 
 If the song is named "thorns" it will start a cutscene with a red background. The image "senpaiCrazy" will be placed and play the animation "Senpai Pre Explosion". The sound effect "Senpai_Dies" will play.

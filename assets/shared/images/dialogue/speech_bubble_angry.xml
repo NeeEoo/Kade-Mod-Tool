@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="speech_bubble_angry.png">
+	<!-- Created with Adobe Animate version 20.0.0.17400 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="appear0000" x="2446" y="431" width="335" height="295" frameX="-751" frameY="-105" frameWidth="1367" frameHeight="507"/>
+	<SubTexture name="appear0001" x="0" y="756" width="1367" height="507"/>
+	<SubTexture name="appear0002" x="0" y="756" width="1367" height="507"/>
+
+	<SubTexture name="normal0000" x="0" y="0" width="1231" height="408" frameX="-9" frameY="-5" frameWidth="1241" frameHeight="421"/>
+	<SubTexture name="normal0001" x="1241" y="0" width="1228" height="421" frameX="-9" frameY="0" frameWidth="1241" frameHeight="421"/>
+	<SubTexture name="normal0002" x="2479" y="0" width="1241" height="393" frameX="0" frameY="-15" frameWidth="1241" frameHeight="421"/>
+</TextureAtlas>

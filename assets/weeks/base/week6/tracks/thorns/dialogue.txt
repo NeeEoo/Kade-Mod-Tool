@@ -1,5 +1,11 @@
-:dad:Direct contact with real humans, after being trapped in here for so long...
-:dad:and HER of all people.
-:dad:I'll make her father pay for what he's done to me and all the others,,,,
-:dad:I'll beat you and make you take my place.
-:dad:You don't mind your bodies being borrowed right? It's only fair...
+>bgmusic<LunchboxScary
+>isPixel<
+>image<320,170,spiritFaceForward,6
+>fontcolor<0xffffffff,0xff000000
+>portraitcolors<0
+
+:none:Direct contact with real humans, after being trapped in here for so long...
+:none:and HER of all people.
+:none:I'll make her father pay for what he's done to me and all the others,,,,
+:none:I'll beat you and make you take my place.
+:none:You don't mind your bodies being borrowed right? It's only fair...

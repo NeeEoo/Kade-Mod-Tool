@@ -304,6 +304,18 @@ class SBSetTimeUnit extends SBAction {
 	}
 }
 
+class SBSetTiming extends SBAction {
+	public var timing:SBTiming;
+
+	public function new(timing:SBTiming) {
+		this.timing = timing;
+	}
+
+	override public function runAction() {
+		storyBoard.timing = timing;
+	}
+}
+
 class SBConfig extends SBAction {
 	public var key:String;
 	public var value:Dynamic;
@@ -442,6 +454,65 @@ class SBText extends SBAction {
 	}
 }
 
+class SBDialogue extends SBAction {
+	public inline static var PAUSE:Int = 0;
+	public inline static var TIMED:Int = 1;
+
+	public var filename:String;
+	public var action:Int;
+	private var dialogue:Array<String>;
+	private var dialogueEvents:Array<DialogueSystem.DialogueEvent>;
+	private var cachedPortraits = new Map<String, FlxSprite>();
+
+	public function new(filename:String, action:Int = PAUSE) {
+		this.filename = filename;
+		this.action = action;
+
+		dialogue = [];
+		if(Paths.exists(filename, TEXT)) {
+			dialogue = CoolUtil.coolTextFile(filename);
+		}
+
+		dialogueEvents = DialogueSystem.parseDialog(dialogue);
+
+		var portraitsCached:Array<String> = [];
+
+		for(item in dialogueEvents) {
+			if(Std.isOfType(item, DialogueSystem.Dialogue)) {
+				var item = cast (item, DialogueSystem.Dialogue);
+				var character = item.character;
+
+				if(!portraitsCached.contains(character)) {
+					portraitsCached.push(character);
+					cachedPortraits[character] = DialogueSystem.cachePortrait(character);
+				}
+			}
+		}
+	}
+
+	override public function runAction() {
+		if(dialogue.length == 0) return;
+
+		if(action == PAUSE) {
+			PlayState.instance.pauseSong();
+		}
+
+		var dialogueBox:DialogueSystem = new DialogueSystem(dialogue, dialogueEvents, cachedPortraits);
+		dialogueBox.scrollFactor.set();
+		switch(action) {
+			case PAUSE:
+				dialogueBox.finishThing = PlayState.instance.resumeSong;
+			case TIMED:
+				dialogueBox.allowKeyPresses = false;
+			default:
+				throw "Invalid Action";
+		}
+
+		dialogueBox.cameras = [PlayState.instance.camHUD];
+		PlayState.instance.add(dialogueBox);
+	}
+}
+
 enum SBSection {
 	STARTING_CUTSCENE;
 	GAMEPLAY;
@@ -454,6 +525,11 @@ enum SBTimeUnit {
 	STEPS;
 }
 
+enum SBTiming {
+	EXACT;
+	LATE;
+}
+
 class StoryBoardParser
 {
 	public static var instance:StoryBoardParser = null;
@@ -462,6 +538,7 @@ class StoryBoardParser
 	public var currentSection:SBSection = null;
 	public var version:String = "";
 	public var timeUnit:SBTimeUnit = SBTimeUnit.MS;
+	public var timing:SBTiming = SBTiming.LATE;
 
 	public var sectionActions = new Map<SBSection, Array<SBAction>>();
 
@@ -475,7 +552,7 @@ class StoryBoardParser
 
 		if(createBare) return;
 
-		var filename = Paths.storyBoardWeekPath(PlayState.SONG.song.toLowerCase() + "/storyboard");
+		var filename = Paths.storyBoardWeekPath(PlayState.songName + "/storyboard");
 
 		var storyboardData = CoolUtil.coolTextFile(filename);
 
@@ -706,6 +783,30 @@ class StoryBoardParser
 
 			actionClass = new SBText(spriteID, layer, origin, text, x, y, fontSize);
 		}
+		else if(action == "SetTiming")
+		{
+			var timeString = data[2];
+
+			var timingUnit = switch(timeString.toLowerCase()) {
+				case 'exact': SBTiming.EXACT;
+				case 'late': SBTiming.LATE;
+				default: throw 'Invalid Storyboard File - Timing Unit "$timeString" is invalid at line $rowNum';
+			}
+
+			actionClass = new SBSetTiming(timingUnit);
+		}
+		else if(action == "Dialogue")
+		{
+			var filename = StoryBoardParser.convertSpecialPath(data[2]);
+
+			var dialogueAction = switch(data[3].toLowerCase()) {
+				case 'pause': SBDialogue.PAUSE;
+				case 'timed': SBDialogue.TIMED;
+				default: SBDialogue.PAUSE;
+			}
+
+			actionClass = new SBDialogue(filename, dialogueAction);
+		}
 
 		return actionClass;
 	}
@@ -713,37 +814,21 @@ class StoryBoardParser
 	public function runIntroCutsceneStep(time:Int) {
 		if(currentSection != SBSection.STARTING_CUTSCENE) return;
 		if(timeUnit != SBTimeUnit.MS) throw "Only Milliseconds are allowed for intro cutscene";
-		var curActions = sectionActions[currentSection];
-		if(curActions == null) return;
-
-		while(curActions.length > 0 && curActions[0].time <= time)
-		{
-			var action = curActions.shift();
-
-			action.runAction();
-
-			if(Std.is(action, SBSetTimeUnit)) break; // Unsafe if there is a action on that exact time. Will cause it to happen next step
-		}
+		runActions(time);
 	}
 
 	public function runOutroCutsceneStep(time:Int) {
 		if(currentSection != SBSection.ENDING_CUTSCENE) return;
 		if(timeUnit != SBTimeUnit.MS) throw "Only Milliseconds are allowed for outro cutscene";
-		var curActions = sectionActions[currentSection];
-		if(curActions == null) return;
-
-		while(curActions.length > 0 && curActions[0].time <= time)
-		{
-			var action = curActions.shift();
-
-			action.runAction();
-
-			if(Std.is(action, SBSetTimeUnit)) break; // Unsafe if there is a action on that exact time. Will cause it to happen next step
-		}
+		runActions(time);
 	}
 
 	public function runGameplayStep(time:Int) {
 		if(currentSection != SBSection.GAMEPLAY) return;
+		runActions(time);
+	}
+
+	private function runActions(time:Int) {
 		var curActions = sectionActions[currentSection];
 		if(curActions == null) return;
 
@@ -782,7 +867,7 @@ class StoryBoardParser
 	}
 
 	public static inline function storyBoardExists() {
-		return Paths.storyBoardExists(PlayState.SONG.song.toLowerCase() + "/storyboard");
+		return Paths.storyBoardExists(PlayState.songName + "/storyboard");
 	}
 
 	public function getActor(spriteID:String):Dynamic {

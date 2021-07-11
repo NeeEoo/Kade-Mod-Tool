@@ -20,7 +20,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	#if sys
 	var perSongOffset:FlxText;
-	
+
 	var offsetChanged:Bool = false;
 	var lastOffset:Float = 0;
 	var oldOffset:Float = 0;
@@ -30,7 +30,9 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		super();
 
+		#if sys
 		oldOffset = lastOffset = PlayState.songOffset;
+		#end
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
@@ -43,7 +45,6 @@ class PauseSubState extends MusicBeatSubstate
 		add(bg);
 
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
-		// levelInfo.text += PlayState.SONG.song;
 		levelInfo.text += PlayState.visualSongName;
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
@@ -69,7 +70,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
-		
+
 		#if sys
 		perSongOffset = new FlxText(5, FlxG.height - 18, 0, "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds value to global offset, per song.', 12);
 		perSongOffset.scrollFactor.set();
@@ -99,35 +100,33 @@ class PauseSubState extends MusicBeatSubstate
 
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
-		var rightP = controls.RIGHT_P;
 		var accepted = controls.ACCEPT;
 
 		if (upP)
 			changeSelection(-1);
 		else if (downP)
 			changeSelection(1);
-		
+
 		#if sys
-		else if (leftP)
+		else if (controls.LEFT_P)
 		{
 			//oldOffset = PlayState.songOffset;
 			PlayState.songOffset -= 1;
 		}
-		else if (rightP)
+		else if (controls.RIGHT_P)
 		{
 			// oldOffset = PlayState.songOffset;
 			PlayState.songOffset += 1;
 		}
 
 		// Prevent loop from happening every single time the offset changes
-		// if(leftP || rightP) {
+		if(accepted && oldOffset != PlayState.songOffset) {
+			var songPath = Paths.weekPath(PlayState.songName + '/', "week" + PlayState.storyWeek);
+			trace('Changing Offset from $oldOffset to ${PlayState.songOffset}');
+			sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
+		}
+
 		if(lastOffset != PlayState.songOffset) {
-			if(accepted) {
-				var songPath = Paths.weekPath(PlayState.SONG.song.toLowerCase() + '/', "week" + PlayState.storyWeek);
-				trace('Changing Offset from $oldOffset to ${PlayState.songOffset}');
-				sys.FileSystem.rename(songPath + oldOffset + '.offset', songPath + PlayState.songOffset + '.offset');
-			}
 			perSongOffset.text = "Additive Offset (Left, Right): " + PlayState.songOffset + " - Description - " + 'Adds the value to offset on the song.';
 			lastOffset = PlayState.songOffset;
 

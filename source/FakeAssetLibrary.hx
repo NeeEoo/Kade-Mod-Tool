@@ -85,7 +85,7 @@ class FakeAssetLibrary {
 				}
 			}
 		} else {
-			trace('"$directory" does not exists');
+			trace('"$directory" does not exist');
 		}
 	}
 

@@ -15,7 +15,7 @@ Do not put the videos in the videos folder. Put it in your mod folder.
 
 The file must start with
 `
-KMTStoryBoard v0.1
+KMTStoryBoard v0.2
 `
 
 Intro cutscenes only allows the milliseconds time unit.
@@ -88,6 +88,18 @@ The lower the number the higher quality it is, but the file is larger.
 
 Then when you are done click Okay, and then click Convert.
 
+
+To play a video when you start the song you do:
+
+```
+KMTStoryBoard v0.2
+
+--SECTION-Intro--
+0,PlayVideo,"#/videos/your_video.webm"
+--END-SECTION--
+```
+
+The video should be placed in your mod folder. The example will play the video from `assets/weeks/<MOD>/videos/your_video.webm`
 ------------------
 
 Actions:
@@ -124,6 +136,16 @@ Attrib[Rel][Float|String|Int|Bool|Null]. Takes 2 arguments
 
 Config[Float|String|Int|Bool|Null]. Takes 2 arguments
     Key, Value
+
+SetTiming takes 1 argument
+    timing (either exact or late)
+        By default, it is set to late.
+        Setting it to exact will make animation commands not work.
+        Late timing means that stuff happens next frame.
+
+Dialogue takes 1-2 arguments
+    filename, type (either pause or timed)
+        Read more in Dialogue.txt
 
 PlayVideo takes 1 arguments.
     Filename

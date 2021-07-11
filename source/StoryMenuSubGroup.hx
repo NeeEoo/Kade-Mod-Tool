@@ -424,7 +424,7 @@ class StoryMenuSubGroup extends FlxGroup
 			PlayState.campaignScore = 0;
 			PlayState.currentMod = curModStr;
 			StoryMenuState.weekUnlocked = weekUnlocked;
-			PlayState.songFilename = songName;
+			PlayState.songName = songName;
 			LoadingState.setGlobals();
 			PlayState.visualSongName = PlayState.storyVisNamePlaylist[0];
 			PlayState.SONG = Song.loadFromJson(songName + diffic, songName);
