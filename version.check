@@ -1,10 +1,13 @@
-v=4.1
-t=New Version Available\nNewest version is 4.1\nStoryboard Update part 2
+v=4.1.1
 y=297
+h=174
 w=360
-cy=367
 
 :CHANGES:
+- Added more dialogue commands
+- Fixed a crash
+
+Version 4.1
 - Added a dialogue system
 - Added outro cutscenes
 - Bug fixes
