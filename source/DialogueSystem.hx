@@ -55,7 +55,15 @@ class DialogueSystem extends FlxSpriteGroup
 	public var fontSize:Int = 32;
 	public var defaultPortraitColor:Int = FlxColor.WHITE;
 
+	public var clickFX:String = 'clickText';
+
 	public var changedBox:Bool = false;
+	public var shouldFlipBox:Bool = true;
+	public var isFlipped:Bool = false;
+
+	public var curVoice:FlxSound;
+	public var isFadingMusic:Bool = false;
+	public var fadeOutMusicDuration:Float = 2.2;
 
 	public function new(?dialogueList:Array<String>, ?parsedList:Array<DialogueEvent>, ?cachedPortraits:Map<String, FlxSprite>)
 	{
@@ -194,6 +202,7 @@ class DialogueSystem extends FlxSpriteGroup
 	var dialogueStarted:Bool = false;
 
 	var isEnding:Bool = false;
+	var forceProgress:Bool = false;
 
 	override function update(elapsed:Float)
 	{
@@ -225,20 +234,16 @@ class DialogueSystem extends FlxSpriteGroup
 			}
 		}
 
-		if(shouldProgressDialogue && dialogueStarted)
+		if(forceProgress || (shouldProgressDialogue && dialogueStarted))
 		{
-			if(allowKeyPresses && doClickFX) FlxG.sound.play(Paths.sound('clickText'), 0.8);
+			if(!forceProgress && allowKeyPresses && doClickFX) FlxG.sound.play(Paths.sound(clickFX), 0.8);
+			forceProgress = false;
 
 			if(dialogueEvents.length == 0)
 			{
 				if(!isEnding)
 				{
 					isEnding = true;
-
-					var song = PlayState.songName;
-
-					if(song == 'senpai' || song == 'thorns')
-						FlxG.sound.music.fadeOut(2.2, 0);
 
 					new FlxTimer().start(0.2, function(tmr:FlxTimer)
 					{
@@ -252,18 +257,37 @@ class DialogueSystem extends FlxSpriteGroup
 					new FlxTimer().start(1.2, function(tmr:FlxTimer)
 					{
 						if(finishThing != null) finishThing();
+						if(!isFadingMusic) removeBGM();
+						if(curVoice != null) {
+							FlxG.sound.list.remove(curVoice);
+							curVoice.stop();
+							curVoice = null;
+						}
 						kill();
+					});
+
+					new FlxTimer().start(fadeOutMusicDuration, function(tmr:FlxTimer)
+					{
+						if(isFadingMusic) removeBGM();
 					});
 				}
 			}
 			else
 			{
-				if(!allowKeyPresses && doClickFX) FlxG.sound.play(Paths.sound('clickText'), 0.8);
+				if(!allowKeyPresses && doClickFX) FlxG.sound.play(Paths.sound(clickFX), 0.8);
 				progressDialogue();
 			}
 		}
 
 		super.update(elapsed);
+	}
+
+	function removeBGM() {
+		if(PlayState.alternativeMusic != null) {
+			FlxG.sound.list.remove(PlayState.alternativeMusic);
+			PlayState.alternativeMusic.stop();
+			PlayState.alternativeMusic = null;
+		}
 	}
 
 	var dialogueEvents:Array<DialogueEvent> = [];
@@ -287,6 +311,10 @@ class DialogueSystem extends FlxSpriteGroup
 			nextDialogue(currentEvent);
 
 			if(shouldBreak) break;
+		}
+
+		if(dialogueEvents.length == 0 && !Std.isOfType(currentEvent, Dialogue)) {
+			forceProgress = true;
 		}
 	}
 
@@ -407,7 +435,7 @@ class DialogueSystem extends FlxSpriteGroup
 				var modifyX = true;
 				if(centeredPortraits.contains(curCharacter)) modifyX = false;
 
-				currentPortrait.flipX = !box.flipX;
+				currentPortrait.flipX = !isFlipped;
 				if(modifyX) currentPortrait.x = box.x;
 
 				currentPortrait.y = box.y + 100;
@@ -419,7 +447,7 @@ class DialogueSystem extends FlxSpriteGroup
 				currentPortrait.y += offset[1];
 
 				if(modifyX) {
-					if(box.flipX) {
+					if(isFlipped) {
 						//currentPortrait.x += 100;
 						//currentPortrait.x += 30;
 					} else {
@@ -450,16 +478,20 @@ class DialogueSystem extends FlxSpriteGroup
 				var dialogueEvent:DialogueEvent = switch(event) {
 					case 'bgm' | 'bgmusic': new BGMusic(data);
 					case 'stopbgm' | 'stopbgmusic': new StopBGMusic();
+					case 'fadeoutbgm' | 'fadeoutbgmusic': new FadeOutBGMusic(data);
 					case 'sample': new Sample(data);
+					case 'changeclickfx': new ChangeClickFX(data);
+					case 'changetextfx': new ChangeTextFX(data);
 					case 'toggleclickfx': new ToggleClickFX();
 					case 'toggletextfx': new ToggleTextFX();
 					case 'toggledroptext': new ToggleDropText();
+					case 'toggleboxflip': new ToggleBoxFlip();
 					case 'ispixel': new EnablePixel();
 					case 'togglebgfade': new ToggleBGFade();
 					case 'textdelay': new TextDelay(Std.parseFloat(data));
 					case 'image': new MakeImage(data);
 					case 'changebox': new ChangeBox(data);
-					case 'flip' | 'flipbox': new FlipBox();
+					case 'flip': new FlipBox();
 					case 'movebox' | 'moveboxrel': new MoveBox(data, event == "moveboxrel");
 					case 'font' | 'setfont': new SetFont(data);
 					case 'fontcolor' | 'setfontcolor': new SetFontColor(data);
@@ -470,6 +502,8 @@ class DialogueSystem extends FlxSpriteGroup
 					case 'boxscale': new SetBoxScale(Std.parseFloat(data));
 					case 'background' | 'bg': new SetBackground(data);
 					case 'hidebackground' | 'hidebg': new HideBackground();
+					case 'voice': new PlayVoice(data);
+					case 'stopvoice': new StopVoice();
 
 					default: null;
 				}
@@ -518,8 +552,19 @@ class BGMusic extends DialogueEvent {
 	}
 
 	override public function runEvent() {
-		FlxG.sound.playMusic(Paths.music(filename), 0);
-		FlxG.sound.music.fadeIn(1, 0, 0.8);
+		if(PlayState.alternativeMusic == null) {
+			PlayState.alternativeMusic = new FlxSound();
+			FlxG.sound.list.add(PlayState.alternativeMusic);
+		}
+		system.isFadingMusic = false;
+		var bgmusic = PlayState.alternativeMusic;
+		if (bgmusic.active) bgmusic.stop();
+
+		bgmusic.loadEmbedded(Paths.music(filename), true);
+		bgmusic.volume = 0;
+		bgmusic.persist = true;
+		bgmusic.play();
+		bgmusic.fadeIn(1, 0, 0.8);
 	}
 }
 
@@ -538,7 +583,25 @@ class Sample extends DialogueEvent {
 
 class StopBGMusic extends DialogueEvent {
 	override public function runEvent() {
-		FlxG.sound.music.stop();
+		if(PlayState.alternativeMusic != null) PlayState.alternativeMusic.stop();
+		system.isFadingMusic = false;
+	}
+}
+
+class FadeOutBGMusic extends DialogueEvent {
+	public var duration:Float = 2.2;
+
+	public function new(data:String) {
+		super();
+		if(data != "") {
+			this.duration = Std.parseFloat(data);
+		}
+	}
+
+	override public function runEvent() {
+		system.fadeOutMusicDuration = duration;
+		if(PlayState.alternativeMusic != null) PlayState.alternativeMusic.fadeOut(duration, 0);
+		system.isFadingMusic = true;
 	}
 }
 
@@ -562,6 +625,48 @@ class ToggleTextFX extends DialogueEvent {
 	}
 }
 
+class ChangeTextFX extends DialogueEvent {
+	public var filename:String;
+	public var textFX:FlxSound;
+
+	public function new(filename:String) {
+		super();
+		this.filename = filename;
+		textFX = FlxG.sound.load(Paths.sound(filename), 0.6);
+	}
+
+	override public function runEvent() {
+		system.swagDialogueSounds = [textFX];
+
+		if(system.swagDialogue != null) {
+			system.swagDialogue.sounds = system.swagDialogueSounds;
+		}
+	}
+}
+
+class ChangeClickFX extends DialogueEvent {
+	public var filename:String;
+
+	public function new(filename:String) {
+		super();
+		this.filename = filename;
+	}
+
+	override public function runEvent() {
+		system.clickFX = filename;
+	}
+}
+
+class ToggleBoxFlip extends DialogueEvent {
+	override public function runEvent() {
+		system.shouldFlipBox = !system.shouldFlipBox;
+
+		if(system.shouldFlipBox) {
+			system.box.flipX = system.isFlipped;
+		}
+	}
+}
+
 class ToggleDropText extends DialogueEvent {
 	override public function runEvent() {
 		system.dropTextVisible = !system.dropTextVisible;
@@ -575,6 +680,33 @@ class ToggleDropText extends DialogueEvent {
 				system.dropText.alpha = 0;
 			}
 		}
+	}
+}
+
+class PlayVoice extends DialogueEvent {
+	public var filename:String;
+	public var voice:FlxSound;
+
+	public function new(filename:String) {
+		super();
+		this.filename = Paths.sound(filename);
+		voice = new FlxSound().loadEmbedded(this.filename);
+	}
+
+	override public function runEvent() {
+		var wasNull = system.curVoice == null;
+		if(system.curVoice != null && system.curVoice.playing) system.curVoice.stop();
+
+		system.curVoice = voice;
+		if(wasNull) FlxG.sound.list.add(system.curVoice);
+		system.curVoice.play();
+	}
+}
+
+class StopVoice extends DialogueEvent {
+	override public function runEvent() {
+		if(system.curVoice != null && system.curVoice.playing)
+			system.curVoice.stop();
 	}
 }
 
@@ -668,7 +800,11 @@ class ChangeBox extends DialogueEvent {
 
 class FlipBox extends DialogueEvent {
 	override public function runEvent() {
-		system.box.flipX = !system.box.flipX;
+		system.isFlipped = !system.isFlipped;
+
+		if(system.shouldFlipBox) {
+			system.box.flipX = system.isFlipped;
+		}
 	}
 }
 

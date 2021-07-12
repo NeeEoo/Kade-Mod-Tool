@@ -68,8 +68,8 @@ The XML file animation-name should be named `portrait enter`.
 
 If you override an existing portrait that has an XML with a single image portrait, then you'll need to create a file named `PORTRAIT_NAME.noanim`
 
-If the portrait is placed incorrectly, you can make a file named `PORTRAIT_NAME.offset`.
-The file should contain 2 numbers separated by a comma.
+If the portrait is incorrectly placed, you can make a file named `PORTRAIT_NAME.offset`.
+The file should contain two numbers separated by a comma.
 Example:
 
 ```
@@ -102,7 +102,7 @@ Here is a list of commands in the dialogue system:
 
 Flip
     Flips the box. And if the portrait is a single image, it places itself in the correct place.
-    By default, it points right
+    By default, it points right.
 
 ToggleBGFade
     Toggles the tint of the background. (Active by default)
@@ -112,9 +112,19 @@ IsPixel
     This must be at the top of the file.
 
 BGMusic
+    Shorthand: BGM
     Takes 1 argument. Filename
         Plays a music file on loop until the dialogue box closes.
         Reads the file from the `music/` folder
+
+StopBGMusic
+    Shorthand: StopBGM
+        Instantly stops the background music
+
+FadeOutBGMusic
+    Shorthand: FadeOutBGM
+    Takes 1 optional argument. Duration (Float, default=2.2)
+        Fades out the background music.
 
 Sample
     Takes 1 argument. Filename
@@ -126,9 +136,15 @@ ToggleClickFX
 
 ToggleTextFX
     Toggles the sound that plays for the text typing. (Active by default)
+    If you change the Text FX sound and disable the sound, you will need to use ChangeTextFX to activate it.
 
 ToggleDropText
     Toggles the shadow on the text. (Active by default)
+
+ToggleBoxFlip
+    Stops the box from flipping when using the Flip command
+    Useful for dialogue boxes that shouldn't flip.
+    By default, it flips the box.
 
 TextDelay
     Takes 1 argument. Duration (Float)
@@ -157,7 +173,7 @@ FontSize
 
 ChangeBox
     Takes 1-3 arguments. Filename, fps, start animation
-        Changes the box.
+        Changes the box image.
         Fps sets the speed of the animation.
         Start Animation sets the starting animation.
         Reads the image from the `images/` folder.
@@ -170,13 +186,13 @@ BoxAnim
 BoxScale
     Takes 1 argument. Scale (Float)
         Sets the scale of the box.
-        Must be at the top.
+        Must be at the top of the file.
         By default, it is set to 0.9
 
 PortraitColors
     Takes 1 argument. Color (Int)
         This doesn't work as you might guess.
-        It just sets the tint of the image.
+        It sets the tint of the image.
         Setting it to 0 makes the portrait pure black.
 
 MoveBox and MoveBoxRel
@@ -199,6 +215,23 @@ Background
 HideBackground
     Shorthand: HideBG
         Hides the background that was set by the Background command.
+
+Voice
+    Takes 1 argument. Filename
+        Plays a voice line. That can be stopped or interrupted by using either Voice or StopVoice
+
+StopVoice
+    Stops the current voice playing.
+    Use this at the end of the file, or if the next dialogue doesn't have a voice.
+
+ChangeClickFX
+    Takes 1 argument. Filename
+        Changes the sound that plays when you progress the dialogue
+
+ChangeTextFX
+    Takes 1 argument. Filename
+        Changes the sound for the typing.
+        Enables Text FX if it was disabled
 
 ---------
 

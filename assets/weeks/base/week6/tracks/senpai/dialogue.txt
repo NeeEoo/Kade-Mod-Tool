@@ -4,3 +4,5 @@
 :senpai:Ah, a new fair maiden has come in search of true love!
 :senpai:A serenade between gentlemen shall decide where her beautiful heart shall reside.
 :bfPixel:Beep bo bop
+
+>FadeOutBGMusic<

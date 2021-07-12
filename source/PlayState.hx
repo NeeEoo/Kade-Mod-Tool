@@ -51,6 +51,7 @@ class PlayState extends MusicBeatState
 {
 	public static var instance:PlayState = null;
 	public static var openedSubState:FlxSubState = null;
+	public static var alternativeMusic:FlxSound;
 
 	public static inline final DEFAULT_TIME_BG = FlxColor.GRAY;
 	public static inline final DEFAULT_TIME_FILLED = FlxColor.LIME;
@@ -235,6 +236,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		instance = this;
+		alternativeMusic = null;
 
 		this.Tween = new FlxTweenManager();
 
@@ -1589,6 +1591,7 @@ class PlayState extends MusicBeatState
 			{
 				FlxG.sound.music.pause();
 				vocals.pause();
+				if(alternativeMusic != null) alternativeMusic.pause();
 			}
 
 			Tween.active = false;
@@ -1617,6 +1620,7 @@ class PlayState extends MusicBeatState
 			if (FlxG.sound.music != null && !startingSong)
 			{
 				resyncVocals();
+				if(alternativeMusic != null) alternativeMusic.play();
 			}
 
 			if(startTimer != null && !startTimer.finished)
@@ -2253,6 +2257,7 @@ class PlayState extends MusicBeatState
 			persistentDraw = false;
 			paused = true;
 
+			if(alternativeMusic != null) alternativeMusic.stop();
 			vocals.stop();
 			FlxG.sound.music.stop();
 
@@ -2522,6 +2527,7 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
+		if(alternativeMusic != null) alternativeMusic.volume = 0;
 		#if !switch
 		if (SONG.validScore)
 		{
@@ -3680,6 +3686,7 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.sound.music.pause();
 			vocals.pause();
+			if(alternativeMusic != null) alternativeMusic.pause();
 		}
 
 		Tween.active = false;
@@ -3704,6 +3711,7 @@ class PlayState extends MusicBeatState
 		if (FlxG.sound.music != null && !startingSong)
 		{
 			resyncVocals();
+			if(alternativeMusic != null) alternativeMusic.play();
 		}
 
 		if(startTimer != null && !startTimer.finished)

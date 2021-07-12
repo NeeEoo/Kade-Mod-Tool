@@ -9,3 +9,5 @@
 :none:I'll make her father pay for what he's done to me and all the others,,,,
 :none:I'll beat you and make you take my place.
 :none:You don't mind your bodies being borrowed right? It's only fair...
+
+>FadeOutBGMusic<
