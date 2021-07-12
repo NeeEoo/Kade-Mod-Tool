@@ -1946,7 +1946,6 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.SEVEN)
 		{
-			Tween.active = false;
 			FlxG.switchState(new ChartingState());
 			destroyStuff();
 		}
@@ -1980,14 +1979,12 @@ class PlayState extends MusicBeatState
 		#if debug
 		if (FlxG.keys.justPressed.EIGHT)
 		{
-			Tween.active = false;
 			FlxG.switchState(new AnimationDebug(SONG.player2));
 			destroyStuff();
 		}
 
 		if (FlxG.keys.justPressed.ZERO)
 		{
-			Tween.active = false;
 			FlxG.switchState(new AnimationDebug(SONG.player1));
 			destroyStuff();
 		}
@@ -2493,6 +2490,7 @@ class PlayState extends MusicBeatState
 			luaModchart = null;
 		}
 		#end
+		Tween.active = false;
 		Tween.forEach(tween -> tween.destroy());
 	}
 
