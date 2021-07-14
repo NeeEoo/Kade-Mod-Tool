@@ -1650,16 +1650,18 @@ class PlayState extends MusicBeatState
 
 	function resyncVocals():Void
 	{
-		vocals.pause();
+		if(!hasFinishedSong) {
+			vocals.pause();
+	
+			FlxG.sound.music.play();
+			Conductor.songPosition = FlxG.sound.music.time;
+			vocals.time = Conductor.songPosition;
+			vocals.play();
 
-		FlxG.sound.music.play();
-		Conductor.songPosition = FlxG.sound.music.time;
-		vocals.time = Conductor.songPosition;
-		vocals.play();
-
-		#if (windows && DISCORD)
-		DiscordClient.changePresence(detailsText + " " + visualSongName + " (" + storyDifficultyText + ") " + generateRanking(), "\nAcc: " + truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, largeText, iconRPC);
-		#end
+			#if (windows && DISCORD)
+			DiscordClient.changePresence(detailsText + " " + visualSongName + " (" + storyDifficultyText + ") " + generateRanking(), "\nAcc: " + truncateFloat(accuracy, 2) + "% | Score: " + songScore + " | Misses: " + misses, largeText, iconRPC);
+			#end
+		}
 	}
 
 	public var paused:Bool = false;
@@ -2499,6 +2501,8 @@ class PlayState extends MusicBeatState
 		Tween.forEach(tween -> tween.destroy());
 	}
 
+	public var hasFinishedSong:Bool = false;
+
 	function shouldEndSong() {
 		if(hasStoryBoard && storyBoard.sectionActions.exists(SBSection.ENDING_CUTSCENE))
 		{
@@ -2507,6 +2511,7 @@ class PlayState extends MusicBeatState
 
 			FlxG.sound.music.volume = 0;
 			vocals.volume = 0;
+			hasFinishedSong = true;
 
 			outroStartTime = Std.int(Conductor.songPosition);
 			storyBoard.currentSection = SBSection.ENDING_CUTSCENE;
@@ -2524,6 +2529,7 @@ class PlayState extends MusicBeatState
 		destroyStuff();
 
 		hasEnded = true;
+		hasFinishedSong = true;
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
