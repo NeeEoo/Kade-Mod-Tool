@@ -806,12 +806,6 @@ class PlayState extends MusicBeatState
 		add(dad);
 		add(boyfriend);
 
-		var doof:DialogueSystem = new DialogueSystem(dialogue);
-		// doof.x += 70;
-		// doof.y = FlxG.height * 0.5;
-		doof.scrollFactor.set();
-		doof.finishThing = startCountdown;
-
 		if(hasStoryBoard) storyBoard = new StoryBoardParser();
 
 		Conductor.songPosition = -5000;
@@ -966,7 +960,6 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
-		doof.cameras = [camHUD];
 		kadeEngineWatermark.cameras = [camHUD];
 
 		startingSong = true;
@@ -983,9 +976,15 @@ class PlayState extends MusicBeatState
 		{
 			if (isStoryMode)
 			{
+				var doof:DialogueSystem = new DialogueSystem(dialogue);
+				doof.scrollFactor.set();
+				doof.finishThing = startCountdown;
+				doof.cameras = [camHUD];
+
 				switch (curSong)
 				{
 					case "winter-horrorland":
+						doof.removeSounds();
 						var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
 						add(blackScreen);
 						blackScreen.scrollFactor.set();

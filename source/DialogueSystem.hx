@@ -257,12 +257,7 @@ class DialogueSystem extends FlxSpriteGroup
 					new FlxTimer().start(1.2, function(tmr:FlxTimer)
 					{
 						if(finishThing != null) finishThing();
-						if(!isFadingMusic) removeBGM();
-						if(curVoice != null) {
-							FlxG.sound.list.remove(curVoice);
-							curVoice.stop();
-							curVoice = null;
-						}
+						removeSounds();
 						kill();
 					});
 
@@ -287,6 +282,15 @@ class DialogueSystem extends FlxSpriteGroup
 			FlxG.sound.list.remove(PlayState.alternativeMusic);
 			PlayState.alternativeMusic.stop();
 			PlayState.alternativeMusic = null;
+		}
+	}
+
+	public function removeSounds() {
+		if(!isFadingMusic) removeBGM();
+		if(curVoice != null) {
+			FlxG.sound.list.remove(curVoice);
+			curVoice.stop();
+			curVoice = null;
 		}
 	}
 
