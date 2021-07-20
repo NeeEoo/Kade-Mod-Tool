@@ -1,11 +1,11 @@
-v=4.1.1
+v=4.1.2
 y=297
 h=174
 w=360
 
 :CHANGES:
-- Added more dialogue commands
-- Fixed a crash
+- Fixed BGM always playing
+- Fixed the song repeating
 
 Version 4.1
 - Added a dialogue system

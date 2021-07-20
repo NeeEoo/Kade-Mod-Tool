@@ -34,7 +34,7 @@ class MainMenuState extends MusicBeatState
 
 	public static inline final nightly:String = "";
 
-	public static inline final kadeModToolVer:String = "4.1.1" + nightly;
+	public static inline final kadeModToolVer:String = "4.1.2" + nightly;
 	public static inline final gameVer:String = "0.2.7.1";
 
 	var magenta:FlxSprite;
